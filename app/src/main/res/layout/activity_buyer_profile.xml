@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Buyer.BuyerProfile">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/buyer_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/default_avatar_4" />
+
+    <RelativeLayout
+        android:id="@+id/layout_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buyer_image"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/person_ic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/ic_person_black_24dp" />
+
+        <TextView
+            android:id="@+id/buyer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="50dp"
+            android:layout_toEndOf="@+id/person_ic"
+            android:text="Name"
+            android:textColor="@color/info_description_color"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:id="@+id/textview_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buyer_name"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="20dp"
+            android:text="Simon Mugo"
+            android:textColor="@color/intro_title_color" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_name"
+        android:layout_marginTop="0dp">
+
+        <ImageView
+            android:id="@+id/email_ic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/ic_email_black_24dp" />
+
+        <TextView
+            android:id="@+id/buyer_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="50dp"
+            android:layout_toEndOf="@+id/email_ic"
+            android:text="Email"
+            android:textColor="@color/info_description_color"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:id="@+id/textview_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buyer_email"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="20dp"
+            android:text="mugoosimon97@gmail.com"
+            android:textColor="@color/intro_title_color" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_email"
+        android:layout_marginTop="0dp">
+
+        <ImageView
+            android:id="@+id/phone_ic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/ic_phone_black_24dp" />
+
+        <TextView
+            android:id="@+id/buyer_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="50dp"
+            android:layout_toEndOf="@+id/phone_ic"
+            android:text="Phone"
+            android:textColor="@color/info_description_color"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:id="@+id/textview_phoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buyer_phone"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="20dp"
+            android:text="+254798423277"
+            android:textColor="@color/intro_title_color" />
+
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_phone"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:background="@xml/btn_gradient_style"
+        android:layout_marginEnd="30dp"
+        android:text="Next" />
+
+
+</RelativeLayout>

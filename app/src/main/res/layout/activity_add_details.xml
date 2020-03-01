@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".Buyer.AddDetails">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/buyer_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:src="@drawable/default_avatar_4" />
+
+
+    <ImageView
+        android:id="@+id/edit_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buyer_image"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="-45dp"
+        android:layout_toEndOf="@+id/buyer_image"
+        android:src="@drawable/ic_edit_black_24dp" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerBuyer_username"
+        android:layout_width="match_parent"
+        android:padding="15dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buyer_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textColorHint="#F006E910"
+        app:boxBackgroundColor="#F006E910"
+        app:boxStrokeColor="#F006E910">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:drawableRight="@drawable/ic_person_black_24dp"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:textColorHighlight="#F006E910"
+            android:textColorHint="#F006E910"
+            android:textColorLink="#F006E910" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerBuyer_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/registerBuyer_username"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:padding="15dp"
+        android:textColorHint="#F006E910"
+        app:boxBackgroundColor="#F006E910"
+        app:boxStrokeColor="#F006E910"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:drawableRight="@drawable/ic_email_black_24dp"
+            android:textColorHighlight="#F006E910"
+            android:textColorHint="#F006E910"
+            android:textColorLink="#F006E910" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerBuyer_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/registerBuyer_email"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:padding="15dp"
+        android:textColorHint="#F006E910"
+        app:boxBackgroundColor="#F006E910"
+        app:boxStrokeColor="#F006E910"
+        app:errorEnabled="true"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:textColorHighlight="#F006E910"
+            android:textColorHint="#F006E910"
+            android:textColorLink="#F006E910" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/registerBuyer_password"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:background="@xml/btn_gradient_style"
+        android:layout_marginEnd="30dp"
+        android:text="Save" />
+
+
+</RelativeLayout>
