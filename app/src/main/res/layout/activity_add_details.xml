@@ -23,7 +23,7 @@
 
 
     <ImageView
-        android:id="@+id/edit_image"
+        android:id="@+id/change_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/buyer_image"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/registerBuyer_username"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:padding="15dp"
         android:textColorHint="#F006E910"
         app:boxBackgroundColor="#F006E910"
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/registerBuyer_email"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:padding="15dp"
         android:textColorHint="#F006E910"
         app:boxBackgroundColor="#F006E910"

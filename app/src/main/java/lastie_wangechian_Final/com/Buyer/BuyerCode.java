@@ -1,8 +1,5 @@
 package lastie_wangechian_Final.com.Buyer;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +33,9 @@ public class BuyerCode extends AppCompatActivity {
     private Button button_verify;
     private TextView textView_didntGet;
     private FirebaseAuth mAuth;
+    FirebaseFirestore fStore;
     String verficationId;
+    PhoneAuthProvider.ForceResendingToken token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,6 @@ public class BuyerCode extends AppCompatActivity {
 
         //getting information from previous intent
         String phone_number = getIntent().getStringExtra("buyer_phonenumber");
-        Toast.makeText(BuyerCode.this, phone_number, Toast.LENGTH_LONG).show();
         sendVerificationCode(phone_number);
 
         button_verify.setOnClickListener(new View.OnClickListener() {
@@ -89,33 +91,6 @@ public class BuyerCode extends AppCompatActivity {
         signInWithCredentials(credential);
 
     }
-
-    private void signInWithCredentials(PhoneAuthCredential credential) {
-
-        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if (task.isSuccessful()){
-
-                    startActivity(new Intent(getApplicationContext(),AddDetails.class));
-                    finish();
-                }
-            }
-        });
-    }
-
-    private void sendVerificationCode(String phone_number) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phone_number,
-                60,
-                TimeUnit.SECONDS,
-                this,
-                mCallBack
-
-        );
-    }
-
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks
             mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -151,7 +126,48 @@ public class BuyerCode extends AppCompatActivity {
             super.onCodeSent(s, forceResendingToken);
 
             verficationId = s;
+            token = forceResendingToken;
 
         }
+
+        @Override
+        public void onCodeAutoRetrievalTimeOut(String s) {
+            super.onCodeAutoRetrievalTimeOut(s);
+
+            Toast.makeText(BuyerCode.this, "OTP expired...Try again", Toast.LENGTH_LONG).show();
+        }
     };
+
+    private void sendVerificationCode(String phone_number) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phone_number,
+                60,
+                TimeUnit.SECONDS,
+                this,
+                mCallBack
+
+        );
+    }
+
+    private void signInWithCredentials(PhoneAuthCredential credential) {
+
+
+        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()) {
+
+                    String phone_number = getIntent().getStringExtra("buyer_phonenumber");
+                    Intent next_intent = new Intent(BuyerCode.this, AddDetails.class);
+                    next_intent.putExtra("buyer_phonenumber", phone_number);
+                    startActivity(next_intent);
+                    finish();
+
+                } else {
+                    Toast.makeText(BuyerCode.this, "Authentication failed " + task.getException().toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 }

@@ -140,7 +140,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_phone"

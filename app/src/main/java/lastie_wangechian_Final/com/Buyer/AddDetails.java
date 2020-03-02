@@ -1,15 +1,29 @@
 package lastie_wangechian_Final.com.Buyer;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -17,12 +31,17 @@ import lastie_wangechian_Final.com.R;
 
 public class AddDetails extends AppCompatActivity {
 
+    private static final int GALLERY_PICK = 1;
+    FirebaseAuth mAuth;
+    FirebaseFirestore fStore;
     private Toolbar toolbar;
     private CircleImageView circleImageView;
     private TextInputLayout textInputLayout_username;
     private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
+    String userID;
     private Button button_save;
+    private ImageView imageView_changeImg;
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" +
                     "(?=.*[0-9])" +   //atleast one digit
@@ -31,14 +50,19 @@ public class AddDetails extends AppCompatActivity {
                     "(?=.*[@#&*^+$])" +  // atleast one special characters
                     ".{6,}" +         //minimum of 6 characters
                     "$");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_details);
 
+        mAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        userID = FirebaseAuth.getInstance().getUid();
         textInputLayout_username = findViewById(R.id.registerBuyer_username);
         textInputLayout_email = findViewById(R.id.registerBuyer_email);
         textInputLayout_password = findViewById(R.id.registerBuyer_password);
+        imageView_changeImg = findViewById(R.id.change_image);
         circleImageView = findViewById(R.id.buyer_image);
         button_save = findViewById(R.id.button_save);
         toolbar = findViewById(R.id.toolbar);
@@ -46,6 +70,75 @@ public class AddDetails extends AppCompatActivity {
         getSupportActionBar().setTitle("Additional Details");
 
 
+        final DocumentReference documentReference = fStore.collection("Buyer").document(userID);
+
+
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (validateEmail() | validateUsername() | validatePassword()) {
+
+                    String username = textInputLayout_username.getEditText().getText().toString();
+                    String email = textInputLayout_email.getEditText().getText().toString();
+                    String password = textInputLayout_password.getEditText().getText().toString();
+                    String phone_number = getIntent().getStringExtra("buyer_phonenumber");
+
+                    Map<String, String> userMap = new HashMap<>();
+                    userMap.put("Username", username);
+                    userMap.put("Email", email);
+                    userMap.put("Phone", phone_number);
+                    userMap.put("Image", "default");
+                    userMap.put("Thumbnail", "default");
+                    userMap.put("Password", password);
+
+                    documentReference.set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()) {
+                                startActivity(new Intent(getApplicationContext(), BuyerProfile.class));
+                                finish();
+                            } else {
+
+                                Toast.makeText(AddDetails.this, "Data wasn't saved " + task.getException().toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+                } else {
+
+                    return;
+                }
+            }
+        });
+
+
+        //change image
+        imageView_changeImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setType("image/*");
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(galleryIntent, "Select Image"), GALLERY_PICK);
+            }
+        });
+
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_PICK && requestCode == RESULT_OK) {
+
+            Uri imageUri = data.getData();
+
+        }
     }
 
     private boolean validateUsername() {
