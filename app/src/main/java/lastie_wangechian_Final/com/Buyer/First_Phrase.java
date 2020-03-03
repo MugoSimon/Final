@@ -17,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 
+import lastie_wangechian_Final.com.MainActivity;
 import lastie_wangechian_Final.com.R;
 
 public class First_Phrase extends AppCompatActivity {
@@ -105,7 +106,7 @@ public class First_Phrase extends AppCompatActivity {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                     if (documentSnapshot.exists()) {
-                        startActivity(new Intent(getApplicationContext(), BuyerProfile.class));
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     } else {
 
                         editText_phoneNumber.requestFocus();

@@ -55,21 +55,31 @@ public class BuyerCode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String code = editText_code.getText().toString().trim();
+                try {
 
-                if (TextUtils.isEmpty(code) || code.length() != 6){
+                    String code = editText_code.getText().toString().trim();
 
-                    editText_code.requestFocus();
-                    editText_code.setText(null);
-                    editText_code.setError("invalid code");
-                    return;
+                    if (TextUtils.isEmpty(code) || code.length() != 6) {
 
-                }else{
+                        editText_code.requestFocus();
+                        editText_code.setText(null);
+                        editText_code.setError("invalid code");
+                        return;
 
-                    editText_code.setError(null);
-                    verifyCode(code);
+                    } else {
 
+                        editText_code.setError(null);
+                        verifyCode(code);
+
+                    }
+
+                } catch (Exception e) {
+
+                    Toast.makeText(BuyerCode.this, "Offline", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), First_Phrase.class));
+                    finish();
                 }
+
             }
         });
 

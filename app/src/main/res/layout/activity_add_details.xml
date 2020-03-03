@@ -115,5 +115,16 @@
         android:layout_marginEnd="30dp"
         android:text="Save" />
 
+    <TextView
+        android:id="@+id/link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="67dp"
+        android:layout_marginBottom="0dp"
+        android:text="TextView"
+        android:visibility="invisible" />
+
 
 </RelativeLayout>

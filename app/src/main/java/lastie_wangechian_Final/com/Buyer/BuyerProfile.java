@@ -1,19 +1,24 @@
 package lastie_wangechian_Final.com.Buyer;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import lastie_wangechian_Final.com.MainActivity;
@@ -29,6 +34,7 @@ public class BuyerProfile extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore fStore;
     private Button button_next;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,12 @@ public class BuyerProfile extends AppCompatActivity {
         button_next = findViewById(R.id.button_next);
         textView_phonenumber = findViewById(R.id.textview_phoneNumber);
         circleImageView = findViewById(R.id.buyer_image);
+        progressDialog = new ProgressDialog(this);
+
+        progressDialog.setTitle("Loading info");
+        progressDialog.setMessage("please wait while we load your information");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
         DocumentReference documentReference = fStore.collection("Buyer").document(mAuth.getCurrentUser().getUid());
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -55,14 +67,25 @@ public class BuyerProfile extends AppCompatActivity {
 
                     String username = documentSnapshot.getString("Username");
                     String email = documentSnapshot.getString("Email");
+                    String image = documentSnapshot.getString("Image");
                     String phonenumber = mAuth.getCurrentUser().getPhoneNumber();
+
+                    progressDialog.dismiss();
 
                     textView_name.setText(username);
                     textView_email.setText(email);
                     textView_phonenumber.setText(phonenumber);
+                    Picasso.get().load(image).into(circleImageView);
 
 
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.hide();
+                Toast.makeText(BuyerProfile.this, "Offline", Toast.LENGTH_LONG).show();
+                return;
             }
         });
 
