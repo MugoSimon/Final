@@ -10,17 +10,13 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 
-import lastie_wangechian_Final.com.MainActivity;
 import lastie_wangechian_Final.com.R;
 
-public class First_Phrase extends AppCompatActivity {
+public class BuyerRegister extends AppCompatActivity {
 
     private Toolbar toolbar;
     private EditText editText_phoneNumber;
@@ -31,7 +27,7 @@ public class First_Phrase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first__phrase);
+        setContentView(R.layout.activity_buyer_register);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -42,6 +38,7 @@ public class First_Phrase extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Buyer Side");
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,9 +50,9 @@ public class First_Phrase extends AppCompatActivity {
 
                 }else {
                     String buyer_phonenumber = countryCodePicker.getFullNumberWithPlus();
-                    //Toast.makeText(First_Phrase.this, buyer_phonenumber, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(BuyerRegister.this, buyer_phonenumber, Toast.LENGTH_LONG).show();
                     //startActivity(new Intent(getApplicationContext(),BuyerCode.class));
-                    Intent next_intent = new Intent(First_Phrase.this, BuyerCode.class);
+                    Intent next_intent = new Intent(BuyerRegister.this, BuyerCode.class);
                     next_intent.putExtra("buyer_phonenumber",buyer_phonenumber);
                     startActivity(next_intent);
                     finish();
@@ -93,28 +90,4 @@ public class First_Phrase extends AppCompatActivity {
 
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (mAuth.getCurrentUser() != null) {
-
-            DocumentReference documentReference = fStore.collection("Buyer").document(mAuth.getCurrentUser().getUid());
-            documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                    if (documentSnapshot.exists()) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    } else {
-
-                        editText_phoneNumber.requestFocus();
-                        return;
-                    }
-                }
-            });
-
-        }
-    }
 }

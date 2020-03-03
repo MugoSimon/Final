@@ -16,16 +16,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Buyer.BuyerProfile"
+            android:name=".SelectActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".Buyer.AddDetails"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Vendor.VendorSelect"
+            android:parentActivityName=".SelectActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Buyer.BuyerSelect"
+            android:parentActivityName=".SelectActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Buyer.BuyerLogin"
+            android:parentActivityName=".Buyer.BuyerSelect"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Buyer.BuyerProfile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Buyer.AddDetails"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Buyer.BuyerCode"
-            android:parentActivityName=".Buyer.First_Phrase"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:parentActivityName=".Buyer.BuyerRegister"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Buyer.First_Phrase"
+            android:name=".Buyer.BuyerRegister"
+            android:parentActivityName=".Buyer.BuyerSelect"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"

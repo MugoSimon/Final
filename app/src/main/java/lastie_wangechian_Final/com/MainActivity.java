@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import lastie_wangechian_Final.com.Buyer.First_Phrase;
-
 public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
@@ -28,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
-                startActivity(new Intent(getApplicationContext(), First_Phrase.class));
+                startActivity(new Intent(getApplicationContext(), SelectActivity.class));
                 finish();
             }
         });

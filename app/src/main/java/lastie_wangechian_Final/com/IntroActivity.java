@@ -15,8 +15,6 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-import lastie_wangechian_Final.com.Buyer.First_Phrase;
-
 public class IntroActivity extends AppCompatActivity {
 
     private ViewPager screenPager;
@@ -34,7 +32,7 @@ public class IntroActivity extends AppCompatActivity {
         //checking if the animation slide is attended already
         if( restorePrefData() ){
 
-            Intent next_intent = new Intent(getApplicationContext(), First_Phrase.class);
+            Intent next_intent = new Intent(getApplicationContext(), SelectActivity.class);
             startActivity(next_intent);
             finish();
 

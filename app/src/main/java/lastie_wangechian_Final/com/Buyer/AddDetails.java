@@ -209,7 +209,7 @@ public class AddDetails extends AppCompatActivity {
 
                                 Uri download_url = uri;
                                 String image_link = download_url.toString().trim();
-                                Toast.makeText(AddDetails.this, image_link, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(AddDetails.this, image_link, Toast.LENGTH_LONG).show();
 
                                 textView_link.setText(image_link);
                             }
