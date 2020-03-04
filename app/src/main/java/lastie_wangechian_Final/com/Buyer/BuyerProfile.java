@@ -70,11 +70,10 @@ public class BuyerProfile extends AppCompatActivity {
                     String image = documentSnapshot.getString("Image");
                     String phonenumber = mAuth.getCurrentUser().getPhoneNumber();
 
-                    progressDialog.dismiss();
-
                     textView_name.setText(username);
                     textView_email.setText(email);
                     textView_phonenumber.setText(phonenumber);
+                    progressDialog.dismiss();
                     Picasso.get().load(image).into(circleImageView);
 
 
