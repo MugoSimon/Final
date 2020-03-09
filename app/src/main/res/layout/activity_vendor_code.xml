@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="15dp"
-    tools:context=".Buyer.BuyerCode">
+    tools:context=".Vendor.VendorCode">
 
     <LinearLayout
         android:id="@+id/Title"
@@ -22,7 +21,7 @@
             android:text="get code"
             android:textAlignment="center"
             android:textAllCaps="true"
-            android:textColor="@color/faint_yellow"
+            android:textColor="@color/purple_yake"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -61,7 +60,7 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/edtBuyer_code"
+        android:id="@+id/edtVendor_code"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_below="@+id/message_wait"
@@ -74,13 +73,13 @@
         android:textColorHint="@color/info_description_color" />
 
     <Button
-        android:id="@+id/btnVerify_buyerCode"
+        android:id="@+id/btnVerify_vendorCode"
         android:layout_width="350dp"
         android:layout_height="60dp"
-        android:layout_below="@+id/edtBuyer_code"
+        android:layout_below="@+id/edtVendor_code"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:background="@xml/water_buyer_style"
+        android:background="@xml/water_vendor_style"
         android:text="Verify Code"
         android:textAllCaps="true"
         android:textStyle="bold" />

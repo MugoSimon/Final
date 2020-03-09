@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#fff"
-    android:orientation="vertical"
-    tools:context=".Buyer.BuyerLogin">
+    tools:context=".Vendor.VendorLogin">
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -50,13 +49,13 @@
                 android:gravity="center_vertical">
 
                 <com.hbb20.CountryCodePicker
-                    android:id="@+id/buyerLoginccp"
+                    android:id="@+id/vendorLogin_ccp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:ccp_defaultNameCode="KE" />
 
                 <EditText
-                    android:id="@+id/buyerLogin_phoneNumber"
+                    android:id="@+id/vendorLogin_phoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
@@ -74,7 +73,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/buyerLogin_password"
+        android:id="@+id/vendorLogin_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/RelativeLayout"
@@ -101,7 +100,7 @@
         android:id="@+id/button_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buyerLogin_password"
+        android:layout_below="@+id/vendorLogin_password"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="30dp"
@@ -118,5 +117,6 @@
         android:text="Not a member"
         android:textColor="@color/info_description_color"
         android:textSize="16sp" />
+
 
 </RelativeLayout>

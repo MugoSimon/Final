@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Buyer;
+package lastie_wangechian_Final.com.Vendor;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,33 +23,37 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import lastie_wangechian_Final.com.R;
 
-public class BuyerProfile extends AppCompatActivity {
+public class VendorProfile extends AppCompatActivity {
 
+    FirebaseAuth mAuth;
+    FirebaseFirestore fStore;
+    ProgressDialog progressDialog;
+    String userID;
     private Toolbar toolbar;
     private CircleImageView circleImageView;
     private TextView textView_name;
     private TextView textView_email;
     private TextView textView_phonenumber;
-    FirebaseAuth mAuth;
-    FirebaseFirestore fStore;
     private Button button_next;
-    ProgressDialog progressDialog;
-    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buyer_profile);
+        setContentView(R.layout.activity_vendor_profile);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Buyer Profile");
+        getSupportActionBar().setTitle("Vendor Profile");
 
-        textView_name = findViewById(R.id.textview_name);
-        textView_email = findViewById(R.id.textview_email);
+        mAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        userID = FirebaseAuth.getInstance().getUid();
+
+        textView_name = findViewById(R.id.vendor_name);
+        textView_email = findViewById(R.id.vendor_email);
+        textView_phonenumber = findViewById(R.id.vendor_phone);
         button_next = findViewById(R.id.button_next);
-        textView_phonenumber = findViewById(R.id.textview_phoneNumber);
-        circleImageView = findViewById(R.id.buyer_image);
+        circleImageView = findViewById(R.id.vendor_image);
         progressDialog = new ProgressDialog(this);
 
         progressDialog.setTitle("Loading info");
@@ -57,13 +61,10 @@ public class BuyerProfile extends AppCompatActivity {
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
+
         try {
 
-            mAuth = FirebaseAuth.getInstance();
-            fStore = FirebaseFirestore.getInstance();
-            userID = FirebaseAuth.getInstance().getUid();
-
-            DocumentReference documentReference = fStore.collection("Buyer").document(userID);
+            DocumentReference documentReference = fStore.collection("Vendor").document(userID);
             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -90,27 +91,28 @@ public class BuyerProfile extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     progressDialog.hide();
-                    Toast.makeText(BuyerProfile.this, "Offline", Toast.LENGTH_LONG).show();
+                    Toast.makeText(VendorProfile.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
                     return;
                 }
             });
 
         } catch (Exception e) {
 
-            Toast.makeText(BuyerProfile.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
+            Toast.makeText(VendorProfile.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
 
         }
-
-
 
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), BuyerMainActivity.class));
+
+                startActivity(new Intent(getApplicationContext(), VendorMainActivity.class));
                 finish();
+
             }
         });
 
     }
-}
 
+
+}

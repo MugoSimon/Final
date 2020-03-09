@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Buyer;
+package lastie_wangechian_Final.com.Vendor;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,34 +17,36 @@ import com.hbb20.CountryCodePicker;
 
 import lastie_wangechian_Final.com.R;
 
-public class BuyerRegister extends AppCompatActivity {
+public class VendorRegister extends AppCompatActivity {
 
+    FirebaseAuth mAuth;
+    FirebaseFirestore fStore;
     private Toolbar toolbar;
     private EditText editText_phoneNumber;
     private Button button_next;
     private CountryCodePicker countryCodePicker;
-    FirebaseAuth mAuth;
-    FirebaseFirestore fStore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buyer_register);
+        setContentView(R.layout.activity_vendor_register);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-        button_next = findViewById(R.id.registerBuyer_Button);
-        editText_phoneNumber = findViewById(R.id.registerBuyer_phoneNumber);
-        countryCodePicker = findViewById(R.id.registerBuyer_ccp);
+
+        button_next = findViewById(R.id.registerVendor_Button);
+        editText_phoneNumber = findViewById(R.id.registerVendor_phoneNumber);
+        countryCodePicker = findViewById(R.id.registerVendor_ccp);
         countryCodePicker.registerCarrierNumberEditText(editText_phoneNumber);
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Buyer Side");
+        getSupportActionBar().setTitle("Vendor Side");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
 
                     if (!validatePhonenumber()) {
@@ -52,20 +54,22 @@ public class BuyerRegister extends AppCompatActivity {
                         return;
 
                     } else {
-                        String buyer_phonenumber = countryCodePicker.getFullNumberWithPlus();
+
+                        String vendor_phonenumber = countryCodePicker.getFullNumberWithPlus();
                         //Toast.makeText(BuyerRegister.this, buyer_phonenumber, Toast.LENGTH_LONG).show();
                         //startActivity(new Intent(getApplicationContext(),BuyerCode.class));
-                        Intent next_intent = new Intent(BuyerRegister.this, BuyerCode.class);
-                        next_intent.putExtra("buyer_phonenumber", buyer_phonenumber);
+                        Intent next_intent = new Intent(VendorRegister.this, VendorCode.class);
+                        next_intent.putExtra("vendor_phonenumber", vendor_phonenumber);
                         startActivity(next_intent);
                         finish();
 
                     }
 
                 } catch (Exception e) {
-                    Toast.makeText(BuyerRegister.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
-                }
 
+                    Toast.makeText(VendorRegister.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
@@ -97,5 +101,4 @@ public class BuyerRegister extends AppCompatActivity {
         }
 
     }
-
 }

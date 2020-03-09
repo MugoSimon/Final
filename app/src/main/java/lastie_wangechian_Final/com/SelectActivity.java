@@ -60,16 +60,5 @@ public class SelectActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-        if (mAuth.getCurrentUser() != null) {
-
-            Intent intent = new Intent(SelectActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-
-        }
-    }
 }

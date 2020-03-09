@@ -12,7 +12,9 @@
 
     <!--colors za tabs and text in the layouts-->
 
-    <color name="tab_indicator_gray">#c0c0c0</color>
+    <color name="tab_indicator_gray">#F1DE09</color>
+    <color name="tab_buyer">#D0F1E33E</color>
+    <color name="tab_vendor">#D8D083DD</color>
     <color name="intro_title_color">#000000</color>
     <color name="info_description_color">#FF656565</color>
 

@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Buyer.BuyerProfile">
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context=".Vendor.VendorProfile">
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -11,7 +14,7 @@
         android:layout_height="wrap_content" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/buyer_image"
+        android:id="@+id/vendor_image"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_below="@+id/toolbar"
@@ -23,7 +26,7 @@
         android:id="@+id/layout_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buyer_image"
+        android:layout_below="@+id/vendor_image"
         android:layout_marginTop="0dp">
 
         <ImageView
@@ -35,7 +38,7 @@
             android:src="@drawable/ic_person_black_24dp" />
 
         <TextView
-            android:id="@+id/buyer_name"
+            android:id="@+id/textview_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -47,15 +50,14 @@
 
 
         <TextView
-            android:id="@+id/textview_name"
+            android:id="@+id/vendor_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/buyer_name"
+            android:layout_below="@+id/textview_name"
             android:layout_marginStart="90dp"
             android:layout_marginTop="15dp"
             android:text="Simon Mugo"
             android:textColor="@color/intro_title_color" />
-
 
     </RelativeLayout>
 
@@ -75,7 +77,7 @@
             android:src="@drawable/ic_email_black_24dp" />
 
         <TextView
-            android:id="@+id/buyer_email"
+            android:id="@+id/textview_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -87,10 +89,10 @@
 
 
         <TextView
-            android:id="@+id/textview_email"
+            android:id="@+id/vendor_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/buyer_email"
+            android:layout_below="@+id/textview_email"
             android:layout_marginStart="90dp"
             android:layout_marginTop="15dp"
             android:text="mugoosimon97@gmail.com"
@@ -115,7 +117,7 @@
             android:src="@drawable/ic_phone_black_24dp" />
 
         <TextView
-            android:id="@+id/buyer_phone"
+            android:id="@+id/textview_phoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -127,14 +129,15 @@
 
 
         <TextView
-            android:id="@+id/textview_phoneNumber"
+            android:id="@+id/vendor_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/buyer_phone"
+            android:layout_below="@+id/textview_phoneNumber"
             android:layout_marginStart="90dp"
             android:layout_marginTop="15dp"
             android:text="+254798423277"
             android:textColor="@color/intro_title_color" />
+
 
     </RelativeLayout>
 
@@ -145,8 +148,8 @@
         android:layout_below="@+id/layout_phone"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
-        android:background="@xml/btn_gradient_style"
         android:layout_marginEnd="30dp"
+        android:background="@xml/btn_gradient_style"
         android:text="Next" />
 
 

@@ -120,7 +120,7 @@ public class IntroActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent next_intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent next_intent = new Intent(getApplicationContext(), SelectActivity.class);
                 startActivity(next_intent);
 
                 savePrefsData();

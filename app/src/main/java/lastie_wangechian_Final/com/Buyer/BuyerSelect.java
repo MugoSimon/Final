@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import lastie_wangechian_Final.com.R;
 import lastie_wangechian_Final.com.Vendor.VendorSelect;
 
@@ -18,6 +20,7 @@ public class BuyerSelect extends AppCompatActivity {
     private Button button_login;
     private TextView textView_shifter;
     private Toolbar toolbar;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +31,11 @@ public class BuyerSelect extends AppCompatActivity {
         button_login = findViewById(R.id.btn_BuyerLogin);
         textView_shifter = findViewById(R.id.buyer_textViewShifter);
         toolbar = findViewById(R.id.buyer_Toolbar);
+        mAuth = FirebaseAuth.getInstance();
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Choose Authentication");
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setTitle("Buyer Side");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         button_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,5 +66,17 @@ public class BuyerSelect extends AppCompatActivity {
 
             }
         });
+    }
+
+    protected void onStart() {
+        super.onStart();
+
+        if (mAuth.getCurrentUser() != null) {
+
+            Intent intent = new Intent(BuyerSelect.this, BuyerMainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+        }
     }
 }

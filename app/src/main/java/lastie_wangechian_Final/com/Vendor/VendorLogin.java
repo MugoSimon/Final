@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Buyer;
+package lastie_wangechian_Final.com.Vendor;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,29 +25,29 @@ import com.hbb20.CountryCodePicker;
 
 import lastie_wangechian_Final.com.R;
 
-public class BuyerLogin extends AppCompatActivity {
+public class VendorLogin extends AppCompatActivity {
 
     CollectionReference documentReference;
     private Toolbar toolbar;
     private EditText editText_phoneNumber;
     private TextInputLayout textInputLayout_password;
     private CountryCodePicker countryCodePicker_login;
-    private TextView textView_shifter;
     private Button button_login;
     private FirebaseAuth mAuth;
     private FirebaseFirestore fStore;
+    private TextView textView_shifter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buyer_login);
+        setContentView(R.layout.activity_vendor_login);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         toolbar = findViewById(R.id.toolbar);
-        editText_phoneNumber = findViewById(R.id.buyerLogin_phoneNumber);
-        countryCodePicker_login = findViewById(R.id.buyerLoginccp);
-        textInputLayout_password = findViewById(R.id.buyerLogin_password);
+        editText_phoneNumber = findViewById(R.id.vendorLogin_phoneNumber);
+        countryCodePicker_login = findViewById(R.id.vendorLogin_ccp);
+        textInputLayout_password = findViewById(R.id.vendorLogin_password);
         button_login = findViewById(R.id.button_login);
         countryCodePicker_login.registerCarrierNumberEditText(editText_phoneNumber);
         textView_shifter = findViewById(R.id.textView_shifter);
@@ -59,13 +59,13 @@ public class BuyerLogin extends AppCompatActivity {
         try {
             mAuth = FirebaseAuth.getInstance();
             fStore = FirebaseFirestore.getInstance();
-            documentReference = fStore.collection("Buyer");
+            documentReference = fStore.collection("Vendor");
 
-            //Toast.makeText(BuyerLogin.this, documentReference.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(VendorLogin.this, documentReference.toString(), Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
 
-            Toast.makeText(BuyerLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
+            Toast.makeText(VendorLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
         }
 
         button_login.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +82,7 @@ public class BuyerLogin extends AppCompatActivity {
 
                                 String db_phoneNumber = objectDocsnapshot.getString("Phone");
                                 String db_password = objectDocsnapshot.getString("Password");
-                                Toast.makeText(BuyerLogin.this, db_phoneNumber + " " + db_password, Toast.LENGTH_LONG).show();
+                                Toast.makeText(VendorLogin.this, db_phoneNumber + " " + db_password, Toast.LENGTH_LONG).show();
 
                                 if (validatePassword() | validatePhonenumber()) {
 
@@ -95,11 +95,11 @@ public class BuyerLogin extends AppCompatActivity {
 
                                             if (input_password.equals(db_password)) {
 
-                                                startActivity(new Intent(getApplicationContext(), BuyerMainActivity.class));
+                                                startActivity(new Intent(getApplicationContext(), VendorMainActivity.class));
                                                 finish();
                                             } else {
 
-                                                Toast.makeText(BuyerLogin.this, "Wrong Credentials", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(VendorLogin.this, "Wrong Credentials", Toast.LENGTH_LONG).show();
                                                 return;
 
                                             }
@@ -123,26 +123,27 @@ public class BuyerLogin extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
 
-                            Toast.makeText(BuyerLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(VendorLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
                         }
                     });
 
                 } catch (Exception e) {
 
-                    Toast.makeText(BuyerLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(VendorLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
         textView_shifter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), BuyerRegister.class));
-                finish();
 
+                startActivity(new Intent(getApplicationContext(), VendorRegister.class));
+                finish();
             }
         });
+
+
     }
 
     //method validate phoneNumber
