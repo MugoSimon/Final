@@ -232,6 +232,7 @@ public class AddVendorDetails extends AppCompatActivity {
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();
+                Toast.makeText(AddVendorDetails.this, error.toString(), Toast.LENGTH_LONG).show();
             }
         } else {
             Toast.makeText(AddVendorDetails.this, "error in image retrieval ", Toast.LENGTH_LONG).show();

@@ -229,11 +229,11 @@ public class AddDetails extends AppCompatActivity {
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();
+                Toast.makeText(AddDetails.this, error.toString(), Toast.LENGTH_LONG).show();
+                return;
             }
         }
 
-
-        //Toast.makeText(AddDetails.this, imageUri, Toast.LENGTH_LONG).show();
     }
 
     private boolean validateUsername() {

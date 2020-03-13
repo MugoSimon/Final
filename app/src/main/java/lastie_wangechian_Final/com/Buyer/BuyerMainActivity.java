@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,17 +36,25 @@ public class BuyerMainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Mtaani Order Maji");
 
 
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser currrentUser = mAuth.getCurrentUser();
-        if (currrentUser == null) {
+        try {
 
-            sendToStart();
+            FirebaseUser currrentUser = mAuth.getCurrentUser();
+            if (currrentUser == null) {
+                sendToStart();
+
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "You are Offline...", Toast.LENGTH_LONG).show();
         }
+
     }
 
     private void sendToStart() {
@@ -74,6 +83,7 @@ public class BuyerMainActivity extends AppCompatActivity {
             sendToStart();
 
         }
+
 
         if (item.getItemId() == R.id.buyer_orders) {
 

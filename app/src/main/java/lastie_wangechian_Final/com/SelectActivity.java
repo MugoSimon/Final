@@ -8,14 +8,12 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import lastie_wangechian_Final.com.Buyer.BuyerSelect;
 import lastie_wangechian_Final.com.Vendor.VendorSelect;
 
 public class SelectActivity extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
+    //FirebaseAuth mAuth;
     private Button btn_waterVendor;
     private Button btn_waterBuyer;
     private Toolbar toolbar;
@@ -29,7 +27,7 @@ public class SelectActivity extends AppCompatActivity {
         btn_waterBuyer = findViewById(R.id.btn_water_buyer);
         btn_waterVendor = findViewById(R.id.btn_water_vendor);
         toolbar = findViewById(R.id.select_toolbar);
-        mAuth = FirebaseAuth.getInstance();
+        //mAuth = FirebaseAuth.getInstance();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Select Your Side");

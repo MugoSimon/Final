@@ -5,6 +5,10 @@
         android:id="@+id/Add_item"
         android:title="Add Items" />
     <item
+        android:id="@+id/vendor_viewItems"
+        android:icon="@drawable/ic_power"
+        android:title="View Items" />
+    <item
         android:id="@+id/vendor_logOut"
         android:icon="@drawable/ic_power"
         android:title="Log Out" />

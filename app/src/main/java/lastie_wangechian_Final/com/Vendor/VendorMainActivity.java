@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,17 +31,26 @@ public class VendorMainActivity extends AppCompatActivity {
         tabLayout_mainVendor = findViewById(R.id.vendor_tabs);
         setSupportActionBar(toolbar_mainVendor);
         getSupportActionBar().setTitle("Mtaani Order Maji");
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser currrentUser = mAuth.getCurrentUser();
-        if (currrentUser == null) {
+        try {
 
-            sendToStart();
+            FirebaseUser currrentUser = mAuth.getCurrentUser();
+            if (currrentUser == null) {
+                sendToStart();
+
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "You are Offline...", Toast.LENGTH_LONG).show();
         }
+
     }
 
     private void sendToStart() {
@@ -71,9 +81,14 @@ public class VendorMainActivity extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.Add_item) {
 
-            //Intent intent = new Intent(VendorMainActivity.this, Items.class);
-            //startActivity(intent);
+            Intent intent = new Intent(VendorMainActivity.this, VendorAddItems.class);
+            startActivity(intent);
 
+        }
+        if (item.getItemId() == R.id.vendor_viewItems) {
+
+            Intent intent = new Intent(VendorMainActivity.this, VendorViewItems.class);
+            startActivity(intent);
         }
 
         return true;
