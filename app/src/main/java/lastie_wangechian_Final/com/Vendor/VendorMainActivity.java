@@ -74,10 +74,10 @@ public class VendorMainActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
 
         if (item.getItemId() == R.id.vendor_logOut) {
-
+/*
             mAuth.signOut();
             sendToStart();
-
+*/
         }
         if (item.getItemId() == R.id.Add_item) {
 

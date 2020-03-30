@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context=".Buyer.OrderStatement">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_orderStatement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_orderStatement"
+        android:layout_margin="10dp"
+        android:background="#B2E4E1E1"
+        android:padding="3dp">
+
+        <ImageView
+            android:id="@+id/imageview_statement"
+            android:layout_width="130dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_container" />
+
+        <TextView
+            android:id="@+id/container_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="104dp"
+            android:text="TextView"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="170dp"
+            android:layout_marginTop="100dp"
+            android:text="*"
+            android:textColor="@color/intro_title_color"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/number_ofContainers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="105dp"
+            android:layout_marginEnd="104dp"
+            android:text="TextView"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="160dp"
+            android:layout_marginEnd="104dp"
+            android:text="total_amount"
+            android:textAlignment="center" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/Address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="298dp"
+        android:text="Pick up Station Address"
+        android:textSize="24sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/street"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Address"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="30dp"
+        android:text="Street:"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
+
+    <EditText
+        android:id="@+id/street_name"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/Address"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="76dp"
+        android:ems="10"
+        android:hint="wambua road"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/building"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/street"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="40dp"
+        android:text="Building:"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
+
+    <EditText
+        android:id="@+id/building_name"
+        android:layout_width="237dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/street_name"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="59dp"
+        android:ems="10"
+        android:hint="nyati house"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/Additional"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/building"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="40dp"
+        android:text="Additional info:"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:textStyle="bold|italic" />
+
+    <EditText
+        android:id="@+id/addittional_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/building"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="58dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/button_cashOnDelivery"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="125dp"
+        android:background="#E9C610"
+        android:text="Cash On Delivery"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/button_lipaNaMpesa"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="125dp"
+        android:background="#5DDB0D"
+        android:text="Lipa na Mpesa" />
+
+    <Button
+        android:id="@+id/cancel_order"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="#EE1515"
+        android:text="Cancel Order"
+        android:textColor="#fff" />
+
+</RelativeLayout>

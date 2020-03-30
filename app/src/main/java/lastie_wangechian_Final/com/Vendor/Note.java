@@ -6,7 +6,7 @@ public class Note {
     private String container_name;
     private String container_price;
     private String vendor_userID;
-    private String imageURl;
+    private String container_image;
 
     public Note() {
 
@@ -21,7 +21,7 @@ public class Note {
         this.vendor_userID = vendor_userID;
         this.container_name = container_name;
         this.container_price = container_price;
-        this.imageURl = imageURl;
+        this.container_image = container_image;
 
     }
 
@@ -42,7 +42,7 @@ public class Note {
         return vendor_userID;
     }
 
-    public String getImageURl() {
-        return imageURl;
+    public String getContainer_image() {
+        return container_image;
     }
 }

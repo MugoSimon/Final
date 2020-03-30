@@ -29,19 +29,15 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/buyerMain_Viewpager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/appBarLayout"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="-4dp"
-        android:layout_marginBottom="4dp"
-        android:padding="4dp">
+        android:layout_below="@+id/appBarLayout"
+        android:layout_marginStart="0dp"
+        android:padding="15dp" />
 
-
-    </androidx.viewpager.widget.ViewPager>
 
 
 </RelativeLayout>

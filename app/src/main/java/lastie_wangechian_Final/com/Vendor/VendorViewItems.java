@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -58,7 +59,7 @@ public class VendorViewItems extends AppCompatActivity {
 
         try {
 
-            Query query = itemsReference.orderBy("Container_name", Query.Direction.DESCENDING);
+            Query query = itemsReference.orderBy("container_name", Query.Direction.DESCENDING);
 
             FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>()
                     .setQuery(query, Note.class)
@@ -85,6 +86,18 @@ public class VendorViewItems extends AppCompatActivity {
                     adapter.deleteItem(viewHolder.getAdapterPosition());
                 }
             }).attachToRecyclerView(recyclerView);
+
+
+            adapter.setOnItemClicked(new NoteAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClicked(DocumentSnapshot documentSnapshot, int position) {
+                    Note note = documentSnapshot.toObject(Note.class);
+                    String id = documentSnapshot.getId();
+                    String path = documentSnapshot.getDocumentReference(id).getPath();
+
+                    Toast.makeText(VendorViewItems.this, "path: " + path + "id: " + id, Toast.LENGTH_LONG).show();
+                }
+            });
 
         } catch (Exception e) {
 

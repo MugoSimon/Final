@@ -6,17 +6,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="3dp"
         android:background="#E2E6E5DF"
         android:padding="15dp">
 
         <ImageView
             android:id="@+id/loaded_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/default_avatar_4" />
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="6dp"
+            android:background="#fff"
+            android:src="@drawable/ic_container" />
 
         <TextView
             android:id="@+id/item_name"
@@ -82,10 +82,36 @@
             android:textStyle="italic" />
 
         <TextView
-            android:id="@+id/vendor_name"
+            android:id="@+id/no_of_containers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/loaded_itemPrice"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/loaded_image"
+            android:text="Containers: "
+            android:textColor="@color/intro_title_color"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/loaded_numberOfContainers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loaded_itemPrice"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/no_of_containers"
+            android:text="number_of_containers"
+            android:textColor="@color/intro_title_color"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/vendor_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/no_of_containers"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/loaded_image"
@@ -98,11 +124,37 @@
             android:id="@+id/loaded_vendorName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/loaded_itemPrice"
+            android:layout_below="@+id/loaded_numberOfContainers"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/vendor_name"
             android:text="loaded_itemPrice"
+            android:textColor="@color/intro_title_color"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loaded_vendorName"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/loaded_image"
+            android:text="Time: "
+            android:textColor="@color/intro_title_color"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/loaded_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loaded_vendorName"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/time"
+            android:text="loaded_time"
             android:textColor="@color/intro_title_color"
             android:textSize="16sp"
             android:textStyle="bold" />

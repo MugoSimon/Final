@@ -79,24 +79,7 @@ public class VendorAddItems extends AppCompatActivity {
         textView_vendorname = findViewById(R.id.textView_vendorname);
         imageView_container = findViewById(R.id.image_container);
 
-        button_containerImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                try {
-
-                    Intent galleryIntent = new Intent();
-                    galleryIntent.setType("image/*");
-                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-                    startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
-
-                } catch (Exception e) {
-
-                    Toast.makeText(VendorAddItems.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
 
         documentReference = fStore.collection("Items");
@@ -132,11 +115,11 @@ public class VendorAddItems extends AppCompatActivity {
                         String image_url = textView_imageUrl.getText().toString().trim();
 
                         Map<String, String> container_details = new HashMap<>();
-                        container_details.put("Vendor_name", vendor_name);
-                        container_details.put("Container_name", container_name);
-                        container_details.put("Container_price", container_price);
-                        container_details.put("Vendor_userID", UserId);
-                        container_details.put("Container_image", image_url);
+                        container_details.put("vendor_name", vendor_name);
+                        container_details.put("container_name", container_name);
+                        container_details.put("container_price", container_price);
+                        container_details.put("vendor_userID", UserId);
+                        container_details.put("container_image", image_url);
 
                         documentReference.add(container_details).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                             @Override
@@ -144,6 +127,7 @@ public class VendorAddItems extends AppCompatActivity {
 
                                 startActivity(new Intent(getApplicationContext(), VendorMainActivity.class));
                                 finish();
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -164,6 +148,27 @@ public class VendorAddItems extends AppCompatActivity {
 
             }
         });
+
+
+        button_containerImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+
+                    Intent galleryIntent = new Intent();
+                    galleryIntent.setType("image/*");
+                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+                    startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+
+                } catch (Exception e) {
+
+                    Toast.makeText(VendorAddItems.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
 
 
@@ -172,77 +177,89 @@ public class VendorAddItems extends AppCompatActivity {
         try {
             super.onActivityResult(requestCode, resultCode, data);
 
-
             if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
 
                 Uri imageUri = data.getData();
 
                 CropImage.activity(imageUri)
-                        .setAspectRatio(1, 1)
+                        .setAspectRatio(1, 2)
                         .start(this);
 
                 Bitmap objectImage = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                //String image_path = objectImage.toString().trim();
+                String image_path = objectImage.toString().trim();
                 imageView_container.setImageBitmap(objectImage);
 
-                //Toast.makeText(VendorAddItems.this, image_path, Toast.LENGTH_LONG).show();
-
-
+                Toast.makeText(VendorAddItems.this, image_path, Toast.LENGTH_LONG).show();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
 
-            Toast.makeText(VendorAddItems.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(VendorAddItems.this, "request code iko na maneno " + e.getMessage(), Toast.LENGTH_LONG).show();
 
         }
 
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+        try {
 
-            //Toast.makeText(AddDetails.this, "going to cropping ", Toast.LENGTH_LONG).show();
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
 
-
-            if (resultCode == RESULT_OK) {
-
-                Uri resultUri = result.getUri();
+                //Toast.makeText(AddDetails.this, "going to cropping ", Toast.LENGTH_LONG).show();
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
 
-                final StorageReference filepath = mStorageRef.child("Vendor_Items").child(userID + ".jpg");
+                if (resultCode == RESULT_OK) {
 
-                filepath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    try {
+
+                        Uri resultUri = result.getUri();
+
+                        final StorageReference filepath = mStorageRef.child("Vendor_Items").child(userID + ".jpg");
+
+                        filepath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
-                            public void onSuccess(Uri uri) {
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
 
+                                        String image_link = uri.toString().trim();
 
-                                Uri download_url = uri;
-                                String image_link = download_url.toString().trim();
+                                        Toast.makeText(VendorAddItems.this, image_link, Toast.LENGTH_LONG).show();
+                                        textView_imageUrl.setVisibility(View.VISIBLE);
+                                        textView_imageUrl.setText(image_link);
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                                Toast.makeText(VendorAddItems.this, image_link, Toast.LENGTH_LONG).show();
-                                textView_imageUrl.setVisibility(View.VISIBLE);
-                                textView_imageUrl.setText(image_link);
+                                Toast.makeText(VendorAddItems.this, "Fail to generate the image url: " + e.getMessage().trim(), Toast.LENGTH_LONG).show();
                             }
                         });
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                        Toast.makeText(VendorAddItems.this, "request code iko na maneno: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
 
-                        Toast.makeText(VendorAddItems.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
-
-            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-
-                Exception error = result.getError();
-                Toast.makeText(VendorAddItems.this, error.toString(), Toast.LENGTH_LONG).show();
+                    Exception error = result.getError();
+                    Toast.makeText(VendorAddItems.this, "Error in the crop image request code: " + error.toString(), Toast.LENGTH_LONG).show();
+                }
             }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            Toast.makeText(VendorAddItems.this, "request code iko na maneno: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
         }
+
 
 
     }
