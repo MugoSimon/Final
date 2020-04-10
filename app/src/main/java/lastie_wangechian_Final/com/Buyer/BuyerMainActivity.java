@@ -151,8 +151,8 @@ public class BuyerMainActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.buyer_orders) {
 
-            //Intent order_intent = new Intent(BuyerMainActivity.this, MyOrders.class);
-            //startActivity(order_intent);
+            Intent order_intent = new Intent(BuyerMainActivity.this, BuyerOrders.class);
+            startActivity(order_intent);
 
         }
         return true;

@@ -90,6 +90,7 @@ public class BuyerCode extends AppCompatActivity {
                 Intent no_code_intent = new Intent(BuyerCode.this, BuyerRegister.class);
                 no_code_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(no_code_intent);
+                finish();
             }
         });
 

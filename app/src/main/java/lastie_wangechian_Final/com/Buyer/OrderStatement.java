@@ -74,8 +74,8 @@ public class OrderStatement extends AppCompatActivity {
 
                     if (validateBuilding() | validateStreet()) {
 
-
                         methodSaveOrder();
+
                     } else {
 
                         return;
@@ -110,6 +110,7 @@ public class OrderStatement extends AppCompatActivity {
             String no_of_containers = textView_noOfContainer.getText().toString().trim();
             String total_amount = textView_totalPrice.getText().toString().trim();
             String additional_info = editText_additionalInfo.getText().toString().trim();
+            String vendor_name = getIntent().getStringExtra("vendor_name");
 
 
             documentReference = fStore.collection("Orders");
@@ -121,6 +122,7 @@ public class OrderStatement extends AppCompatActivity {
             buyer_order.put("no_of_containers", no_of_containers);
             buyer_order.put("total_amount", total_amount);
             buyer_order.put("additional_info", additional_info);
+            buyer_order.put("vendor_name", vendor_name);
             // buyer_order.put("time_of_order",time_of_order);
 
 
@@ -130,6 +132,7 @@ public class OrderStatement extends AppCompatActivity {
 
                     startActivity(new Intent(getApplicationContext(), BuyerOrders.class));
                     finish();
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -154,6 +157,7 @@ public class OrderStatement extends AppCompatActivity {
             String container_image = getIntent().getStringExtra("container_image");
             String total_amount = getIntent().getStringExtra("total_amount");
             String user_input = getIntent().getStringExtra("user_input");
+
 
             textView_containerName.setText(container_name);
             Picasso.get().load(container_image).into(imageView);

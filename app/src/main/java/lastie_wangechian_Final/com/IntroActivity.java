@@ -50,11 +50,11 @@ public class IntroActivity extends AppCompatActivity {
 
         //fill list screen
         final ArrayList<ScreenItem> mList = new ArrayList<>();
-        mList.add(new ScreenItem("Easy Pay","Kenya's government does not have the funds to maintain strong piping systems.",R.drawable.easy_1));
-        mList.add(new ScreenItem("Clean Water","Of the 663 million people still using unimproved drinking water sources" ,R.drawable.water_2));
-        mList.add(new ScreenItem("Clean Water Again","Of the 663 million people still using unimproved drinking water sources" ,R.drawable.water_3));
-        mList.add(new ScreenItem("Affordable Delivery","must leave their home to collect water,",R.drawable.deliv_3));
-        mList.add(new ScreenItem("Affordable Delivery","must leave their home to collect water,",R.drawable.deliv_2));
+        mList.add(new ScreenItem("Easy Pay", "Easy to pay or Pay on Delivery.", R.drawable.easy_1));
+        mList.add(new ScreenItem("Clean Water", "Sanitized water and from sources with licensed permits", R.drawable.water_2));
+        mList.add(new ScreenItem("Ready for consumption", "The water is ready for human and animal consumption", R.drawable.water_3));
+        mList.add(new ScreenItem("Affordable Delivery", "The system offers affordable delivery to your residence,", R.drawable.deliv_3));
+        mList.add(new ScreenItem("We care", "we respect human life and care of our surrounding ", R.drawable.deliv_2));
 
 
 

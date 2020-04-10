@@ -15,7 +15,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Buyer.BuyerOrders"></activity>
+        <activity android:name=".Vendor.VendorViewOrder"></activity>
+        <activity
+            android:name=".Buyer.BuyerOrders"
+            android:launchMode="singleTask"
+            android:parentActivityName=".Buyer.BuyerMainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Buyer.OrderStatement"
             android:parentActivityName=".Buyer.MakeOrder"

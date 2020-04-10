@@ -78,7 +78,6 @@ public class MakeOrder extends AppCompatActivity {
                     int total_amount = final_input * price_of_container;
                     textView_totalPrice.setText(total_amount);
 
-
                 } else {
                     return;
                 }
@@ -117,12 +116,14 @@ public class MakeOrder extends AppCompatActivity {
                         String container_name = Txtcontainer_name.getText().toString().trim();
                         String container_image = TxtImage_url.getText().toString().trim();
                         String total_amount = textView_totalPrice.getText().toString().trim();
+                        String vendor_name = TxtVendor_name.getText().toString().trim();
 
                         Intent forward_intent = new Intent(MakeOrder.this, OrderStatement.class);
                         forward_intent.putExtra("user_input", user_input);
                         forward_intent.putExtra("container_name", container_name);
                         forward_intent.putExtra("container_image", container_image);
                         forward_intent.putExtra("total_amount", total_amount);
+                        forward_intent.putExtra("vendor_name", vendor_name);
                         startActivity(forward_intent);
 
                     } else {

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,7 +63,7 @@ public class BuyerRegister extends AppCompatActivity {
 
                     }
 
-                } catch (Exception e) {
+                } catch (RemoteViews.ActionException e) {
                     Toast.makeText(BuyerRegister.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
                 }
 

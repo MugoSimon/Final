@@ -6,12 +6,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import lastie_wangechian_Final.com.R;
 
@@ -20,6 +29,9 @@ public class VendorMainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     private Toolbar toolbar_mainVendor;
     private TabLayout tabLayout_mainVendor;
+    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    private CollectionReference itemsReference = firebaseFirestore.collection("Orders");
+    private OrderVendorNoteAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +45,58 @@ public class VendorMainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Mtaani Order Maji");
 
 
+        setUpRecyclerView();
+    }
+
+    private void setUpRecyclerView() {
+
+        try {
+
+            Query query = itemsReference.orderBy("time_of_order", Query.Direction.DESCENDING);
+
+            FirestoreRecyclerOptions<OrderVendorNote> options = new FirestoreRecyclerOptions.Builder<OrderVendorNote>()
+                    .setQuery(query, OrderVendorNote.class)
+                    .build();
+
+            adapter = new OrderVendorNoteAdapter(options);
+            RecyclerView recyclerView = findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(adapter);
+
+            new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                    ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                @Override
+                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                    return false;
+                }
+
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+                    adapter.deleteItem(viewHolder.getAdapterPosition());
+                }
+            }).attachToRecyclerView(recyclerView);
+
+            adapter.setOnItemClicked(new OrderVendorNoteAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClicked(DocumentSnapshot documentSnapshot, int position) {
+
+                    String id = documentSnapshot.getId();
+                    String path = documentSnapshot.getReference().getPath();
+
+                    Intent forward_intent = new Intent(VendorMainActivity.this, VendorViewOrder.class);
+                    forward_intent.putExtra("id", id);
+                    forward_intent.putExtra("path", path);
+                    startActivity(forward_intent);
+                    Toast.makeText(VendorMainActivity.this, "path: " + path + "id: " + id, Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } catch (Exception e) {
+
+            Toast.makeText(VendorMainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

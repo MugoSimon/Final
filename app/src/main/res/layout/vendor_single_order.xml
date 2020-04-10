@@ -56,7 +56,7 @@
             android:textStyle="normal" />
 
         <TextView
-            android:id="@+id/loaded_itemPrice"
+            android:id="@+id/loaded_totalPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/loaded_itemName"
@@ -75,7 +75,7 @@
             android:layout_below="@+id/loaded_itemName"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/loaded_itemPrice"
+            android:layout_toRightOf="@+id/loaded_totalPrice"
             android:text="Ksh"
             android:textColor="@color/intro_title_color"
             android:textSize="14sp"
@@ -85,7 +85,7 @@
             android:id="@+id/no_of_containers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/loaded_itemPrice"
+            android:layout_below="@+id/loaded_totalPrice"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/loaded_image"
@@ -98,7 +98,7 @@
             android:id="@+id/loaded_numberOfContainers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/loaded_itemPrice"
+            android:layout_below="@+id/loaded_totalPrice"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/no_of_containers"
@@ -108,27 +108,27 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/vendor_name"
+            android:id="@+id/buyer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/no_of_containers"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/loaded_image"
-            android:text="Vendor Name: "
+            android:text="Customer Name: "
             android:textColor="@color/intro_title_color"
             android:textSize="14sp"
             android:textStyle="normal" />
 
         <TextView
-            android:id="@+id/loaded_vendorName"
+            android:id="@+id/loaded_buyerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/loaded_numberOfContainers"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/vendor_name"
-            android:text="loaded_vendorName"
+            android:layout_toRightOf="@+id/buyer_name"
+            android:text="loaded_buyerName"
             android:textColor="@color/intro_title_color"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -137,7 +137,7 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/loaded_vendorName"
+            android:layout_below="@+id/loaded_buyerName"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/loaded_image"
@@ -150,7 +150,7 @@
             android:id="@+id/loaded_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/loaded_vendorName"
+            android:layout_below="@+id/loaded_buyerName"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/time"
