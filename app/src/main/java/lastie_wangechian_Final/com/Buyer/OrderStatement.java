@@ -1,5 +1,6 @@
 package lastie_wangechian_Final.com.Buyer;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -91,10 +93,34 @@ public class OrderStatement extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(OrderStatement.this, "you have cancelled you order", Toast.LENGTH_LONG).show();
-                //TODO add alertDialog for confirmation on cancel
-                startActivity(new Intent(getApplicationContext(), BuyerMainActivity.class));
-                finish();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(OrderStatement.this);
+                builder.setCancelable(false);
+                builder.setTitle("Exit");
+                builder.setMessage("Are you sure you want to cancel the order?");
+
+                //setting listeners for the dialog buttons
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Toast.makeText(OrderStatement.this, "you have cancelled you order", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(getApplicationContext(), BuyerMainActivity.class));
+                        finish();
+
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+
+                    }
+                });
+
+                builder.create().show();
+
             }
         });
     }
@@ -208,4 +234,5 @@ public class OrderStatement extends AppCompatActivity {
             return true;
         }
     }
+
 }
