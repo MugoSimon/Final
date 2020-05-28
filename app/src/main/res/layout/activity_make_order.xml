@@ -60,43 +60,13 @@
         android:textColor="@color/intro_title_color"
         android:textSize="20sp" />
 
-    <EditText
+    <NumberPicker
+        android:layout_width="wrap_content"
         android:id="@+id/number_ofContainers"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/container_price"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp"
-        android:ems="1"
-        android:fontFamily="@font/ubuntu_bold"
-        android:importantForAutofill="no"
-        android:inputType="number"
-        android:maxLength="2"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton_plus"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/container_price"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="65dp"
-        android:layout_marginEnd="57dp"
-        android:clickable="true"
-        android:src="@drawable/ic_plus" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton_minus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/price"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="57dp"
-        android:layout_marginTop="65dp"
-        android:clickable="true"
-        android:src="@drawable/ic_minus" />
+        android:layout_below="@+id/textview_totalAmount"
+        android:layout_marginTop="20dp" />
 
     <Button
         android:id="@+id/button_makeOrder"

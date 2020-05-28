@@ -2,11 +2,10 @@ package lastie_wangechian_Final.com.Buyer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -35,9 +33,7 @@ public class MakeOrder extends AppCompatActivity {
     private ImageView Imgcontainer_image;
     private TextView Txtcontainer_name;
     private TextView Txtcontainer_price;
-    private FloatingActionButton button_minus;
-    private FloatingActionButton button_plus;
-    private EditText editText;
+    private NumberPicker numberPicker;
     private Button button_orderNow;
     private TextView TxtImage_url, TxtVendor_name, textView_totalPrice;
 
@@ -53,9 +49,8 @@ public class MakeOrder extends AppCompatActivity {
         TxtImage_url = findViewById(R.id.image_url);
         TxtVendor_name = findViewById(R.id.vendor_name);
         textView_totalPrice = findViewById(R.id.textview_totalAmount);
-        button_minus = findViewById(R.id.floatingActionButton_minus);
-        button_plus = findViewById(R.id.floatingActionButton_plus);
         button_orderNow = findViewById(R.id.button_makeOrder);
+        numberPicker = findViewById(R.id.number_ofContainers);
 
         String vendor_name = TxtVendor_name.getText().toString().trim();
         setSupportActionBar(toolbar);
@@ -63,56 +58,17 @@ public class MakeOrder extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(20);
 
-        button_minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateInput()) {
-
-                    String input = editText.getText().toString().trim();
-                    int final_input = Integer.parseInt(input) - 1;
-                    editText.setText(final_input);
-
-                    String container_price = Txtcontainer_price.getText().toString().trim();
-                    int price_of_container = Integer.parseInt(container_price);
-                    int total_amount = final_input * price_of_container;
-                    textView_totalPrice.setText(total_amount);
-
-                } else {
-                    return;
-                }
-            }
-        });
-
-        button_plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateInput()) {
-
-                    String input = editText.getText().toString().trim();
-                    int final_input = Integer.parseInt(input) + 1;
-                    editText.setText(final_input);
-
-                    String container_price = Txtcontainer_price.getText().toString().trim();
-                    int price_of_container = Integer.parseInt(container_price);
-                    int total_amount = final_input * price_of_container;
-                    textView_totalPrice.setText(total_amount);
-
-                } else {
-
-                    return;
-                }
-            }
-        });
 
         button_orderNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
 
-                    if (validateInput()) {
-
-                        String user_input = editText.getText().toString().trim();
+                    int number_picked = numberPicker.getValue();
+                    String user_input = String.valueOf(number_picked);
                         String container_name = Txtcontainer_name.getText().toString().trim();
                         String container_image = TxtImage_url.getText().toString().trim();
                         String total_amount = textView_totalPrice.getText().toString().trim();
@@ -126,10 +82,6 @@ public class MakeOrder extends AppCompatActivity {
                         forward_intent.putExtra("vendor_name", vendor_name);
                         startActivity(forward_intent);
 
-                    } else {
-                        return;
-                    }
-
                 } catch (Exception e) {
 
                     Toast.makeText(MakeOrder.this, "Error when button order clicked: " + e.getMessage().trim(), Toast.LENGTH_LONG).show();
@@ -138,7 +90,7 @@ public class MakeOrder extends AppCompatActivity {
         });
 
     }
-
+/*
     private boolean validateInput() {
 
         String input = editText.getText().toString().trim();
@@ -159,6 +111,8 @@ public class MakeOrder extends AppCompatActivity {
 
         }
     }
+
+ */
 
     @Override
     protected void onStart() {
