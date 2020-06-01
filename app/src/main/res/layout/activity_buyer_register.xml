@@ -13,65 +13,123 @@
         android:layout_height="wrap_content"
         android:background="@color/faint_yellow"/>
 
-    <RelativeLayout
-        android:id="@+id/RelativeLayout"
+
+    <TextView
+        android:id="@+id/create_an_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="monospace"
+        android:text="Create Account"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#64DD17"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:typeface="monospace" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerBuyer_username"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/create_an_account"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginTop="150dp"
         android:layout_marginStart="8dp"
-        android:padding="15dp">
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="#F006E910"
+        app:boxStrokeColor="#F006E910"
+        app:errorEnabled="true"
+        app:hintAnimationEnabled="true">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:drawableRight="@drawable/ic_person_black_24dp"
+            android:hint="username"
+            android:inputType="textPersonName"
+            android:textColor="#000" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Phone Number"
-                android:textColor="#F006E910" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerBuyer_email"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/registerBuyer_username"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="#F006E910"
+        app:boxStrokeColor="#F006E910"
+        app:errorEnabled="true"
+        app:hintAnimationEnabled="true">
 
-                <com.hbb20.CountryCodePicker
-                    android:id="@+id/registerBuyer_ccp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:ccp_defaultNameCode="KE" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableRight="@drawable/ic_email_black_24dp"
+            android:hint="email"
+            android:inputType="textEmailAddress"
+            android:textColor="#000" />
 
-                <EditText
-                    android:id="@+id/registerBuyer_phoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:digits="0123456789"
-                    android:hint="7123..."
-                    android:inputType="number"
-                    android:drawableRight="@drawable/ic_phone_black_24dp"
-                    android:maxLength="10"
-                    android:textAlignment="center" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerBuyer_password"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/registerBuyer_email"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="#F006E910"
+        app:boxStrokeColor="#F006E910"
+        app:errorEnabled="true"
+        app:hintAnimationEnabled="true"
+        app:passwordToggleEnabled="true">
 
-        </LinearLayout>
 
-    </RelativeLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:textColor="#000" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/registerBuyer_Button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/RelativeLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
+        android:layout_below="@+id/registerBuyer_password"
         android:background="@xml/button_background_green"
-        android:text="Next"
+        android:text="register"
+        android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"
+        android:fontFamily="monospace"
+        android:text="login"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/info_description_color" />
 
 </RelativeLayout>

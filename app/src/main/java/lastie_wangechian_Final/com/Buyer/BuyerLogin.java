@@ -1,11 +1,12 @@
 package lastie_wangechian_Final.com.Buyer;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,29 +14,26 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.hbb20.CountryCodePicker;
 
 import lastie_wangechian_Final.com.R;
 
 public class BuyerLogin extends AppCompatActivity {
 
-    CollectionReference documentReference;
     private Toolbar toolbar;
-    private EditText editText_phoneNumber;
+    private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
-    private CountryCodePicker countryCodePicker_login;
-    private TextView textView_shifter;
+    private TextView textView_forgotPassword;
     private Button button_login;
+    private ProgressDialog login_progressDialog;
     private FirebaseAuth mAuth;
-    private FirebaseFirestore fStore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,130 +41,104 @@ public class BuyerLogin extends AppCompatActivity {
         setContentView(R.layout.activity_buyer_login);
 
         mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
         toolbar = findViewById(R.id.toolbar);
-        editText_phoneNumber = findViewById(R.id.buyerLogin_phoneNumber);
-        countryCodePicker_login = findViewById(R.id.buyerLoginccp);
+        textInputLayout_email = findViewById(R.id.loginBuyer_email);
         textInputLayout_password = findViewById(R.id.buyerLogin_password);
+        textView_forgotPassword = findViewById(R.id.textView_forgotPassword);
         button_login = findViewById(R.id.button_login);
-        countryCodePicker_login.registerCarrierNumberEditText(editText_phoneNumber);
-        textView_shifter = findViewById(R.id.textView_shifter);
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        try {
-            mAuth = FirebaseAuth.getInstance();
-            fStore = FirebaseFirestore.getInstance();
-            documentReference = fStore.collection("Buyer");
-
-            //Toast.makeText(BuyerLogin.this, documentReference.toString(), Toast.LENGTH_LONG).show();
-
-        } catch (Exception e) {
-
-            Toast.makeText(BuyerLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
-        }
+        login_progressDialog = new ProgressDialog(this);
 
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                try {
+                if (validateEmail() | validatePassword()) {
 
-                    documentReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    String email = textInputLayout_email.getEditText().getText().toString().trim();
+                    String password = textInputLayout_password.getEditText().getText().toString().trim();
 
-                            for (DocumentSnapshot objectDocsnapshot : queryDocumentSnapshots) {
+                    login_progressDialog.setTitle("Authenticating credentials");
+                    login_progressDialog.setMessage("please wait...");
+                    login_progressDialog.setCanceledOnTouchOutside(false);
+                    login_progressDialog.show();
 
-                                String db_phoneNumber = objectDocsnapshot.getString("Phone");
-                                String db_password = objectDocsnapshot.getString("Password");
-                                Toast.makeText(BuyerLogin.this, db_phoneNumber + " " + db_password, Toast.LENGTH_LONG).show();
+                    login_user(email, password);
 
-                                if (validatePassword() | validatePhonenumber()) {
+                } else {
 
-                                    String input_phoneNumber = countryCodePicker_login.getFullNumberWithPlus();
-                                    String input_password = textInputLayout_password.getEditText().getText().toString();
+                    return;
 
-                                    try {
-
-                                        if (input_phoneNumber.equals(db_phoneNumber)) {
-
-                                            if (input_password.equals(db_password)) {
-
-                                                startActivity(new Intent(getApplicationContext(), BuyerMainActivity.class));
-                                                finish();
-                                            } else {
-
-                                                Toast.makeText(BuyerLogin.this, "Wrong Credentials", Toast.LENGTH_LONG).show();
-                                                return;
-
-                                            }
-
-                                        } else {
-                                            return;
-                                        }
-
-                                    } catch (Exception e) {
-
-
-                                    }
-
-
-                                } else {
-                                    return;
-                                }
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            Toast.makeText(BuyerLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                } catch (Exception e) {
-
-                    Toast.makeText(BuyerLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
                 }
 
             }
         });
 
-        textView_shifter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), BuyerRegister.class));
-                finish();
+    }
 
+
+    private void login_user(String email, String password) {
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        if (task.isSuccessful()) {
+
+                            login_progressDialog.dismiss();
+                            Intent next_intent = new Intent(BuyerLogin.this, BuyerMainActivity.class);
+                            startActivity(next_intent);
+                            finish();
+
+                        } else {
+
+                            login_progressDialog.hide();
+                            Toast.makeText(BuyerLogin.this, "Check your credentials", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Something went wrong", Snackbar.LENGTH_LONG)
+                        .setAction("View Details", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                Toast.makeText(getApplicationContext(), "You are Offline...", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                snackbar.show();
             }
         });
     }
 
-    //method validate phoneNumber
-    private boolean validatePhonenumber() {
+    private boolean validateEmail() {
 
-        String buyer_phonenumber = editText_phoneNumber.getText().toString().trim();
+        String buyer_email = textInputLayout_email.getEditText().getText().toString().trim();
 
-        if (TextUtils.isEmpty(buyer_phonenumber)) {
+        if (TextUtils.isEmpty(buyer_email)) {
 
-            editText_phoneNumber.requestFocus();
-            editText_phoneNumber.setError("field can't be empty");
+            textInputLayout_email.requestFocus();
+            textInputLayout_email.setError("Field can't be empty");
             return false;
 
-        } else if (buyer_phonenumber.length() != 9) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(buyer_email).matches()) {
 
-            editText_phoneNumber.requestFocus();
-            editText_phoneNumber.setError("invalid phonenumber");
-            editText_phoneNumber.setText(null);
-
+            textInputLayout_email.requestFocus();
+            textInputLayout_email.setError("invalid email");
+            textInputLayout_email.getEditText().setText(null);
             return false;
 
         } else {
 
-            editText_phoneNumber.setError(null);
+            textInputLayout_email.setError(null);
             return true;
         }
 

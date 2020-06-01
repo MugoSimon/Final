@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -190,9 +191,19 @@ public class OrderStatement extends AppCompatActivity {
             textView_noOfContainer.setText(user_input);
             textView_totalPrice.setText(total_amount);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
 
-            Toast.makeText(OrderStatement.this, "Error loading data: " + e.getMessage().trim(), Toast.LENGTH_LONG).show();
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Unable to load content", Snackbar.LENGTH_LONG)
+                    .setAction("View Details", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Toast.makeText(OrderStatement.this, "Error loading data: " + e.getMessage().trim(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+            snackbar.show();
+
+
         }
     }
 

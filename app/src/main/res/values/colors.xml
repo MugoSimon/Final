@@ -2,8 +2,8 @@
 <resources>
 
     <color name="colorPrimary">#fff</color>
-    <color name="colorPrimaryDark">#fff</color>
-    <color name="colorAccent">#FFFFFF</color>
+    <color name="colorPrimaryDark">#B53CEE</color>
+    <color name="colorAccent">#0D4CFA</color>
 
     <!--colors za buttons -->
 
@@ -16,7 +16,7 @@
     <color name="tab_buyer">#D0F1E33E</color>
     <color name="tab_vendor">#D8D083DD</color>
     <color name="intro_title_color">#000000</color>
-    <color name="info_description_color">#FF656565</color>
+    <color name="info_description_color">#656565</color>
 
     <!--colors za layouts za past introduction-->
     <color name="faint_yellow">#E7C00F</color>

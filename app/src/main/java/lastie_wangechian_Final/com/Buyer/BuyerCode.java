@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
@@ -165,7 +166,7 @@ public class BuyerCode extends AppCompatActivity {
 
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+            public void onComplete(@NonNull final Task<AuthResult> task) {
 
                 if (task.isSuccessful()) {
 
@@ -176,7 +177,17 @@ public class BuyerCode extends AppCompatActivity {
                     finish();
 
                 } else {
-                    Toast.makeText(BuyerCode.this, "Authentication failed " + task.getException().toString(), Toast.LENGTH_LONG).show();
+
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Unable to load content", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Toast.makeText(BuyerCode.this, "Authentication failed " + task.getException().toString(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
+
+
                 }
             }
         });

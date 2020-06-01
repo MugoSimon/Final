@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -109,7 +111,17 @@ public class BuyerMainActivity extends AppCompatActivity {
             }
 
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "You are Offline...", Toast.LENGTH_LONG).show();
+
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Unable to load content", Snackbar.LENGTH_LONG)
+                    .setAction("View Details", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Toast.makeText(getApplicationContext(), "You are Offline...", Toast.LENGTH_LONG).show();
+                        }
+                    });
+            snackbar.show();
+
         }
 
         adapter.startListening();

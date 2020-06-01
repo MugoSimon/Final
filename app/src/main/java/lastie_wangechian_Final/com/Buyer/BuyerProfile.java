@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -90,7 +91,18 @@ public class BuyerProfile extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     progressDialog.hide();
-                    Toast.makeText(BuyerProfile.this, "Offline", Toast.LENGTH_LONG).show();
+
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Unable to load content", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Toast.makeText(BuyerProfile.this, "Offline", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
+
+
                     return;
                 }
             });
