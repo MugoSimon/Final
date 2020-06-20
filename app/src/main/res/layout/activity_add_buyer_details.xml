@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/vendor_addDetails"
-    android:padding="0dp"
-    android:orientation="vertical"
-    tools:context=".Vendor.AddVendorDetails">
+    android:id="@+id/add_buyer_details"
+    tools:context=".Buyer.AddBuyerDetails">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -31,9 +29,9 @@
         android:typeface="monospace" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/vendor_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:id="@+id/buyer_image"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
         android:layout_below="@+id/add_details"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
@@ -44,17 +42,17 @@
         android:id="@+id/change_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vendor_image"
+        android:layout_below="@+id/buyer_image"
         android:layout_marginStart="0dp"
         android:layout_marginTop="-45dp"
-        android:layout_toEndOf="@+id/vendor_image"
+        android:layout_toEndOf="@+id/buyer_image"
         android:src="@drawable/ic_edit_black_24dp" />
 
     <RelativeLayout
         android:id="@+id/place_of_phoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vendor_image"
+        android:layout_below="@+id/buyer_image"
         android:layout_marginTop="20dp"
         android:gravity="center_vertical"
         android:weightSum="3">
@@ -70,7 +68,7 @@
             app:ccp_defaultNameCode="KE" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/registerVendor_phoneNumber"
+            android:id="@+id/registerBuyer_phoneNumber"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
@@ -99,15 +97,16 @@
 
     </RelativeLayout>
 
+
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerVendor_address"
-        android:layout_width="match_parent"
+        android:id="@+id/registerBuyer_address"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/place_of_phoneNumber"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
         android:layout_marginEnd="8dp"
         android:textColorHint="#304FFE"
         app:boxStrokeColor="#304FFE"
@@ -125,14 +124,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerVendor_buildingName"
-        android:layout_width="match_parent"
+        android:id="@+id/registerBuyer_buildingName"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/registerVendor_address"
+        android:layout_below="@+id/registerBuyer_address"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
         android:layout_marginEnd="8dp"
         android:textColorHint="#304FFE"
         app:boxStrokeColor="#304FFE"
@@ -153,7 +152,7 @@
         android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/registerVendor_buildingName"
+        android:layout_below="@+id/registerBuyer_buildingName"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
@@ -170,6 +169,5 @@
         android:layout_marginBottom="0dp"
         android:text="TextView"
         android:visibility="invisible" />
-
 
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package lastie_wangechian_Final.com.Vendor;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -8,26 +10,30 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+import lastie_wangechian_Final.com.ForgotPassword;
 import lastie_wangechian_Final.com.R;
 
 public class VendorLogin extends AppCompatActivity {
 
-    CollectionReference documentReference;
     private Toolbar toolbar;
     private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
     private Button button_login;
     private FirebaseAuth mAuth;
-    private FirebaseFirestore fStore;
     private TextView textView_forgotPassword;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,33 +41,54 @@ public class VendorLogin extends AppCompatActivity {
         setContentView(R.layout.activity_vendor_login);
 
         mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
         toolbar = findViewById(R.id.toolbar);
         textInputLayout_email = findViewById(R.id.loginVendor_email);
         textInputLayout_password = findViewById(R.id.vendorLogin_password);
         button_login = findViewById(R.id.button_login);
-        textView_forgotPassword = findViewById(R.id.textView_forgotPassword);
+        textView_forgotPassword = findViewById(R.id.textView_shifter);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        try {
-            mAuth = FirebaseAuth.getInstance();
-            fStore = FirebaseFirestore.getInstance();
-            documentReference = fStore.collection("Vendor");
-
-            Toast.makeText(VendorLogin.this, documentReference.toString(), Toast.LENGTH_LONG).show();
-
-        } catch (Exception e) {
-
-            Toast.makeText(VendorLogin.this, e.getMessage().trim(), Toast.LENGTH_LONG).show();
-        }
+        progressDialog = new ProgressDialog(this);
 
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                try {
+
+                    if (!validateEmail() | !validatePassword()) {
+
+                        return;
+
+                    } else {
+
+                        String email = textInputLayout_email.getEditText().getText().toString().trim();
+                        String password = textInputLayout_password.getEditText().getText().toString().trim();
+
+                        progressDialog.setTitle("Authenticating");
+                        progressDialog.setMessage("please wait as you check your credentials");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
+                        vendor_login(email, password);
+
+                    }
+                } catch (Exception e) {
+
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_login), "Something went wrong", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Toast.makeText(getApplicationContext(), "Button isn't working", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
+
+                }
 
             }
         });
@@ -70,11 +97,59 @@ public class VendorLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //todo open the forgot password activity
+                Intent intent = new Intent(getApplicationContext(), ForgotPassword.class);
+                startActivity(intent);
                 finish();
             }
         });
 
+
+    }
+
+    private void vendor_login(String email, String password) {
+
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull final Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+
+                    progressDialog.dismiss();
+                    Intent intent = new Intent(getApplicationContext(), VendorMainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+
+                } else {
+
+                    progressDialog.hide();
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_login), "Authentication Failed", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull final Exception e) {
+
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_login), "Something went wrong", Snackbar.LENGTH_LONG)
+                        .setAction("View Details", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                snackbar.show();
+
+            }
+        });
 
     }
 

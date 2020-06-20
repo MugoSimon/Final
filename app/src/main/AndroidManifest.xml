@@ -15,9 +15,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Vendor.Vendor_ForgotPassword"></activity>
-        <activity android:name=".Buyer.Buyer_ForgotPassword" />
-        <activity android:name=".Vendor.VendorViewOrder" />
+        <activity
+            android:name=".Buyer.AddBuyerDetails"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ForgotPassword"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Vendor.VendorViewOrder"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Buyer.BuyerOrders"
             android:launchMode="singleTask"
@@ -55,10 +61,6 @@
             android:name=".Vendor.AddVendorDetails"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Vendor.VendorCode"
-            android:parentActivityName=".Vendor.VendorRegister"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Vendor.VendorLogin"
             android:parentActivityName=".Vendor.VendorSelect"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -80,12 +82,6 @@
         <activity
             android:name=".Buyer.BuyerLogin"
             android:parentActivityName=".Buyer.BuyerSelect"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Buyer.BuyerProfile"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Buyer.AddDetails"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Buyer.BuyerRegister"

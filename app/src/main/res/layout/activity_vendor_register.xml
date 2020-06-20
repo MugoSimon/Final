@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/vendor_register"
     android:orientation="vertical"
     tools:context=".Vendor.VendorRegister">
 
@@ -21,7 +22,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
         android:fontFamily="monospace"
-        android:text="Create Account"
+        android:text="Create An Account"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#64DD17"
@@ -62,7 +63,7 @@
         android:layout_below="@+id/registerVendor_username"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:textColorHint="#F006E910"
         app:boxStrokeColor="@color/purple_yake"

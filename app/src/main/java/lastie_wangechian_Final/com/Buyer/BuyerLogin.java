@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import lastie_wangechian_Final.com.ForgotPassword;
 import lastie_wangechian_Final.com.R;
 
 public class BuyerLogin extends AppCompatActivity {
@@ -44,7 +45,7 @@ public class BuyerLogin extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         textInputLayout_email = findViewById(R.id.loginBuyer_email);
         textInputLayout_password = findViewById(R.id.buyerLogin_password);
-        textView_forgotPassword = findViewById(R.id.textView_forgotPassword);
+        textView_forgotPassword = findViewById(R.id.textView_shifter);
         button_login = findViewById(R.id.button_login);
 
 
@@ -54,26 +55,55 @@ public class BuyerLogin extends AppCompatActivity {
 
         login_progressDialog = new ProgressDialog(this);
 
+        textView_forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent next_intent = new Intent(BuyerLogin.this, ForgotPassword.class);
+                startActivity(next_intent);
+                finish();
+
+            }
+        });
+
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (validateEmail() | validatePassword()) {
+                try {
 
-                    String email = textInputLayout_email.getEditText().getText().toString().trim();
-                    String password = textInputLayout_password.getEditText().getText().toString().trim();
+                    if (!validateEmail() | !validatePassword()) {
 
-                    login_progressDialog.setTitle("Authenticating credentials");
-                    login_progressDialog.setMessage("please wait...");
-                    login_progressDialog.setCanceledOnTouchOutside(false);
-                    login_progressDialog.show();
+                        return;
 
-                    login_user(email, password);
+                    } else {
 
-                } else {
+                        String email = textInputLayout_email.getEditText().getText().toString().trim();
+                        String password = textInputLayout_password.getEditText().getText().toString().trim();
+
+                        login_progressDialog.setTitle("Authenticating credentials");
+                        login_progressDialog.setMessage("please wait...");
+                        login_progressDialog.setCanceledOnTouchOutside(false);
+                        login_progressDialog.show();
+
+                        login_user(email, password);
+
+                    }
+
+                } catch (Exception e) {
+
+
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Something went wrong", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Toast.makeText(getApplicationContext(), "Button isn't working", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
 
                     return;
-
                 }
 
             }
@@ -84,39 +114,51 @@ public class BuyerLogin extends AppCompatActivity {
 
     private void login_user(String email, String password) {
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+        try {
 
-                        if (task.isSuccessful()) {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
 
-                            login_progressDialog.dismiss();
-                            Intent next_intent = new Intent(BuyerLogin.this, BuyerMainActivity.class);
-                            startActivity(next_intent);
-                            finish();
+                            if (task.isSuccessful()) {
 
-                        } else {
+                                login_progressDialog.dismiss();
+                                Intent next_intent = new Intent(BuyerLogin.this, BuyerMainActivity.class);
+                                startActivity(next_intent);
+                                finish();
 
-                            login_progressDialog.hide();
-                            Toast.makeText(BuyerLogin.this, "Check your credentials", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                            } else {
 
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Something went wrong", Snackbar.LENGTH_LONG)
-                        .setAction("View Details", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                Toast.makeText(getApplicationContext(), "You are Offline...", Toast.LENGTH_LONG).show();
+                                login_progressDialog.hide();
+                                Toast.makeText(BuyerLogin.this, "Check your credentials", Toast.LENGTH_SHORT).show();
                             }
-                        });
-                snackbar.show();
-            }
-        });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.relLayout), "Something went wrong", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Toast.makeText(getApplicationContext(), "Trying to configure settings", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
+                    return;
+                }
+            });
+
+        } catch (Exception e) {
+
+            Toast.makeText(BuyerLogin.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
+
+        }
+
+
     }
 
     private boolean validateEmail() {

@@ -138,6 +138,7 @@ public class BuyerMainActivity extends AppCompatActivity {
     private void sendToStart() {
 
         Intent reverse_intent = new Intent(this, BuyerSelect.class);
+        reverse_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(reverse_intent);
         finish();
     }

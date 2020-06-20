@@ -1,15 +1,25 @@
 package lastie_wangechian_Final.com.Vendor;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.RuntimeExecutionException;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -34,6 +44,8 @@ public class VendorRegister extends AppCompatActivity {
     private TextInputLayout textInputLayout_username;
     private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
+    private ProgressDialog progressDialog;
+    private TextView textView_shifter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,33 +59,98 @@ public class VendorRegister extends AppCompatActivity {
         textInputLayout_email = findViewById(R.id.registerVendor_email);
         textInputLayout_password = findViewById(R.id.registerVendor_password);
         button_register = findViewById(R.id.registerVendor_Button);
+        textView_shifter = findViewById(R.id.login);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Vendor Side");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        progressDialog = new ProgressDialog(this);
+
+        textView_shifter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getApplicationContext(), VendorLogin.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         button_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (validateUsername() | validateEmail() | validatePassword()) {
+                try {
 
-                    String username = textInputLayout_username.getEditText().getText().toString().trim();
-                    String email = textInputLayout_email.getEditText().getText().toString().trim();
-                    String password = textInputLayout_password.getEditText().getText().toString().trim();
+                    if (!validateUsername() | !validateEmail() | !validatePassword()) {
 
-                    register_vendor(username, email, password);
+                        return;
 
+                    } else {
+
+                        String username = textInputLayout_username.getEditText().getText().toString().trim();
+                        String email = textInputLayout_email.getEditText().getText().toString().trim();
+                        String password = textInputLayout_password.getEditText().getText().toString().trim();
+
+                        progressDialog.setTitle("Registering User");
+                        progressDialog.setMessage("kindly wait as we register you");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
+                        register_vendor(username, email, password);
+
+                    }
+
+                } catch (NullPointerException e) {
+
+                    return;
                 }
+
+
             }
         });
 
     }
 
-    private void register_vendor(String username, String email, String password) {
+    private void register_vendor(final String username, String email, String password) {
 
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
+                        try {
+
+                            if (task.isSuccessful()) {
+
+                                progressDialog.dismiss();
+                                Intent intent = new Intent(getApplicationContext(), AddVendorDetails.class);
+                                intent.putExtra("username", username);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+
+                            } else {
+
+                                progressDialog.hide();
+                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (final RuntimeExecutionException e) {
+
+                            Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_register), "Runtime Error", Snackbar.LENGTH_LONG)
+                                    .setAction("View Details", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                            snackbar.show();
+                        }
+                    }
+                });
     }
 
     private boolean validateUsername() {

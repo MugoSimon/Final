@@ -2,7 +2,10 @@ package lastie_wangechian_Final.com.Vendor;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -11,20 +14,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.hbb20.CountryCodePicker;
+import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -42,15 +54,14 @@ public class AddVendorDetails extends AppCompatActivity {
                     ".{6,}" +         //minimum of 6 characters
                     "$");
     FirebaseAuth mAuth;
-    FirebaseFirestore fStore;
     StorageReference mStorageRef;
-    DocumentReference documentReference;
-    String userID;
+    private DatabaseReference mDatabase;
     private Toolbar toolbar;
     private CircleImageView circleImageView;
-    private TextInputLayout textInputLayout_username;
-    private TextInputLayout textInputLayout_email;
-    private TextInputLayout textInputLayout_password;
+    private CountryCodePicker cpp;
+    private TextInputLayout textInputLayout_phoneNumber;
+    private TextInputLayout textInputLayout_address;
+    private TextInputLayout textInputLayout_buildingName;
     private TextView textView_link;
     private Button button_save;
     private ImageView imageView_changeImg;
@@ -62,16 +73,15 @@ public class AddVendorDetails extends AppCompatActivity {
         setContentView(R.layout.activity_add_vendor_details);
 
         mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        userID = FirebaseAuth.getInstance().getUid();
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        textInputLayout_username = findViewById(R.id.registerVendor_username);
-        textInputLayout_email = findViewById(R.id.registerVendor_email);
-        textInputLayout_password = findViewById(R.id.registerVendor_password);
+        textInputLayout_phoneNumber = findViewById(R.id.registerVendor_phoneNumber);
+        textInputLayout_address = findViewById(R.id.registerVendor_address);
+        textInputLayout_buildingName = findViewById(R.id.registerVendor_buildingName);
         textView_link = findViewById(R.id.link);
         imageView_changeImg = findViewById(R.id.change_image);
         circleImageView = findViewById(R.id.vendor_image);
+        cpp = findViewById(R.id.country_codePicker);
         button_save = findViewById(R.id.button_save);
         progressDialog = new ProgressDialog(this);
 
@@ -79,8 +89,10 @@ public class AddVendorDetails extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Vendor Additional Details");
 
-        documentReference = fStore.collection("Vendor").document(userID);
+        cpp.registerCarrierNumberEditText(textInputLayout_phoneNumber.getEditText());
 
+        FirebaseUser current_user = mAuth.getCurrentUser();
+        final String user_id = current_user.getUid();
 
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,44 +100,102 @@ public class AddVendorDetails extends AppCompatActivity {
 
                 try {
 
-                    if (validateUsername() | validatePassword()) {
+                    if (!validatePhoneNumber() | !validateAddress() | validateBuildingName()) {
 
-                        String username = textInputLayout_username.getEditText().getText().toString();
-                        String email = textInputLayout_email.getEditText().getText().toString();
-                        String image_link = textView_link.getText().toString();
-                        String password = textInputLayout_password.getEditText().getText().toString();
-                        String phone_number = getIntent().getStringExtra("vendor_phonenumber");
-
-                        Map<String, String> userMap = new HashMap<>();
-                        userMap.put("Username", username);
-                        userMap.put("Email", email);
-                        userMap.put("Image", image_link);
-                        userMap.put("Phone", phone_number);
-                        userMap.put("Thumbnail", "default");
-                        userMap.put("Password", password);
-
-                        documentReference.set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-
-                                if (task.isSuccessful()) {
-                                    startActivity(new Intent(getApplicationContext(), VendorProfile.class));
-                                    finish();
-                                } else {
-
-                                    Toast.makeText(AddVendorDetails.this, "Data wasn't saved " + task.getException().toString(), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                        return;
 
                     } else {
 
-                        return;
+                        progressDialog.setTitle("Saving user profile");
+                        progressDialog.setMessage("please wait...");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
+                        String username = getIntent().getStringExtra("username");
+                        String phone_number = cpp.getFullNumberWithPlus();
+                        String address = textInputLayout_address.getEditText().getText().toString();
+                        String building_name = textInputLayout_buildingName.getEditText().getText().toString();
+                        String vendor_image = textView_link.getText().toString();
+
+                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Vendor_Profile").child(user_id);
+
+                        HashMap<String, String> vendor_profile = new HashMap<>();
+                        vendor_profile.put("username", username);
+                        vendor_profile.put("phone_number", phone_number);
+                        vendor_profile.put("address", address);
+                        vendor_profile.put("building_name", building_name);
+                        vendor_profile.put("vendor_image", vendor_image);
+
+                        mDatabase.setValue(vendor_profile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                try {
+
+                                    if (task.isSuccessful()) {
+
+                                        progressDialog.dismiss();
+                                        Intent intent = new Intent(getApplicationContext(), VendorMainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        finish();
+
+                                    } else {
+
+                                        progressDialog.hide();
+                                        Toast.makeText(getApplicationContext(), "Error saving user's profile: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                } catch (final DatabaseException e) {
+
+                                    progressDialog.hide();
+                                    Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addDetails), "Database Exception Found", Snackbar.LENGTH_LONG)
+                                            .setAction("View Details", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+
+                                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                    snackbar.show();
+                                    return;
+                                }
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull final Exception e) {
+
+                                progressDialog.hide();
+                                Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addDetails), "Failure Listener Initialized", Snackbar.LENGTH_LONG)
+                                        .setAction("View Details", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                snackbar.show();
+                                return;
+
+                            }
+                        });
                     }
 
-                } catch (Exception e) {
+                } catch (final RuntimeException e) {
 
-                    Toast.makeText(AddVendorDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    progressDialog.hide();
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addDetails), "Runtime exception", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
+                    return;
                 }
 
             }
@@ -146,13 +216,13 @@ public class AddVendorDetails extends AppCompatActivity {
                 } catch (Exception e) {
 
                     Toast.makeText(AddVendorDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
                 }
             }
         });
     }
 
-    /*
-        @Override
+    @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
             try {
@@ -176,6 +246,7 @@ public class AddVendorDetails extends AppCompatActivity {
                 e.printStackTrace();
 
                 Toast.makeText(AddVendorDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                return;
 
             }
 
@@ -189,10 +260,12 @@ public class AddVendorDetails extends AppCompatActivity {
 
 
                     Uri resultUri = result.getUri();
+                    FirebaseUser current_user = mAuth.getCurrentUser();
+                    final String user_id = current_user.getUid();
 
                     //Toast.makeText(AddDetails.this, resultUri.toString(), Toast.LENGTH_LONG).show();
 
-                    final StorageReference filepath = mStorageRef.child("Vendor_Images").child(userID + ".jpg");
+                    final StorageReference filepath = mStorageRef.child("Vendor_Images").child(user_id + ".jpg");
 
                     filepath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -232,52 +305,85 @@ public class AddVendorDetails extends AppCompatActivity {
         }
 
 
-     */
-    private boolean validateUsername() {
+    //validate phone_number
+    private boolean validatePhoneNumber() {
 
-        String buyer_username = textInputLayout_username.getEditText().getText().toString().trim();
+        String phone_number = textInputLayout_phoneNumber.getEditText().getText().toString().trim();
 
-        if (TextUtils.isEmpty(buyer_username)) {
+        if (phone_number.isEmpty()) {
 
-            textInputLayout_username.requestFocus();
-            textInputLayout_username.setError("enter username");
+            textInputLayout_phoneNumber.requestFocus();
+            textInputLayout_phoneNumber.setError("field can't be left empty");
+            textInputLayout_phoneNumber.getEditText().setText(null);
             return false;
 
-        } else if (buyer_username.length() > 15) {
+        } else if (phone_number.length() != 9) {
 
-            textInputLayout_username.requestFocus();
-            textInputLayout_username.getEditText().setText(null);
-            textInputLayout_username.setError("username too long");
+            textInputLayout_phoneNumber.requestFocus();
+            textInputLayout_phoneNumber.setError("invalid number");
+            textInputLayout_phoneNumber.getEditText().setText(null);
             return false;
 
         } else {
 
-            textInputLayout_username.setError(null);
+            textInputLayout_phoneNumber.setError(null);
             return true;
         }
     }
 
-    private boolean validatePassword() {
 
-        String buyer_password = textInputLayout_password.getEditText().getText().toString().trim();
+    //validate address
+    private boolean validateAddress() {
 
-        if (TextUtils.isEmpty(buyer_password)) {
+        String address = textInputLayout_address.getEditText().getText().toString().trim();
 
-            textInputLayout_password.requestFocus();
-            textInputLayout_password.setError("password required");
+        if (TextUtils.isEmpty(address)) {
+
+            textInputLayout_address.requestFocus();
+            textInputLayout_address.setError("field can't be left empty");
+            textInputLayout_address.getEditText().setText(null);
             return false;
 
-        } else if (!PASSWORD_PATTERN.matcher(buyer_password).matches()) {
+        } else if (TextUtils.getTrimmedLength(address) > 20) {
 
-            textInputLayout_password.requestFocus();
-            textInputLayout_password.getEditText().setText(null);
-            textInputLayout_password.setError("password too weak");
+            textInputLayout_address.requestFocus();
+            textInputLayout_address.setError("address too long");
+            textInputLayout_address.getEditText().setText(null);
             return false;
 
         } else {
 
-            textInputLayout_password.setError(null);
+            textInputLayout_address.setError(null);
             return true;
+
+        }
+
+    }
+
+    //validate building_name
+    private boolean validateBuildingName() {
+
+        String buildingName = textInputLayout_buildingName.getEditText().getText().toString().trim();
+
+        if (buildingName.equals("")) {
+
+            textInputLayout_buildingName.requestFocus();
+            textInputLayout_buildingName.setError("field can't be left empty");
+            textInputLayout_buildingName.getEditText().setText(null);
+            return false;
+
+        } else if (buildingName.length() > 20) {
+
+            textInputLayout_buildingName.requestFocus();
+            textInputLayout_buildingName.setError("building name too long");
+            textInputLayout_buildingName.getEditText().setText(null);
+            return false;
+
+        } else {
+
+            textInputLayout_buildingName.setError(null);
+            return true;
+
         }
     }
 

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,14 +16,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import lastie_wangechian_Final.com.R;
@@ -44,8 +42,7 @@ public class BuyerRegister extends AppCompatActivity {
     private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
     private FirebaseAuth mAuth;
-    private FirebaseUser firebaseUser;
-    private DatabaseReference buyer_DatabaseReference;
+    private TextView textView_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +54,7 @@ public class BuyerRegister extends AppCompatActivity {
         textInputLayout_username = findViewById(R.id.registerBuyer_username);
         textInputLayout_email = findViewById(R.id.registerBuyer_email);
         textInputLayout_password = findViewById(R.id.registerBuyer_password);
+        textView_login = findViewById(R.id.login);
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -66,28 +64,47 @@ public class BuyerRegister extends AppCompatActivity {
 
         reg_progressDialog = new ProgressDialog(this);
 
+        textView_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent next_intent = new Intent(BuyerRegister.this, BuyerLogin.class);
+                startActivity(next_intent);
+                finish();
+            }
+        });
+
         button_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (!validateUsername() | !validateEmail() | !validatePassword()) {
+                try {
+
+                    if (!validateUsername() | !validateEmail() | !validatePassword()) {
+
+                        return;
+
+                    } else {
+
+                        String username = textInputLayout_username.getEditText().getText().toString();
+                        String email = textInputLayout_email.getEditText().getText().toString();
+                        String password = textInputLayout_password.getEditText().getText().toString();
+
+                        reg_progressDialog.setTitle("Registering User");
+                        reg_progressDialog.setMessage("kindly wait as we register you");
+                        reg_progressDialog.setCanceledOnTouchOutside(false);
+                        reg_progressDialog.show();
+
+                        register_user(username, email, password);
+
+                    }
+
+                } catch (NullPointerException e) {
 
                     return;
 
-                } else {
-
-                    String username = textInputLayout_username.getEditText().getText().toString();
-                    String email = textInputLayout_email.getEditText().getText().toString();
-                    String password = textInputLayout_password.getEditText().getText().toString();
-
-                    reg_progressDialog.setTitle("Registering User");
-                    reg_progressDialog.setMessage("kindly wait as we register you");
-                    reg_progressDialog.setCanceledOnTouchOutside(false);
-                    reg_progressDialog.show();
-
-                    register_user(username, email, password);
-
                 }
+
 
             }
         });
@@ -100,43 +117,37 @@ public class BuyerRegister extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if (task.isSuccessful()) {
+                        try {
 
-                            FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-                            String user_id = current_user.getUid();
-                            Toast.makeText(BuyerRegister.this, user_id, Toast.LENGTH_SHORT).show();
+                            if (task.isSuccessful()) {
 
-                            buyer_DatabaseReference = FirebaseDatabase.getInstance().getReference().child("Buyer").child(user_id);
+                                reg_progressDialog.dismiss();
+                                Intent next_intent = new Intent(BuyerRegister.this, AddBuyerDetails.class);
+                                next_intent.putExtra("username", username);
+                                next_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(next_intent);
+                                finish();
 
-                            HashMap<String, String> buyer_map = new HashMap<>();
-                            buyer_map.put("username", username);
-                            buyer_map.put("image", "default");
-                            buyer_map.put("thumbnail", "thumbnail");
-                            buyer_map.put("phone_number", "123457890");
+                            } else {
 
-                            buyer_DatabaseReference.setValue(buyer_map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+                                reg_progressDialog.hide();
+                                Toast.makeText(BuyerRegister.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
-                                    if (task.isSuccessful()) {
+                            }
 
-                                        reg_progressDialog.dismiss();
-                                        Intent next_intent = new Intent(BuyerRegister.this, BuyerMainActivity.class);
-                                        startActivity(next_intent);
-                                        finish();
+                        } catch (final RuntimeException e) {
 
-                                    } else {
-                                        Toast.makeText(BuyerRegister.this, "Error storing data", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                            Snackbar snackbar = Snackbar.make(findViewById(R.id.reg_buyer), "Runtime Error", Snackbar.LENGTH_LONG)
+                                    .setAction("View Details", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
 
-                        } else {
-
-                            reg_progressDialog.hide();
-                            Toast.makeText(BuyerRegister.this, "Error registering user", Toast.LENGTH_SHORT).show();
-
+                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                            snackbar.show();
                         }
+
                     }
                 });
 
