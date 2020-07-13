@@ -299,7 +299,9 @@ public class AddVendorDetails extends AppCompatActivity {
                     Toast.makeText(AddVendorDetails.this, error.toString(), Toast.LENGTH_LONG).show();
                 }
             } else {
+
                 Toast.makeText(AddVendorDetails.this, "error in image retrieval ", Toast.LENGTH_LONG).show();
+
             }
 
         }

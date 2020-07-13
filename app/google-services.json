@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "175233601815",
-    "firebase_url": "https://final-55ffa.firebaseio.com",
-    "project_id": "final-55ffa",
-    "storage_bucket": "final-55ffa.appspot.com"
+    "project_number": "1048801784668",
+    "firebase_url": "https://project-77ac9.firebaseio.com",
+    "project_id": "project-77ac9",
+    "storage_bucket": "project-77ac9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:175233601815:android:1f005c8c5999df42f0a752",
+        "mobilesdk_app_id": "1:1048801784668:android:e50c2743ee6640c690c799",
         "android_client_info": {
           "package_name": "lastie_wangechian_Final.com"
         }
       },
       "oauth_client": [
         {
-          "client_id": "175233601815-3ik7ien8qe9h4jlfegbu8uonu2a42qam.apps.googleusercontent.com",
+          "client_id": "1048801784668-c30sikgrn8tbkorlisf9l7fbutnid6ql.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "lastie_wangechian_Final.com",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "175233601815-bf8uom4dasdh8orekpjp1agmh1gcdliq.apps.googleusercontent.com",
+          "client_id": "1048801784668-fq6tj7bda7q35h7fmobecbm3evjv86gu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCeoMS5XM1O1c9kWrkKR_Dm5DPMZizLW0E"
+          "current_key": "AIzaSyAOxR9gc6JTx9a2pLPoiToChk1o08s3rmM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "175233601815-bf8uom4dasdh8orekpjp1agmh1gcdliq.apps.googleusercontent.com",
+              "client_id": "1048801784668-fq6tj7bda7q35h7fmobecbm3evjv86gu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
