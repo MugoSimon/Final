@@ -1,11 +1,12 @@
 package lastie_wangechian_Final.com.Vendor;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -33,9 +35,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hbb20.CountryCodePicker;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -60,12 +63,13 @@ public class AddVendorDetails extends AppCompatActivity {
     private CircleImageView circleImageView;
     private CountryCodePicker cpp;
     private TextInputLayout textInputLayout_phoneNumber;
-    private TextInputLayout textInputLayout_address;
+    private TextInputLayout textInputLayout_location;
     private TextInputLayout textInputLayout_buildingName;
     private TextView textView_link;
     private Button button_save;
     private ImageView imageView_changeImg;
     private ProgressDialog progressDialog;
+    private Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,7 @@ public class AddVendorDetails extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         textInputLayout_phoneNumber = findViewById(R.id.registerVendor_phoneNumber);
-        textInputLayout_address = findViewById(R.id.registerVendor_address);
+        textInputLayout_location = findViewById(R.id.registerVendor_location);
         textInputLayout_buildingName = findViewById(R.id.registerVendor_buildingName);
         textView_link = findViewById(R.id.link);
         imageView_changeImg = findViewById(R.id.change_image);
@@ -100,7 +104,7 @@ public class AddVendorDetails extends AppCompatActivity {
 
                 try {
 
-                    if (!validatePhoneNumber() | !validateAddress() | validateBuildingName()) {
+                    if (!validatePhoneNumber() | !validateLocation() | validateBuildingName()) {
 
                         return;
 
@@ -113,16 +117,16 @@ public class AddVendorDetails extends AppCompatActivity {
 
                         String username = getIntent().getStringExtra("username");
                         String phone_number = cpp.getFullNumberWithPlus();
-                        String address = textInputLayout_address.getEditText().getText().toString();
+                        String location = textInputLayout_location.getEditText().getText().toString();
                         String building_name = textInputLayout_buildingName.getEditText().getText().toString();
                         String vendor_image = textView_link.getText().toString();
 
-                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Vendor_Profile").child(user_id);
+                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Vendors").child(user_id);
 
                         HashMap<String, String> vendor_profile = new HashMap<>();
                         vendor_profile.put("username", username);
                         vendor_profile.put("phone_number", phone_number);
-                        vendor_profile.put("address", address);
+                        vendor_profile.put("address", location);
                         vendor_profile.put("building_name", building_name);
                         vendor_profile.put("vendor_image", vendor_image);
 
@@ -207,105 +211,135 @@ public class AddVendorDetails extends AppCompatActivity {
 
                 try {
 
-                    Intent galleryIntent = new Intent();
-                    galleryIntent.setType("image/*");
-                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-                    startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+                    CropImage.startPickImageActivity(AddVendorDetails.this);
 
                 } catch (Exception e) {
 
-                    Toast.makeText(AddVendorDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     return;
                 }
             }
+
         });
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-            try {
-                super.onActivityResult(requestCode, resultCode, data);
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
 
-                if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
+            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE
+                    && resultCode == Activity.RESULT_OK) {
 
-                    Uri imageUri = data.getData();
+                Uri image_uri = CropImage.getPickImageResultUri(this, data);
 
-                    CropImage.activity(imageUri)
-                            .setAspectRatio(1, 1)
-                            .setMaxCropResultSize(500, 500)
-                            .start(this);
+                if (CropImage.isReadExternalStoragePermissionsRequired(this, image_uri)) {
 
-                    Bitmap objectImage = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                    circleImageView.setImageBitmap(objectImage);
+                    uri = image_uri;
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
 
+                } else {
+
+                    startCrop(image_uri);
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                Toast.makeText(AddVendorDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                return;
 
             }
 
             if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
 
-                //Toast.makeText(AddDetails.this, "going to cropping ", Toast.LENGTH_LONG).show();
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
-
-
                 if (resultCode == RESULT_OK) {
 
+                    Picasso.get().load(result.getUri()).into(circleImageView);
+                    Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_LONG).show();
+                    //String image_link = result.getUri().toString();
+                    //textView_link.setText(image_link);
 
-                    Uri resultUri = result.getUri();
-                    FirebaseUser current_user = mAuth.getCurrentUser();
-                    final String user_id = current_user.getUid();
+                    try {
 
-                    //Toast.makeText(AddDetails.this, resultUri.toString(), Toast.LENGTH_LONG).show();
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        String userID = currentUser.getUid();
 
-                    final StorageReference filepath = mStorageRef.child("Vendor_Images").child(user_id + ".jpg");
+                        final StorageReference image_path = mStorageRef.child("Vendor_profile").child(userID + ".jpg");
+                        image_path.putFile(result.getUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    filepath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
+                                Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_LONG).show();
 
-                                    Uri download_url = uri;
-                                    String image_link = download_url.toString().trim();
-                                    //Toast.makeText(AddDetails.this, image_link, Toast.LENGTH_LONG).show();
+                                image_path.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
 
-                                    textView_link.setText(image_link);
-                                }
+                                        textView_link.setText(String.valueOf(uri));
 
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
 
-                            //progressDialog.dismiss();
-                            Toast.makeText(AddVendorDetails.this, "error in uploading image " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                                        Toast.makeText(getApplicationContext(), "No downloaded url", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull final Exception e) {
+
+                                Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addDetails), "Image Failure To Upload.", Snackbar.LENGTH_LONG)
+                                        .setAction("View Details", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                snackbar.show();
+                                return;
+
+                            }
+                        });
+
+                    } catch (DatabaseException e) {
+
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+
+                    }
 
 
-                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                } else {
 
-                    Exception error = result.getError();
-                    Toast.makeText(AddVendorDetails.this, error.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Nope nope nope", Toast.LENGTH_LONG).show();
+                    return;
+
                 }
-            } else {
-
-                Toast.makeText(AddVendorDetails.this, "error in image retrieval ", Toast.LENGTH_LONG).show();
-
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            return;
 
         }
 
+    }
+
+    //cropping image according to user requirement
+    private void startCrop(Uri image_uri) {
+
+        CropImage.activity(image_uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .setAspectRatio(1, 1)
+                .setMaxCropResultSize(500, 500)
+                .start(this);
+
+    }
 
     //validate phone_number
     private boolean validatePhoneNumber() {
@@ -333,29 +367,28 @@ public class AddVendorDetails extends AppCompatActivity {
         }
     }
 
+    //validate location
+    private boolean validateLocation() {
 
-    //validate address
-    private boolean validateAddress() {
-
-        String address = textInputLayout_address.getEditText().getText().toString().trim();
+        String address = textInputLayout_location.getEditText().getText().toString().trim();
 
         if (TextUtils.isEmpty(address)) {
 
-            textInputLayout_address.requestFocus();
-            textInputLayout_address.setError("field can't be left empty");
-            textInputLayout_address.getEditText().setText(null);
+            textInputLayout_location.requestFocus();
+            textInputLayout_location.setError("field can't be left empty");
+            textInputLayout_location.getEditText().setText(null);
             return false;
 
         } else if (TextUtils.getTrimmedLength(address) > 20) {
 
-            textInputLayout_address.requestFocus();
-            textInputLayout_address.setError("address too long");
-            textInputLayout_address.getEditText().setText(null);
+            textInputLayout_location.requestFocus();
+            textInputLayout_location.setError("address too long");
+            textInputLayout_location.getEditText().setText(null);
             return false;
 
         } else {
 
-            textInputLayout_address.setError(null);
+            textInputLayout_location.setError(null);
             return true;
 
         }

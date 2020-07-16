@@ -101,7 +101,7 @@
     </RelativeLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerVendor_address"
+        android:id="@+id/registerVendor_location"
         android:layout_width="match_parent"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:drawableRight="@drawable/ic_place"
-            android:hint="address"
+            android:hint="location"
             android:inputType="textPostalAddress"
             android:textColor="#000" />
 
@@ -130,7 +130,7 @@
         android:layout_width="match_parent"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/registerVendor_address"
+        android:layout_below="@+id/registerVendor_location"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"

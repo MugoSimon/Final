@@ -1,11 +1,12 @@
 package lastie_wangechian_Final.com.Buyer;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -32,9 +34,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hbb20.CountryCodePicker;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,7 +47,7 @@ public class AddBuyerDetails extends AppCompatActivity {
 
     private static final int GALLERY_PICK = 1;
     FirebaseAuth mAuth;
-    StorageReference mStorageRef;
+    private StorageReference mStorageRef;
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
     private CircleImageView circleImageView;
@@ -56,6 +59,7 @@ public class AddBuyerDetails extends AppCompatActivity {
     private Button button_save;
     private ImageView imageView_changeImg;
     private ProgressDialog progressDialog;
+    private Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +83,6 @@ public class AddBuyerDetails extends AppCompatActivity {
         getSupportActionBar().setTitle("User Profile");
 
         cpp.registerCarrierNumberEditText(textInputLayout_phoneNumber.getEditText());
-        /*
-        FirebaseUser current_user = mAuth.getCurrentUser();
-        String user_id = current_user.getUid();
-        Toast.makeText(getApplicationContext(), user_id, Toast.LENGTH_LONG).show();
-         */
 
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,15 +103,15 @@ public class AddBuyerDetails extends AppCompatActivity {
 
                         String username = getIntent().getStringExtra("username");
                         String phone_number = cpp.getFullNumberWithPlus();
-                        String address = textInputLayout_address.getEditText().toString().trim();
-                        String building_name = textInputLayout_buildingName.getEditText().toString().trim();
+                        String address = textInputLayout_address.getEditText().getText().toString().trim();
+                        String building_name = textInputLayout_buildingName.getEditText().getText().toString().trim();
                         String buyer_image = textView_link.getText().toString().trim();
 
                         FirebaseUser current_user = mAuth.getCurrentUser();
                         String user_id = current_user.getUid();
                         Toast.makeText(getApplicationContext(), user_id, Toast.LENGTH_LONG).show();
 
-                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Buyer_Profile").child(user_id);
+                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Buyers").child(user_id);
 
                         HashMap<String, String> buyer_profile = new HashMap<>();
                         buyer_profile.put("username", username);
@@ -121,8 +120,7 @@ public class AddBuyerDetails extends AppCompatActivity {
                         buyer_profile.put("building_name", building_name);
                         buyer_profile.put("buyer_image", buyer_image);
 
-                        mDatabase.setValue(buyer_profile)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        mDatabase.setValue(buyer_profile).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -200,15 +198,11 @@ public class AddBuyerDetails extends AppCompatActivity {
 
                 try {
 
-                    Intent galleryIntent = new Intent();
-                    galleryIntent.setType("image/*");
-                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-                    startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+                    CropImage.startPickImageActivity(AddBuyerDetails.this);
 
                 } catch (Exception e) {
 
-                    Toast.makeText(AddBuyerDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -218,86 +212,121 @@ public class AddBuyerDetails extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         try {
             super.onActivityResult(requestCode, resultCode, data);
 
+            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE
+                    && resultCode == Activity.RESULT_OK) {
 
-            if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
+                Uri image_uri = CropImage.getPickImageResultUri(this, data);
 
-                Uri imageUri = data.getData();
+                if (CropImage.isReadExternalStoragePermissionsRequired(this, image_uri)) {
 
-                CropImage.activity(imageUri)
-                        .setAspectRatio(1, 1)
-                        .start(this);
+                    uri = image_uri;
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
 
-                Bitmap objectImage = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                circleImageView.setImageBitmap(objectImage);
+                } else {
+
+                    startCrop(image_uri);
+                }
 
             }
 
-        } catch (IOException e) {
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+
+                    Picasso.get().load(result.getUri()).into(circleImageView);
+                    Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_LONG).show();
+                    //String image_link = result.getUri().toString();
+                    //textView_link.setText(image_link);
+
+                    try {
+
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        String userID = currentUser.getUid();
+
+
+                        final StorageReference image_path = mStorageRef.child("Buyer_profile").child(userID + ".jpg");
+                        image_path.putFile(result.getUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_LONG).show();
+
+                                image_path.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+
+                                        textView_link.setText(String.valueOf(uri));
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                        Toast.makeText(getApplicationContext(), "No downloaded url", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull final Exception e) {
+
+                                Snackbar snackbar = Snackbar.make(findViewById(R.id.add_buyer_details), "Image Failure To Upload.", Snackbar.LENGTH_LONG)
+                                        .setAction("View Details", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                snackbar.show();
+                                return;
+
+                            }
+                        });
+
+                    } catch (DatabaseException e) {
+
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+
+                    }
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "Nope nope nope", Toast.LENGTH_LONG).show();
+                    return;
+
+                }
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
 
-            Toast.makeText(AddBuyerDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             return;
 
         }
 
-
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-
-            //Toast.makeText(AddDetails.this, "going to cropping ", Toast.LENGTH_LONG).show();
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-
-
-            if (resultCode == RESULT_OK) {
-
-
-                Uri resultUri = result.getUri();
-                FirebaseUser currentUser = mAuth.getCurrentUser();
-                String userID = currentUser.getUid();
-
-                //Toast.makeText(AddDetails.this, resultUri.toString(), Toast.LENGTH_LONG).show();
-
-                final StorageReference filepath = mStorageRef.child("Buyer_Profile").child(userID + ".jpg");
-
-                filepath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-
-                                Uri download_url = uri;
-                                String image_link = download_url.toString().trim();
-                                //Toast.makeText(AddDetails.this, image_link, Toast.LENGTH_LONG).show();
-
-                                textView_link.setText(image_link);
-                            }
-
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                        //progressDialog.dismiss();
-                        Toast.makeText(AddBuyerDetails.this, "error in uploading image " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-
-                Exception error = result.getError();
-                Toast.makeText(AddBuyerDetails.this, error.toString(), Toast.LENGTH_LONG).show();
-                return;
-            }
-        }
     }
 
+    //image cropping at user requirement.
+    private void startCrop(Uri image_uri) {
+
+        CropImage.activity(image_uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .setAspectRatio(1, 1)
+                .setMaxCropResultSize(500, 500)
+                .start(this);
+
+    }
 
     //validate phone_number
     private boolean validatePhoneNumber() {
@@ -324,7 +353,6 @@ public class AddBuyerDetails extends AppCompatActivity {
             return true;
         }
     }
-
 
     //validate address
     private boolean validateAddress() {
