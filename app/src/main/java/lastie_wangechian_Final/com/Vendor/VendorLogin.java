@@ -27,7 +27,7 @@ import lastie_wangechian_Final.com.R;
 
 public class VendorLogin extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private Toolbar login_toolbar;
     private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
     private Button button_login;
@@ -41,13 +41,13 @@ public class VendorLogin extends AppCompatActivity {
         setContentView(R.layout.activity_vendor_login);
 
         mAuth = FirebaseAuth.getInstance();
-        toolbar = findViewById(R.id.toolbar);
+        login_toolbar = findViewById(R.id.vendor_appBar_login);
         textInputLayout_email = findViewById(R.id.loginVendor_email);
         textInputLayout_password = findViewById(R.id.vendorLogin_password);
         button_login = findViewById(R.id.button_login);
         textView_forgotPassword = findViewById(R.id.textView_shifter);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(login_toolbar);
         getSupportActionBar().setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

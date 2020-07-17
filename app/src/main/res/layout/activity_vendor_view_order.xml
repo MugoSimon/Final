@@ -39,7 +39,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorAccent_vendor"
         android:textStyle="bold" />
 
     <Button

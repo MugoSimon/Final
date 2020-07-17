@@ -59,7 +59,7 @@ public class AddVendorDetails extends AppCompatActivity {
     FirebaseAuth mAuth;
     StorageReference mStorageRef;
     private DatabaseReference mDatabase;
-    private Toolbar toolbar;
+    private Toolbar addDetails_toolbar;
     private CircleImageView circleImageView;
     private CountryCodePicker cpp;
     private TextInputLayout textInputLayout_phoneNumber;
@@ -89,8 +89,8 @@ public class AddVendorDetails extends AppCompatActivity {
         button_save = findViewById(R.id.button_save);
         progressDialog = new ProgressDialog(this);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        addDetails_toolbar = findViewById(R.id.vendor_appBar_addDetail);
+        setSupportActionBar(addDetails_toolbar);
         getSupportActionBar().setTitle("Vendor Additional Details");
 
         cpp.registerCarrierNumberEditText(textInputLayout_phoneNumber.getEditText());
@@ -104,7 +104,7 @@ public class AddVendorDetails extends AppCompatActivity {
 
                 try {
 
-                    if (!validatePhoneNumber() | !validateLocation() | validateBuildingName()) {
+                    if (!validatePhoneNumber() | !validateLocation() | !validateBuildingName()) {
 
                         return;
 
@@ -258,13 +258,16 @@ public class AddVendorDetails extends AppCompatActivity {
                     //String image_link = result.getUri().toString();
                     //textView_link.setText(image_link);
 
+                    //                                        Toast.makeText(getApplicationContext(), "No downloaded url", Toast.LENGTH_LONG).show();
                     try {
 
                         FirebaseUser currentUser = mAuth.getCurrentUser();
                         String userID = currentUser.getUid();
 
+                        Uri resultUri = result.getUri();
+
                         final StorageReference image_path = mStorageRef.child("Vendor_profile").child(userID + ".jpg");
-                        image_path.putFile(result.getUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        image_path.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 

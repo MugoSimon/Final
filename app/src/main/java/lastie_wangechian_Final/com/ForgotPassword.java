@@ -23,7 +23,7 @@ import lastie_wangechian_Final.com.Buyer.BuyerLogin;
 
 public class ForgotPassword extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private Toolbar forgot_toolbar;
     private TextInputLayout textInputLayout_email;
     private Button button_submit;
     private FirebaseAuth mAuth;
@@ -39,8 +39,8 @@ public class ForgotPassword extends AppCompatActivity {
         textInputLayout_email = findViewById(R.id.forgotPassword_email);
         button_submit = findViewById(R.id.button_submit);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        forgot_toolbar = findViewById(R.id.forgot_toolbar);
+        setSupportActionBar(forgot_toolbar);
         getSupportActionBar().setTitle("Forgot Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -27,7 +27,7 @@ import lastie_wangechian_Final.com.R;
 
 public class BuyerRegister extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private Toolbar register_toolbar;
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" +
                     "(?=.*[0-9])" +   //atleast one digit
@@ -57,8 +57,8 @@ public class BuyerRegister extends AppCompatActivity {
         textView_login = findViewById(R.id.login);
 
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        register_toolbar = findViewById(R.id.buyer_appBar_register);
+        setSupportActionBar(register_toolbar);
         getSupportActionBar().setTitle("Registering Buyer");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

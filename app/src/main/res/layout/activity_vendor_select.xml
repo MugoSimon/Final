@@ -6,16 +6,15 @@
     tools:context=".Vendor.VendorSelect">
 
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/vendor_Toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include
+        android:id="@+id/vendor_appBar_select"
+        layout="@layout/vendor_app_bar_layout" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_below="@+id/vendor_Toolbar"
+        android:layout_below="@+id/vendor_appBar_select"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/ic_credit_card_black_24dp" />

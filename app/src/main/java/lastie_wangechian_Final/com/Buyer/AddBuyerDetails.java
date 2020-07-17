@@ -31,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hbb20.CountryCodePicker;
@@ -41,6 +42,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import lastie_wangechian_Final.com.Buyer.MainActivity.BuyerMainActivity;
 import lastie_wangechian_Final.com.R;
 
 public class AddBuyerDetails extends AppCompatActivity {
@@ -49,7 +51,7 @@ public class AddBuyerDetails extends AppCompatActivity {
     FirebaseAuth mAuth;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabase;
-    private Toolbar toolbar;
+    private Toolbar buyer_toolbar;
     private CircleImageView circleImageView;
     private CountryCodePicker cpp;
     private TextInputLayout textInputLayout_phoneNumber;
@@ -67,6 +69,7 @@ public class AddBuyerDetails extends AppCompatActivity {
         setContentView(R.layout.activity_add_buyer_details);
 
         mAuth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         textView_link = findViewById(R.id.link);
         imageView_changeImg = findViewById(R.id.change_image);
@@ -76,11 +79,12 @@ public class AddBuyerDetails extends AppCompatActivity {
         textInputLayout_phoneNumber = findViewById(R.id.registerBuyer_phoneNumber);
         textInputLayout_address = findViewById(R.id.registerBuyer_address);
         textInputLayout_buildingName = findViewById(R.id.registerBuyer_buildingName);
+        buyer_toolbar = findViewById(R.id.buyer_appBar);
         progressDialog = new ProgressDialog(this);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(buyer_toolbar);
         getSupportActionBar().setTitle("User Profile");
+
 
         cpp.registerCarrierNumberEditText(textInputLayout_phoneNumber.getEditText());
 
@@ -250,9 +254,10 @@ public class AddBuyerDetails extends AppCompatActivity {
                         FirebaseUser currentUser = mAuth.getCurrentUser();
                         String userID = currentUser.getUid();
 
+                        Uri resultUri = result.getUri();
 
                         final StorageReference image_path = mStorageRef.child("Buyer_profile").child(userID + ".jpg");
-                        image_path.putFile(result.getUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        image_path.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 

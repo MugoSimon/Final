@@ -1,18 +1,27 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- style za buyer -->
+    <style name="AppTheme_buyer" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary_buyer</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_buyer</item>
+        <item name="colorAccent">@color/colorAccent_buyer</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- style za vendor -->
+    <style name="AppTheme_vendor" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary_vendor</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_vendor</item>
+        <item name="colorAccent">@color/colorAccent_vendor</item>
+    </style>
+
+    <!-- style za rest -->
+    <style name="AppTheme_rest" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary_rest</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_rest</item>
+        <item name="colorAccent">@color/colorAccent_rest</item>
     </style>
 
 </resources>

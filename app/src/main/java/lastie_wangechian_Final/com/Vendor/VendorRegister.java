@@ -31,7 +31,7 @@ public class VendorRegister extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     FirebaseFirestore fStore;
-    private Toolbar toolbar;
+    private Toolbar register_toolbar;
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" +
                     "(?=.*[0-9])" +   //atleast one digit
@@ -61,8 +61,8 @@ public class VendorRegister extends AppCompatActivity {
         button_register = findViewById(R.id.registerVendor_Button);
         textView_shifter = findViewById(R.id.login);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        register_toolbar = findViewById(R.id.vendor_appBar_register);
+        setSupportActionBar(register_toolbar);
         getSupportActionBar().setTitle("Vendor Side");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

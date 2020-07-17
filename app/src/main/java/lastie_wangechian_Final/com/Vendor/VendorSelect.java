@@ -20,7 +20,7 @@ public class VendorSelect extends AppCompatActivity {
     private Button button_register;
     private Button button_login;
     private TextView textView_shifter;
-    private Toolbar toolbar;
+    private Toolbar vendorSelect_toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +30,10 @@ public class VendorSelect extends AppCompatActivity {
         button_register = findViewById(R.id.btn_VendorRegister);
         button_login = findViewById(R.id.btn_VendorLogin);
         textView_shifter = findViewById(R.id.vendor_textViewShifter);
-        toolbar = findViewById(R.id.vendor_Toolbar);
+        vendorSelect_toolbar = findViewById(R.id.vendor_appBar_select);
         mAuth = FirebaseAuth.getInstance();
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(vendorSelect_toolbar);
         getSupportActionBar().setTitle("Vendor Section");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

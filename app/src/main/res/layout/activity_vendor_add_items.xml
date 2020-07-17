@@ -8,16 +8,15 @@
     android:orientation="vertical"
     tools:context=".Vendor.VendorAddItems">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/add_item_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include
+        android:id="@+id/vendor_appBar_addDetails"
+        layout="@layout/vendor_app_bar_layout" />
 
     <TextView
         android:id="@+id/item_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/add_item_toolbar"
+        android:layout_below="@+id/vendor_appBar_addDetails"
         android:layout_marginStart="30dp"
         android:layout_marginTop="50dp"
         android:text="Container: "
@@ -29,7 +28,7 @@
         android:id="@+id/editText_container"
         android:layout_width="200dp"
         android:layout_height="60dp"
-        android:layout_below="@+id/add_item_toolbar"
+        android:layout_below="@+id/vendor_appBar_addDetails"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_toRightOf="@+id/item_type"

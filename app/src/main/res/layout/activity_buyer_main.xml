@@ -7,7 +7,7 @@
     android:id="@+id/relLayout"
     android:background="#BEF1F1ED"
     android:orientation="vertical"
-    tools:context=".Buyer.BuyerMainActivity">
+    tools:context=".Buyer.MainActivity.BuyerMainActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -30,15 +30,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+
+    <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
+        android:id="@+id/buyer_viewPager"
         android:layout_below="@+id/appBarLayout"
-        android:layout_marginStart="0dp"
-        android:padding="15dp" />
-
-
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

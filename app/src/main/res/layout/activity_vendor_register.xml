@@ -7,18 +7,16 @@
     android:orientation="vertical"
     tools:context=".Vendor.VendorRegister">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/purple_yake" />
+    <include
+        android:id="@+id/vendor_appBar_register"
+        layout="@layout/vendor_app_bar_layout" />
 
 
     <TextView
         android:id="@+id/create_an_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/vendor_appBar_register"
         android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
         android:fontFamily="monospace"

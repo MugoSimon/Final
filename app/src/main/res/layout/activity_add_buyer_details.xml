@@ -7,18 +7,17 @@
     android:id="@+id/add_buyer_details"
     tools:context=".Buyer.AddBuyerDetails">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include
+        android:id="@+id/buyer_appBar"
+        layout="@layout/buyer_app_bar_layout" />
 
     <TextView
         android:id="@+id/add_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/buyer_appBar"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="monospace"
         android:text="Enter your Profile"
         android:textAlignment="center"

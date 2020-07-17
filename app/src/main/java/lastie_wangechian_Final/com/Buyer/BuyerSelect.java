@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import lastie_wangechian_Final.com.Buyer.MainActivity.BuyerMainActivity;
 import lastie_wangechian_Final.com.R;
 import lastie_wangechian_Final.com.Vendor.VendorSelect;
 
@@ -19,7 +20,7 @@ public class BuyerSelect extends AppCompatActivity {
     private Button button_register;
     private Button button_login;
     private TextView textView_shifter;
-    private Toolbar toolbar;
+    private Toolbar buyerSelect_toolbar;
     FirebaseAuth mAuth;
 
     @Override
@@ -30,10 +31,10 @@ public class BuyerSelect extends AppCompatActivity {
         button_register = findViewById(R.id.btn_BuyerRegister);
         button_login = findViewById(R.id.btn_BuyerLogin);
         textView_shifter = findViewById(R.id.buyer_textViewShifter);
-        toolbar = findViewById(R.id.buyer_Toolbar);
+        buyerSelect_toolbar = findViewById(R.id.buyerselect_toolbar);
         mAuth = FirebaseAuth.getInstance();
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(buyerSelect_toolbar);
         getSupportActionBar().setTitle("Buyer Side");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -5,18 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".Buyer.BuyerSelect">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/buyer_Toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include
+        android:id="@+id/buyerselect_toolbar"
+        layout="@layout/buyer_app_bar_layout" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_below="@+id/buyer_Toolbar"
+        android:layout_below="@+id/buyerselect_toolbar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/ic_shopping_cart_black_24dp" />
 
     <TextView

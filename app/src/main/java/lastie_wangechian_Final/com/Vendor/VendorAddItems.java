@@ -46,7 +46,7 @@ public class VendorAddItems extends AppCompatActivity {
     StorageReference mStorageRef;
     CollectionReference documentReference;
     String userID;
-    private Toolbar toolbar;
+    private Toolbar addItems_toolbar;
     private EditText editText_containerName;
     private EditText editText_continerPrice;
     private Button button_containerImage;
@@ -65,8 +65,8 @@ public class VendorAddItems extends AppCompatActivity {
         userID = FirebaseAuth.getInstance().getUid();
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        toolbar = findViewById(R.id.add_item_toolbar);
-        setSupportActionBar(toolbar);
+        addItems_toolbar = findViewById(R.id.vendor_appBar_addDetails);
+        setSupportActionBar(addItems_toolbar);
         getSupportActionBar().setTitle("Add Items For Sale");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);

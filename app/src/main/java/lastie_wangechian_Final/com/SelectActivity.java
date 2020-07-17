@@ -16,7 +16,7 @@ public class SelectActivity extends AppCompatActivity {
     //FirebaseAuth mAuth;
     private Button btn_waterVendor;
     private Button btn_waterBuyer;
-    private Toolbar toolbar;
+    private Toolbar select_toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +26,11 @@ public class SelectActivity extends AppCompatActivity {
         //variables from the layouts
         btn_waterBuyer = findViewById(R.id.btn_water_buyer);
         btn_waterVendor = findViewById(R.id.btn_water_vendor);
-        toolbar = findViewById(R.id.select_toolbar);
+        select_toolbar = findViewById(R.id.rest_appBar);
         //mAuth = FirebaseAuth.getInstance();
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Select Your Side");
-
+        setSupportActionBar(select_toolbar);
+        getSupportActionBar().setTitle("Select Side");
 
         //when the water buyer button is clicked
         btn_waterBuyer.setOnClickListener(new View.OnClickListener() {

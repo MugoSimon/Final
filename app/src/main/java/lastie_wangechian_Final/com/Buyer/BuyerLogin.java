@@ -22,12 +22,13 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import lastie_wangechian_Final.com.Buyer.MainActivity.BuyerMainActivity;
 import lastie_wangechian_Final.com.ForgotPassword;
 import lastie_wangechian_Final.com.R;
 
 public class BuyerLogin extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private Toolbar login_toolbar;
     private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
     private TextView textView_forgotPassword;
@@ -42,14 +43,14 @@ public class BuyerLogin extends AppCompatActivity {
         setContentView(R.layout.activity_buyer_login);
 
         mAuth = FirebaseAuth.getInstance();
-        toolbar = findViewById(R.id.toolbar);
+        login_toolbar = findViewById(R.id.buyer_appBar_login);
         textInputLayout_email = findViewById(R.id.loginBuyer_email);
         textInputLayout_password = findViewById(R.id.buyerLogin_password);
         textView_forgotPassword = findViewById(R.id.textView_shifter);
         button_login = findViewById(R.id.button_login);
 
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(login_toolbar);
         getSupportActionBar().setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
