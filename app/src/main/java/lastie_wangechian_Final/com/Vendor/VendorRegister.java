@@ -63,7 +63,7 @@ public class VendorRegister extends AppCompatActivity {
 
         register_toolbar = findViewById(R.id.vendor_appBar_register);
         setSupportActionBar(register_toolbar);
-        getSupportActionBar().setTitle("Vendor Side");
+        getSupportActionBar().setTitle("Registering Vendor");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressDialog = new ProgressDialog(this);

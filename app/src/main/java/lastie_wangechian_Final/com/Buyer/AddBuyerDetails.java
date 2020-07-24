@@ -113,7 +113,7 @@ public class AddBuyerDetails extends AppCompatActivity {
 
                         FirebaseUser current_user = mAuth.getCurrentUser();
                         String user_id = current_user.getUid();
-                        Toast.makeText(getApplicationContext(), user_id, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), user_id, Toast.LENGTH_LONG).show();
 
                         mDatabase = FirebaseDatabase.getInstance().getReference().child("Buyers").child(user_id);
 
@@ -305,7 +305,7 @@ public class AddBuyerDetails extends AppCompatActivity {
 
                 } else {
 
-                    Toast.makeText(getApplicationContext(), "Nope nope nope", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "No media data was picked", Toast.LENGTH_LONG).show();
                     return;
 
                 }

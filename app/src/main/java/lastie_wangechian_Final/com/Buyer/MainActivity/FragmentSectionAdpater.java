@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 class FragmentSectionAdpater extends FragmentPagerAdapter {
 
+    //empty constructor required
     public FragmentSectionAdpater(@NonNull FragmentManager fm) {
         super(fm);
     }

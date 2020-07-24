@@ -65,7 +65,7 @@ public class BuyerNoteAdapter extends FirestoreRecyclerAdapter<BuyerNote, BuyerN
 
             circleImageView = itemView.findViewById(R.id.loaded_image);
             textView_vendorName = itemView.findViewById(R.id.loaded_vendorName);
-            textView_containerName = itemView.findViewById(R.id.loaded_containerName);
+            textView_containerName = itemView.findViewById(R.id.loaded_location);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -1,20 +1,25 @@
 package lastie_wangechian_Final.com.Vendor;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -22,67 +27,75 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import lastie_wangechian_Final.com.R;
 
-public class VendorAddItems extends AppCompatActivity {
+public class VendorAddItems extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final int GALLERY_PICK = 1;
-    FirebaseAuth mAuth;
-    FirebaseFirestore fStore;
-    StorageReference mStorageRef;
-    CollectionReference documentReference;
-    String userID;
+    String[] item_types = {"water bottle", "5l jerry can", "10l jerry can", "20l jerry can", "40l jerry can", "50l skyplast", "75l skyplast", "100l skyplast", "water truck"};
+    private FirebaseAuth mAuth;
+    private StorageReference mStorageRef;
     private Toolbar addItems_toolbar;
-    private EditText editText_containerName;
-    private EditText editText_continerPrice;
+    private DatabaseReference mDatabase;
+    private TextInputLayout textInputLayout_itemName;
+    private TextInputLayout textInputLayout_itemPrice;
     private Button button_containerImage;
     private Button button_save;
     private ImageView imageView_container;
     private TextView textView_imageUrl;
-    private TextView textView_vendorname;
+    private ProgressDialog progressDialog;
+    private Spinner spinner;
+    private Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor_add_items);
 
+        //firebase and its requirement.
         mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        userID = FirebaseAuth.getInstance().getUid();
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
+        //toolbar and its stuffs
         addItems_toolbar = findViewById(R.id.vendor_appBar_addDetails);
         setSupportActionBar(addItems_toolbar);
         getSupportActionBar().setTitle("Add Items For Sale");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
-        editText_containerName = findViewById(R.id.editText_container);
-        editText_continerPrice = findViewById(R.id.editText_price);
+        //progressDialog
+        progressDialog = new ProgressDialog(this);
+
+        //others
+        textInputLayout_itemName = findViewById(R.id.item_name);
+        textInputLayout_itemPrice = findViewById(R.id.item_price);
         button_containerImage = findViewById(R.id.choose_container);
         button_save = findViewById(R.id.button_save);
         textView_imageUrl = findViewById(R.id.textView_imageUrl);
-        textView_vendorname = findViewById(R.id.textView_vendorname);
         imageView_container = findViewById(R.id.image_container);
 
-
-
-
-        documentReference = fStore.collection("Items");
+        //spinner and its stuffs
+        spinner = findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(this);
+        ArrayAdapter itemsAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, item_types);
+        itemsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(itemsAdapter);
 
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,62 +103,106 @@ public class VendorAddItems extends AppCompatActivity {
 
                 try {
 
-                    if (validateContainerName() | validateContainerPrice()) {
+                    if (!validateContainerName() || !validateContainerPrice()) {
 
-                        String UserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        DocumentReference documentReference_getName = fStore.collection("Vendor").document(userID);
-                        documentReference_getName.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                                if (documentSnapshot.exists()) {
-
-                                    String username = documentSnapshot.getString("Username");
-                                    Toast.makeText(VendorAddItems.this, username, Toast.LENGTH_LONG).show();
-                                    textView_vendorname.setText(username);
-                                }
-
-                            }
-                        });
-
-
-                        String container_name = editText_containerName.getText().toString().trim();
-                        String vendor_name = textView_vendorname.getText().toString().trim();
-                        String container_price = editText_continerPrice.getText().toString().trim();
-                        String image_url = textView_imageUrl.getText().toString().trim();
-
-                        Map<String, String> container_details = new HashMap<>();
-                        container_details.put("vendor_name", vendor_name);
-                        container_details.put("container_name", container_name);
-                        container_details.put("container_price", container_price);
-                        container_details.put("vendor_userID", UserId);
-                        container_details.put("container_image", image_url);
-
-                        documentReference.add(container_details).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-
-                                startActivity(new Intent(getApplicationContext(), VendorMainActivity.class));
-                                finish();
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                                Toast.makeText(VendorAddItems.this, "Data wasn't saved " + e.toString().trim(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        return;
 
                     } else {
 
-                        return;
+                        progressDialog.setTitle("Saving item");
+                        progressDialog.setMessage("please wait...");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
+                        try {
+
+                            String item_name = textInputLayout_itemName.getEditText().getText().toString().trim();
+                            String item_price = textInputLayout_itemPrice.getEditText().getText().toString().trim();
+                            String item_type = spinner.getSelectedItem().toString();
+                            String item_image = textView_imageUrl.getText().toString();
+
+                            FirebaseUser current_user = mAuth.getCurrentUser();
+                            String user_id = current_user.getUid();
+
+                            mDatabase = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id).child(item_name);
+                            HashMap<String, String> item_hashMap = new HashMap<>();
+                            item_hashMap.put("item_name", item_name);
+                            item_hashMap.put("item_price", item_price);
+                            item_hashMap.put("item_type", item_type);
+                            item_hashMap.put("item_image", item_image);
+
+                            mDatabase.setValue(item_hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    try {
+
+                                        if (task.isSuccessful()) {
+
+                                            progressDialog.dismiss();
+                                            progressDialog.dismiss();
+                                            Intent intent = new Intent(getApplicationContext(), VendorMainActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+
+                                        } else {
+
+                                            progressDialog.hide();
+                                            Toast.makeText(getApplicationContext(), "Error saving user's profile: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                                        }
+                                    } catch (final DatabaseException e) {
+
+                                        progressDialog.hide();
+                                        Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addItems), "Database Exception Found", Snackbar.LENGTH_LONG)
+                                                .setAction("View Details", new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+
+                                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                        snackbar.show();
+                                        return;
+
+                                    }
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                    progressDialog.hide();
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    return;
+
+                                }
+                            });
+
+                        } catch (NullPointerException e) {
+
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
                     }
 
-                } catch (Exception e) {
-                    Toast.makeText(VendorAddItems.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
+                } catch (final RuntimeException e) {
 
+                    progressDialog.hide();
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addItems), "Runtime Exception:", Snackbar.LENGTH_LONG)
+                            .setAction("View Details", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    snackbar.show();
+                    return;
+
+                }
             }
         });
 
@@ -156,155 +213,194 @@ public class VendorAddItems extends AppCompatActivity {
 
                 try {
 
-                    Intent galleryIntent = new Intent();
-                    galleryIntent.setType("image/*");
-                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-                    startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+                    CropImage.startPickImageActivity(VendorAddItems.this);
 
                 } catch (Exception e) {
 
-                    Toast.makeText(VendorAddItems.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
                 }
+
             }
         });
 
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         try {
+
             super.onActivityResult(requestCode, resultCode, data);
 
-            if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
+            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE
+                    && resultCode == Activity.RESULT_OK) {
 
-                Uri imageUri = data.getData();
+                Uri image_uri = CropImage.getPickImageResultUri(this, data);
 
-                CropImage.activity(imageUri)
-                        .setAspectRatio(1, 2)
-                        .start(this);
+                if (CropImage.isReadExternalStoragePermissionsRequired(this, image_uri)) {
 
-                Bitmap objectImage = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                String image_path = objectImage.toString().trim();
-                imageView_container.setImageBitmap(objectImage);
+                    uri = image_uri;
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
 
-                Toast.makeText(VendorAddItems.this, image_path, Toast.LENGTH_LONG).show();
+                } else {
+
+                    startCrop(image_uri);
+                }
+
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            Toast.makeText(VendorAddItems.this, "request code iko na maneno " + e.getMessage(), Toast.LENGTH_LONG).show();
-
-        }
-
-
-        try {
 
             if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
 
-                //Toast.makeText(AddDetails.this, "going to cropping ", Toast.LENGTH_LONG).show();
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
-
-
                 if (resultCode == RESULT_OK) {
+
+                    imageView_container.setVisibility(View.VISIBLE);
+                    Picasso.get().load(result.getUri()).into(imageView_container);
+                    Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_LONG).show();
 
                     try {
 
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        String userID = currentUser.getUid();
+
                         Uri resultUri = result.getUri();
 
-                        final StorageReference filepath = mStorageRef.child("Vendor_Items").child(userID + ".jpg");
-
-                        filepath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        final StorageReference item_storagePath = mStorageRef.child("Items").child(userID).child(item_types.toString());
+                        item_storagePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+
+                                Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_LONG).show();
+
+                                item_storagePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
 
-                                        String image_link = uri.toString().trim();
+                                        textView_imageUrl.setText(String.valueOf(uri));
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
 
-                                        Toast.makeText(VendorAddItems.this, image_link, Toast.LENGTH_LONG).show();
-                                        textView_imageUrl.setVisibility(View.VISIBLE);
-                                        textView_imageUrl.setText(image_link);
+                                        Toast.makeText(getApplicationContext(), "No downloaded url", Toast.LENGTH_LONG).show();
                                     }
                                 });
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
-                            public void onFailure(@NonNull Exception e) {
+                            public void onFailure(@NonNull final Exception e) {
 
-                                Toast.makeText(VendorAddItems.this, "Fail to generate the image url: " + e.getMessage().trim(), Toast.LENGTH_LONG).show();
+                                Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addItems), "Image Failure To Upload.", Snackbar.LENGTH_LONG)
+                                        .setAction("View Details", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                snackbar.show();
+                                return;
+
                             }
                         });
+                    } catch (DatabaseException e) {
 
-                    } catch (Exception e) {
-
-                        e.printStackTrace();
-                        Toast.makeText(VendorAddItems.this, "request code iko na maneno: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        return;
 
                     }
+                } else {
 
-                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Toast.makeText(getApplicationContext(), "No media data was picked", Toast.LENGTH_LONG).show();
+                    return;
 
-                    Exception error = result.getError();
-                    Toast.makeText(VendorAddItems.this, "Error in the crop image request code: " + error.toString(), Toast.LENGTH_LONG).show();
                 }
             }
 
         } catch (Exception e) {
-
             e.printStackTrace();
-            Toast.makeText(VendorAddItems.this, "request code iko na maneno: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            return;
 
         }
 
+    }
 
+    private void startCrop(Uri image_uri) {
+
+        CropImage.activity(image_uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .setAspectRatio(1, 2)
+                .setMaxCropResultSize(1000, 600)
+                .start(this);
 
     }
 
     public boolean validateContainerName() {
 
-        String container_name = editText_containerName.getText().toString().trim();
+        String container_name = textInputLayout_itemName.getEditText().getText().toString().trim();
 
         if (TextUtils.isEmpty(container_name)) {
 
-            editText_containerName.requestFocus();
-            editText_containerName.setError("container name required");
+            textInputLayout_itemName.requestFocus();
+            textInputLayout_itemName.setError("item name required");
+            textInputLayout_itemName.getEditText().setText(null);
             return false;
 
-        } else if (container_name.length() > 15) {
+        } else if (container_name.length() > 12) {
 
-            editText_containerName.requestFocus();
-            editText_containerName.setError("container name too long");
+            textInputLayout_itemName.requestFocus();
+            textInputLayout_itemName.setError("item name too long");
+            textInputLayout_itemName.getEditText().setText(null);
             return false;
 
         } else {
 
-            editText_containerName.setError(null);
+            textInputLayout_itemName.setError(null);
             return true;
         }
     }
 
     public boolean validateContainerPrice() {
 
-        String container_price = editText_continerPrice.getText().toString().trim();
+        String container_price = textInputLayout_itemPrice.getEditText().getText().toString().trim();
 
         if (TextUtils.isEmpty(container_price)) {
 
-            editText_continerPrice.requestFocus();
-            editText_continerPrice.setError("container price required");
+            textInputLayout_itemPrice.requestFocus();
+            textInputLayout_itemPrice.setError("item price required");
+            textInputLayout_itemPrice.getEditText().setText(null);
             return false;
+
         } else if (container_price.equals(0)) {
 
-            editText_continerPrice.requestFocus();
-            editText_continerPrice.setError("invalid price");
+            textInputLayout_itemPrice.requestFocus();
+            textInputLayout_itemPrice.setError("invalid price");
+            textInputLayout_itemPrice.getEditText().setText(null);
             return false;
+
         } else {
 
-            editText_continerPrice.setError(null);
+            textInputLayout_itemPrice.setError(null);
             return true;
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+        String item_selected = spinner.getSelectedItem().toString();
+        Toast.makeText(getApplicationContext(), item_selected + " " + position, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+        spinner.requestFocus();
     }
 }

@@ -127,6 +127,7 @@ public class BuyerMainActivity extends AppCompatActivity {
             startActivity(order_intent);
 
         }
+
         return true;
     }
 

@@ -78,7 +78,7 @@ public class OrderVendorNoteAdapter extends FirestoreRecyclerAdapter<OrderVendor
             super(itemView);
 
             Img_containerImage = itemView.findViewById(R.id.ImageView_image);
-            textView_containerName = itemView.findViewById(R.id.loaded_containerName);
+            textView_containerName = itemView.findViewById(R.id.loaded_location);
             textView_noOfContainers = itemView.findViewById(R.id.loaded_numberOfContainers);
             textView_totalAmount = itemView.findViewById(R.id.loaded_totalPrice);
             textView_buyerName = itemView.findViewById(R.id.loaded_buyerName);

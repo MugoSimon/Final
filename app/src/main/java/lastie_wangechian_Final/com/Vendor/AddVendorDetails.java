@@ -126,7 +126,7 @@ public class AddVendorDetails extends AppCompatActivity {
                         HashMap<String, String> vendor_profile = new HashMap<>();
                         vendor_profile.put("username", username);
                         vendor_profile.put("phone_number", phone_number);
-                        vendor_profile.put("address", location);
+                        vendor_profile.put("location", location);
                         vendor_profile.put("building_name", building_name);
                         vendor_profile.put("vendor_image", vendor_image);
 

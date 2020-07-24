@@ -6,6 +6,10 @@
         android:icon="@drawable/ic_shopping_cart_black_24dp"
         android:title="My Orders" />
     <item
+        android:id="@+id/available_vendors"
+        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        android:title="Available Vendors" />
+    <item
         android:id="@+id/buyer_logOut"
         android:icon="@drawable/ic_power"
         android:title="Log Out" />
