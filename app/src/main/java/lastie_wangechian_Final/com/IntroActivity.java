@@ -17,12 +17,12 @@ import java.util.ArrayList;
 
 public class IntroActivity extends AppCompatActivity {
 
+    Animation btnAnim;
+    int position = 0;
     private ViewPager screenPager;
     private TabLayout tab_indicator;
     private Button btnNext;
     private Button btngetStarted;
-    Animation btnAnim;
-    int position = 0;
     private IntroViewPagerAdapter introViewPagerAdapter;
 
     @Override
@@ -30,7 +30,7 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //checking if the animation slide is attended already
-        if( restorePrefData() ){
+        if (restorePrefData()) {
 
             Intent next_intent = new Intent(getApplicationContext(), SelectActivity.class);
             startActivity(next_intent);
@@ -46,7 +46,7 @@ public class IntroActivity extends AppCompatActivity {
         tab_indicator = findViewById(R.id.tab_indicator);
         btnNext = findViewById(R.id.btn_Next);
         btngetStarted = findViewById(R.id.btn_getStarted);
-        btnAnim = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.button_animation);
+        btnAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_animation);
 
         //fill list screen
         final ArrayList<ScreenItem> mList = new ArrayList<>();
@@ -55,7 +55,6 @@ public class IntroActivity extends AppCompatActivity {
         mList.add(new ScreenItem("Ready for consumption", "The water is ready for human and animal consumption", R.drawable.water_3));
         mList.add(new ScreenItem("Affordable Delivery", "The system offers affordable delivery to your residence,", R.drawable.deliv_3));
         mList.add(new ScreenItem("We care", "we respect human life and care of our surrounding ", R.drawable.deliv_2));
-
 
 
         //setup viewpager
@@ -74,7 +73,7 @@ public class IntroActivity extends AppCompatActivity {
 
                 position = screenPager.getCurrentItem();
 
-                if(position < mList.size()){
+                if (position < mList.size()) {
 
                     position++;
                     screenPager.setCurrentItem(position);
@@ -82,7 +81,7 @@ public class IntroActivity extends AppCompatActivity {
                 }
 
                 //the last screen in the introduction slider
-                if(position == mList.size() -1 ){
+                if (position == mList.size() - 1) {
 
                     //kuna kazi hapa
                     loadLastScreen();
@@ -95,11 +94,10 @@ public class IntroActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
-                if(tab.getPosition() == mList.size() -1){
+                if (tab.getPosition() == mList.size() - 1) {
 
                     loadLastScreen();
                 }
-
 
 
             }
@@ -132,17 +130,17 @@ public class IntroActivity extends AppCompatActivity {
 
     private boolean restorePrefData() {
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("myPrefs",MODE_PRIVATE);
-        Boolean isIntroActivityOpenedBefore = pref.getBoolean("isIntroOpened",false);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        Boolean isIntroActivityOpenedBefore = pref.getBoolean("isIntroOpened", false);
         return isIntroActivityOpenedBefore;
     }
 
 
     private void savePrefsData() {
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("myPrefs",MODE_PRIVATE);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putBoolean("isIntroOpened",true);
+        editor.putBoolean("isIntroOpened", true);
         editor.commit();
 
 

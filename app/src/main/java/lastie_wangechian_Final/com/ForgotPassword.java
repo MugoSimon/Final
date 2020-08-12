@@ -19,8 +19,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-import lastie_wangechian_Final.com.Buyer.BuyerLogin;
-
 public class ForgotPassword extends AppCompatActivity {
 
     private Toolbar forgot_toolbar;
@@ -70,7 +68,7 @@ public class ForgotPassword extends AppCompatActivity {
                             if (task.isSuccessful()) {
 
                                 Toast.makeText(getApplicationContext(), "A link was sent to " + email, Toast.LENGTH_LONG).show();
-                                Intent next_intent = new Intent(ForgotPassword.this, BuyerLogin.class);
+                                Intent next_intent = new Intent(ForgotPassword.this, SelectActivity.class);
                                 startActivity(next_intent);
                                 finish();
                             }

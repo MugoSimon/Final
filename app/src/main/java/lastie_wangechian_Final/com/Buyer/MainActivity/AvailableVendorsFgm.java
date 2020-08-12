@@ -22,10 +22,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import lastie_wangechian_Final.com.Buyer.AvailableItems;
+import lastie_wangechian_Final.com.Buyer.Grid_View.AvailableItems;
 import lastie_wangechian_Final.com.R;
 
 /**
@@ -57,8 +59,9 @@ public class AvailableVendorsFgm extends Fragment {
 
         recyclerView_vendorList.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        //recyclerView_vendorList.setLayoutManager(new GridLayoutManager(getContext(), 2));
         //route to the database in firebase
-        vendorListRef = FirebaseDatabase.getInstance().getReference().child("Vendors");
+
 
         return AvailableVendors;
     }
@@ -69,6 +72,9 @@ public class AvailableVendorsFgm extends Fragment {
         super.onStart();
         //TODO check on how one can know you are offline using database reference
 
+        vendorListRef = FirebaseDatabase.getInstance().getReference().child("Vendors");
+        vendorListRef.keepSynced(true);
+
         //kuquery the request ya database reference.
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<VendorList>()
                 .setQuery(vendorListRef, VendorList.class)
@@ -77,7 +83,7 @@ public class AvailableVendorsFgm extends Fragment {
         FirebaseRecyclerAdapter<VendorList, VendorListHolder> adapter =
                 new FirebaseRecyclerAdapter<VendorList, VendorListHolder>(options) {
 
-                    //sourcing info from database and binf them to their respective holders
+                    //sourcing info from database and bind them to their respective holders
                     @Override
                     protected void onBindViewHolder(@NonNull final VendorListHolder holder, final int position, @NonNull VendorList model) {
 
@@ -95,13 +101,24 @@ public class AvailableVendorsFgm extends Fragment {
 
                                 if (dataSnapshot.hasChild("vendor_image")) {
 
-                                    String profile_image = dataSnapshot.child("vendor_image").getValue().toString();
+                                    final String profile_image = dataSnapshot.child("vendor_image").getValue().toString();
                                     String vendor_username = dataSnapshot.child("username").getValue().toString();
                                     String vendor_location = dataSnapshot.child("address").getValue().toString();
 
                                     holder.vendor_username.setText(vendor_username);
                                     holder.vendor_location.setText(vendor_location);
-                                    Picasso.get().load(profile_image).placeholder(R.drawable.default_avatar_3).into(holder.vendor_image);
+                                    Picasso.get().load(profile_image).placeholder(R.drawable.default_avatar_3).networkPolicy(NetworkPolicy.OFFLINE).into(holder.vendor_image, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+
+                                            Picasso.get().load(profile_image).placeholder(R.drawable.default_avatar_3).into(holder.vendor_image);
+                                        }
+                                    });
 
                                 } else {
 

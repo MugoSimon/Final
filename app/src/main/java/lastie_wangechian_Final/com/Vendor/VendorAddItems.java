@@ -124,14 +124,14 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
                             FirebaseUser current_user = mAuth.getCurrentUser();
                             String user_id = current_user.getUid();
 
-                            mDatabase = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id).child(item_name);
+                            mDatabase = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id);
                             HashMap<String, String> item_hashMap = new HashMap<>();
                             item_hashMap.put("item_name", item_name);
                             item_hashMap.put("item_price", item_price);
                             item_hashMap.put("item_type", item_type);
                             item_hashMap.put("item_image", item_image);
 
-                            mDatabase.setValue(item_hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            mDatabase.push().setValue(item_hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 

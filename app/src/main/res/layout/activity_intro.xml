@@ -56,14 +56,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="144dp"
-        android:background="@xml/btn_gradient_style"
-        android:textColor="#fff"
         android:layout_marginLeft="8dp"
-        android:visibility="invisible"
         android:layout_marginEnd="132dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="75dp"
-        android:text="Get Started" />
+        android:background="@xml/btn_gradient_style"
+        android:text="Get Started"
+        android:textColor="#fff"
+        android:visibility="invisible" />
 </RelativeLayout>
-
-

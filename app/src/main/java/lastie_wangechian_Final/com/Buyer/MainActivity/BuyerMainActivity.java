@@ -18,7 +18,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import lastie_wangechian_Final.com.Buyer.BuyerOrders;
 import lastie_wangechian_Final.com.Buyer.BuyerSelect;
 import lastie_wangechian_Final.com.R;
 
@@ -120,7 +119,7 @@ public class BuyerMainActivity extends AppCompatActivity {
 
         }
 
-
+/*
         if (item.getItemId() == R.id.buyer_orders) {
 
             Intent order_intent = new Intent(BuyerMainActivity.this, BuyerOrders.class);
@@ -128,6 +127,8 @@ public class BuyerMainActivity extends AppCompatActivity {
 
         }
 
+
+ */
         return true;
     }
 

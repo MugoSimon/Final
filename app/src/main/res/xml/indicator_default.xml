@@ -2,17 +2,17 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-<item>
-    <shape
-        android:innerRadius="0dp"
-        android:shape="ring"
-        android:thickness="4dp"
-        android:useLevel="false">
+    <item>
+        <shape
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thickness="4dp"
+            android:useLevel="false">
 
-        <solid android:color="@color/tab_indicator_gray" />
+            <solid android:color="@color/tab_indicator_gray" />
 
-    </shape>
+        </shape>
 
-</item>
+    </item>
 
 </layer-list>
