@@ -16,6 +16,9 @@
         android:roundIcon="@drawable/deliv_1"
         android:supportsRtl="true">
         <activity
+            android:name=".Buyer.ActualOrder"
+            android:theme="@style/AppTheme_rest" />
+        <activity
             android:name=".Buyer.Grid_View.AvailableItems"
             android:theme="@style/AppTheme_buyer" />
         <activity
