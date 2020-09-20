@@ -26,6 +26,9 @@
     <color name="tab_vendor">#D8D083DD</color>
     <color name="intro_title_color">#000000</color>
     <color name="info_description_color">#656565</color>
+    <color name="faded">#CEC8C8</color>
+    <color name="not_faded">#0A8BDB</color>
+
 
     <!--colors za layouts za past introduction-->
     <color name="faint_yellow">#E7C00F</color>

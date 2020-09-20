@@ -62,7 +62,6 @@ public class AvailableVendorsFgm extends Fragment {
         //recyclerView_vendorList.setLayoutManager(new GridLayoutManager(getContext(), 2));
         //route to the database in firebase
 
-
         return AvailableVendors;
     }
 
@@ -88,13 +87,13 @@ public class AvailableVendorsFgm extends Fragment {
                     protected void onBindViewHolder(@NonNull final VendorListHolder holder, final int position, @NonNull VendorList model) {
 
                         final String user_id = getRef(position).getKey();
-
                         if (user_id.equals(null)) {
 
                             textView_offline.setVisibility(View.VISIBLE);
                             imageView.setVisibility(View.VISIBLE);
 
                         }
+
                         vendorListRef.child(user_id).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

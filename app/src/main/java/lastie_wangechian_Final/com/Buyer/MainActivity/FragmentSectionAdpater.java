@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-class FragmentSectionAdpater extends FragmentPagerAdapter {
+public class FragmentSectionAdpater extends FragmentPagerAdapter {
 
     //empty constructor required
     public FragmentSectionAdpater(@NonNull FragmentManager fm) {

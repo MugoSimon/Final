@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Vendor;
+package lastie_wangechian_Final.com.Vendor.MainActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,18 +10,23 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import lastie_wangechian_Final.com.R;
+import lastie_wangechian_Final.com.Vendor.VendorAddItems;
+import lastie_wangechian_Final.com.Vendor.VendorSelect;
 
 public class VendorMainActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     private Toolbar toolbar_mainVendor;
+    private ViewPager mViewpager;
     private TabLayout tabLayout_mainVendor;
+    private FragmentSectionAdapter fragmentSectionAdpater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,11 @@ public class VendorMainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar_mainVendor);
         getSupportActionBar().setTitle("Mtaani Order Maji");
 
-
+        //tabs
+        mViewpager = findViewById(R.id.vendor_viewPager);
+        fragmentSectionAdpater = new FragmentSectionAdapter(getSupportFragmentManager());
+        mViewpager.setAdapter(fragmentSectionAdpater);
+        tabLayout_mainVendor.setupWithViewPager(mViewpager);
     }
 
 

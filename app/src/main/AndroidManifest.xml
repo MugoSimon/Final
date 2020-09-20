@@ -16,6 +16,18 @@
         android:roundIcon="@drawable/deliv_1"
         android:supportsRtl="true">
         <activity
+            android:name=".Vendor.ViewRequestedOrders.ViewOrder"
+            android:parentActivityName=".Vendor.ViewRequestedOrders.RequestedOrders"
+            android:theme="@style/AppTheme_vendor" />
+        <activity
+            android:name=".Buyer.ChangeLocation"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme_rest" />
+        <activity
+            android:name=".Buyer.PlaceOrder"
+            android:parentActivityName=".Buyer.ActualOrder"
+            android:theme="@style/AppTheme_rest" />
+        <activity
             android:name=".Buyer.ActualOrder"
             android:theme="@style/AppTheme_rest" />
         <activity
@@ -30,10 +42,10 @@
         <activity
             android:name=".Vendor.VendorAddItems"
             android:launchMode="singleTask"
-            android:parentActivityName=".Vendor.VendorMainActivity"
+            android:parentActivityName=".Vendor.MainActivity.VendorMainActivity"
             android:theme="@style/AppTheme_vendor" />
         <activity
-            android:name=".Vendor.VendorMainActivity"
+            android:name=".Vendor.MainActivity.VendorMainActivity"
             android:theme="@style/AppTheme_vendor" />
         <activity
             android:name=".Buyer.MainActivity.BuyerMainActivity"

@@ -24,7 +24,6 @@ import lastie_wangechian_Final.com.R;
 public class BuyerMainActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
-
     private Toolbar toolbar_mainBuyer;
     private ViewPager mViewpager;
     private TabLayout tabLayout_mainBuyer;

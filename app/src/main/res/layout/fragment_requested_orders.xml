@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Vendor.ViewRequestedOrders.RequestedOrders">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fgm_recyclerViewerOrder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <ImageView
+        android:id="@+id/ord_ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/ic_cloud_off"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/ord_textView_offline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="you're offline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#1938FF"
+        android:visibility="invisible" />
+
+</RelativeLayout>

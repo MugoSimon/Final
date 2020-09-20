@@ -1,5 +1,6 @@
 package lastie_wangechian_Final.com.Buyer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,23 +10,41 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
 
 import lastie_wangechian_Final.com.R;
 
-public class ActualOrder extends AppCompatActivity {
+public class ActualOrder extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
+    String export_price, export_name, export_type, export_image;
     private TextView textView_price, textView_name, textView_type;
     private NumberPicker numberPicker;
     private ImageView imageView;
     private TextView textView_totalPrice;
     private RatingBar ratingBar;
     private Button button_AddtoCart, button_BuyNow;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actual_order);
+
+        //firebase and its requirement.
+        mAuth = FirebaseAuth.getInstance();
 
         textView_price = findViewById(R.id.textView_price);
         textView_name = findViewById(R.id.textView_name);
@@ -41,17 +60,14 @@ public class ActualOrder extends AppCompatActivity {
         numberPicker.setMaxValue(20);
         numberPicker.setMinValue(1);
 
-        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        numberPicker.setFormatter(new NumberPicker.Formatter() {
             @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-
-                int quantity = picker.getValue();
-
-                //textView_totalPrice.setText(oldVal);
-
+            public String format(int value) {
+                return String.format("%02d", value);
             }
         });
 
+        numberPicker.setOnValueChangedListener(this);
         //ratingBar and its content
         //todo generate random float values for the rating bar
         Double d = (Math.random()) * (5 - 2) + 2;
@@ -65,6 +81,27 @@ public class ActualOrder extends AppCompatActivity {
             public void onClick(View v) {
 
                 //action when its clicked
+                try {
+
+                    String total_price_here = textView_totalPrice.getText().toString();
+                    int number_pickerValue = numberPicker.getValue();
+                    String value_ofNumberPicker = String.valueOf(number_pickerValue);
+
+                    Intent intent = new Intent(getApplicationContext(), PlaceOrder.class);
+                    intent.putExtra("export_name", export_name);
+                    intent.putExtra("export_image", export_image);
+                    intent.putExtra("export_price", total_price_here);
+                    intent.putExtra("export_type", export_type);
+                    intent.putExtra("export_quantity", value_ofNumberPicker);
+                    startActivity(intent);
+
+                    //Toast.makeText(getApplicationContext(), textView_totalPrice.getText(), Toast.LENGTH_LONG).show();
+
+                } catch (RuntimeException errro) {
+
+                    throw new RuntimeException(errro.getMessage());
+                }
+
             }
         });
 
@@ -73,6 +110,71 @@ public class ActualOrder extends AppCompatActivity {
             public void onClick(View v) {
 
                 //add to cart activity
+                try {
+
+                    if (!numberPicker.hasFocus()) {
+
+                        button_AddtoCart.setBackgroundColor(getResources().getColor(R.color.faded));
+                        Toast.makeText(getApplicationContext(), "Choose the quantity at numberpicker", Toast.LENGTH_LONG).show();
+                        numberPicker.requestFocus();
+
+                    } else {
+
+                        button_AddtoCart.setBackgroundColor(getResources().getColor(R.color.not_faded));
+                        button_AddtoCart.setEnabled(true);
+                        FirebaseUser current_user = mAuth.getCurrentUser();
+                        String user_id = current_user.getUid();
+                        String buyer_price = textView_totalPrice.getText().toString();
+                        startActivity(new Intent(getApplicationContext(), PlaceOrder.class));
+
+                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Cart").child(user_id);
+
+                        HashMap<String, String> cart_hashMap = new HashMap<>();
+                        cart_hashMap.put("export_name", export_name);
+                        cart_hashMap.put("export_image", export_image);
+                        cart_hashMap.put("export_price", buyer_price);
+                        cart_hashMap.put("export_type", export_type);
+
+                        mDatabase.push().setValue(cart_hashMap)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        Toast.makeText(getApplicationContext(), "added to cart", Toast.LENGTH_LONG).show();
+                                        button_AddtoCart.setEnabled(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        button_AddtoCart.setEnabled(false);
+                                        try {
+                                            throw new Exception(e.getMessage());
+
+                                        } catch (Exception ex) {
+
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                    }
+
+                } catch (Exception e) {
+
+                    try {
+                        throw new Exception(e.getMessage());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                }
+
+
+
+
             }
         });
 
@@ -84,20 +186,48 @@ public class ActualOrder extends AppCompatActivity {
         try {
             super.onStart();
 
-            String export_name = getIntent().getStringExtra("export_name");
-            String export_image = getIntent().getStringExtra("export_image");
-            String export_price = getIntent().getStringExtra("export_price");
-            String export_type = getIntent().getStringExtra("export_type");
+            export_name = getIntent().getStringExtra("export_name");
+            export_image = getIntent().getStringExtra("export_image");
+            export_price = getIntent().getStringExtra("export_price");
+            export_type = getIntent().getStringExtra("export_type");
 
             textView_name.setText(export_name);
             textView_type.setText(export_type);
             textView_price.setText(export_price);
+            Picasso.get().load(export_image).networkPolicy(NetworkPolicy.OFFLINE).into(imageView);
 
             Toast.makeText(getApplicationContext(), export_image, Toast.LENGTH_LONG).show();
 
         } catch (RuntimeException errro) {
 
-            return;
+            throw new RuntimeException(errro.getMessage());
+
         }
+    }
+
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+        try {
+
+            int this_price = Integer.parseInt(export_price);
+            int total_price_cal = this_price * newVal;
+
+            textView_totalPrice.setText(String.valueOf(total_price_cal));
+
+        } catch (ArithmeticException error) {
+
+            throw new ArithmeticException(error.getMessage());
+
+        } catch (Exception e) {
+
+            try {
+                throw new Exception(e.getMessage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+
     }
 }

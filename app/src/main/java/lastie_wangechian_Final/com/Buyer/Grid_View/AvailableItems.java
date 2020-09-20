@@ -10,12 +10,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -69,7 +73,7 @@ public class AvailableItems extends AppCompatActivity {
                         protected void onBindViewHolder(@NonNull final myViewHolder holder, int position, @NonNull final Model model) {
 
                             //try fetching from the database
-                            /*
+
                             db_ItemsRefer.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
@@ -129,7 +133,6 @@ public class AvailableItems extends AppCompatActivity {
 
                             });
 
-                             */
                             //export the variables to next intent
                             export_name = model.getItem_name();
                             export_price = model.getItem_price();

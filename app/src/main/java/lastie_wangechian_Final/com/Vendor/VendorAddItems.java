@@ -44,6 +44,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashMap;
 
 import lastie_wangechian_Final.com.R;
+import lastie_wangechian_Final.com.Vendor.MainActivity.VendorMainActivity;
 
 public class VendorAddItems extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -140,7 +141,6 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
                                         if (task.isSuccessful()) {
 
                                             progressDialog.dismiss();
-                                            progressDialog.dismiss();
                                             Intent intent = new Intent(getApplicationContext(), VendorMainActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(intent);
@@ -182,8 +182,7 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
 
                         } catch (NullPointerException e) {
 
-                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                            return;
+                            throw new NullPointerException(e.getMessage());
                         }
 
                     }
@@ -402,5 +401,6 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
     public void onNothingSelected(AdapterView<?> parent) {
 
         spinner.requestFocus();
+        return;
     }
 }
