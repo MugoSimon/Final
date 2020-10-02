@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Buyer;
+package lastie_wangechian_Final.com.Vendor.Authenticatons;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,18 +15,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.regex.Pattern;
 
 import lastie_wangechian_Final.com.R;
 
-public class BuyerRegister extends AppCompatActivity {
+public class VendorRegister extends AppCompatActivity {
 
+    FirebaseAuth mAuth;
+    FirebaseFirestore fStore;
     private Toolbar register_toolbar;
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" +
@@ -36,40 +40,40 @@ public class BuyerRegister extends AppCompatActivity {
                     "(?=.*[@#&*^+$])" +  // atleast one special characters
                     ".{6,}" +         //minimum of 6 characters
                     "$");
-    private ProgressDialog reg_progressDialog;
     private Button button_register;
     private TextInputLayout textInputLayout_username;
     private TextInputLayout textInputLayout_email;
     private TextInputLayout textInputLayout_password;
-    private FirebaseAuth mAuth;
-    private TextView textView_login;
+    private ProgressDialog progressDialog;
+    private TextView textView_shifter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buyer_register);
+        setContentView(R.layout.activity_vendor_register);
 
         mAuth = FirebaseAuth.getInstance();
-        button_register = findViewById(R.id.registerBuyer_Button);
-        textInputLayout_username = findViewById(R.id.registerBuyer_username);
-        textInputLayout_email = findViewById(R.id.registerBuyer_email);
-        textInputLayout_password = findViewById(R.id.registerBuyer_password);
-        textView_login = findViewById(R.id.login);
+        fStore = FirebaseFirestore.getInstance();
 
+        textInputLayout_username = findViewById(R.id.registerVendor_username);
+        textInputLayout_email = findViewById(R.id.registerVendor_email);
+        textInputLayout_password = findViewById(R.id.registerVendor_password);
+        button_register = findViewById(R.id.registerVendor_Button);
+        textView_shifter = findViewById(R.id.login);
 
-        register_toolbar = findViewById(R.id.buyer_appBar_register);
+        register_toolbar = findViewById(R.id.vendor_appBar_register);
         setSupportActionBar(register_toolbar);
-        getSupportActionBar().setTitle("Registering Buyer");
+        getSupportActionBar().setTitle("Registering Vendor");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        reg_progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this);
 
-        textView_login.setOnClickListener(new View.OnClickListener() {
+        textView_shifter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent next_intent = new Intent(BuyerRegister.this, BuyerLogin.class);
-                startActivity(next_intent);
+                Intent intent = new Intent(getApplicationContext(), VendorLogin.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -86,31 +90,31 @@ public class BuyerRegister extends AppCompatActivity {
 
                     } else {
 
-                        String username = textInputLayout_username.getEditText().getText().toString();
-                        String email = textInputLayout_email.getEditText().getText().toString();
-                        String password = textInputLayout_password.getEditText().getText().toString();
+                        String username = textInputLayout_username.getEditText().getText().toString().trim();
+                        String email = textInputLayout_email.getEditText().getText().toString().trim();
+                        String password = textInputLayout_password.getEditText().getText().toString().trim();
 
-                        reg_progressDialog.setTitle("Registering User");
-                        reg_progressDialog.setMessage("kindly wait as we register you");
-                        reg_progressDialog.setCanceledOnTouchOutside(false);
-                        reg_progressDialog.show();
+                        progressDialog.setTitle("Registering User");
+                        progressDialog.setMessage("kindly wait as we register you");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
 
-                        register_user(username, email, password);
+                        register_vendor(username, email, password);
 
                     }
 
                 } catch (NullPointerException e) {
 
                     return;
-
                 }
 
 
             }
         });
+
     }
 
-    private void register_user(final String username, String email, String password) {
+    private void register_vendor(final String username, String email, String password) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -121,23 +125,21 @@ public class BuyerRegister extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
 
-                                reg_progressDialog.dismiss();
-                                Intent next_intent = new Intent(BuyerRegister.this, AddBuyerDetails.class);
-                                next_intent.putExtra("username", username);
-                                next_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(next_intent);
+                                progressDialog.dismiss();
+                                Intent intent = new Intent(getApplicationContext(), AddVendorDetails.class);
+                                intent.putExtra("username", username);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                                 finish();
 
                             } else {
 
-                                reg_progressDialog.hide();
-                                Toast.makeText(BuyerRegister.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
+                                progressDialog.hide();
+                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
+                        } catch (final RuntimeExecutionException e) {
 
-                        } catch (final RuntimeException e) {
-
-                            Snackbar snackbar = Snackbar.make(findViewById(R.id.reg_buyer), "Runtime Error", Snackbar.LENGTH_LONG)
+                            Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_register), "Runtime Error", Snackbar.LENGTH_LONG)
                                     .setAction("View Details", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -147,10 +149,8 @@ public class BuyerRegister extends AppCompatActivity {
                                     });
                             snackbar.show();
                         }
-
                     }
                 });
-
     }
 
     private boolean validateUsername() {
@@ -174,7 +174,6 @@ public class BuyerRegister extends AppCompatActivity {
 
             textInputLayout_username.setError(null);
             return true;
-
         }
     }
 
@@ -226,6 +225,5 @@ public class BuyerRegister extends AppCompatActivity {
             return true;
         }
     }
-
 
 }

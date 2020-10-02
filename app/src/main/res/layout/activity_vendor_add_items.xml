@@ -7,7 +7,7 @@
     android:id="@+id/vendor_addItems"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context=".Vendor.VendorAddItems">
+    tools:context=".Vendor.MainActivity.VendorAddItems">
 
     <include
         android:id="@+id/vendor_appBar_addDetails"

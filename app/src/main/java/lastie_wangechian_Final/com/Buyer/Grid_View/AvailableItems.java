@@ -27,7 +27,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import lastie_wangechian_Final.com.Buyer.ActualOrder;
+import lastie_wangechian_Final.com.Buyer.WhileOrdering.ActualOrder;
 import lastie_wangechian_Final.com.R;
 
 public class AvailableItems extends AppCompatActivity {
@@ -204,10 +204,14 @@ public class AvailableItems extends AppCompatActivity {
                     Toast.makeText(v.getContext(), "clicked", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(v.getContext(), ActualOrder.class);
 
+
+                    String user_id = getIntent().getStringExtra("user_id");
+                    Toast.makeText(AvailableItems.this, user_id, Toast.LENGTH_LONG).show();
                     intent.putExtra("export_name", export_name);
                     intent.putExtra("export_image", export_image);
                     intent.putExtra("export_price", export_price);
                     intent.putExtra("export_type", export_type);
+                    intent.putExtra("vendor_id", user_id);
 
                     startActivity(intent);
                 }

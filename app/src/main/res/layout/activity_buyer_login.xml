@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context=".Buyer.BuyerLogin">
+    tools:context=".Buyer.Authentications.BuyerLogin">
 
     <include
         android:id="@+id/buyer_appBar_login"

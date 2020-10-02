@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com;
+package lastie_wangechian_Final.com.Intro;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.ArrayList;
+
+import lastie_wangechian_Final.com.R;
 
 public class IntroViewPagerAdapter extends PagerAdapter {
 

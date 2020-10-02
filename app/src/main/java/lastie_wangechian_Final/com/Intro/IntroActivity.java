@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com;
+package lastie_wangechian_Final.com.Intro;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +14,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+
+import lastie_wangechian_Final.com.R;
 
 public class IntroActivity extends AppCompatActivity {
 

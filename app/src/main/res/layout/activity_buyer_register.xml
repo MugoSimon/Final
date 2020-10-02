@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/reg_buyer"
     android:orientation="vertical"
-    tools:context=".Buyer.BuyerRegister">
+    tools:context=".Buyer.Authentications.BuyerRegister">
 
     <include
         android:id="@+id/buyer_appBar_register"

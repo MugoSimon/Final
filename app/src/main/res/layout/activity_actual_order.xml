@@ -6,7 +6,7 @@
     android:background="#6DFFFFFF"
     android:orientation="horizontal"
     android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-    tools:context=".Buyer.ActualOrder">
+    tools:context=".Buyer.WhileOrdering.ActualOrder">
 
 
     <LinearLayout

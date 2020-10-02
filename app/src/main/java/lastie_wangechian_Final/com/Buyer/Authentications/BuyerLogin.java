@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Buyer;
+package lastie_wangechian_Final.com.Buyer.Authentications;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,7 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import lastie_wangechian_Final.com.Buyer.MainActivity.BuyerMainActivity;
-import lastie_wangechian_Final.com.ForgotPassword;
+import lastie_wangechian_Final.com.Essentials.ForgotPassword;
 import lastie_wangechian_Final.com.R;
 
 public class BuyerLogin extends AppCompatActivity {

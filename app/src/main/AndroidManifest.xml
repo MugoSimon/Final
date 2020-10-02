@@ -9,79 +9,88 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".Final"
+        android:name=".Essentials.Final"
         android:allowBackup="true"
         android:icon="@drawable/deliv_1"
         android:label="@string/app_name"
         android:roundIcon="@drawable/deliv_1"
         android:supportsRtl="true">
         <activity
+            android:name=".Buyer.AddtoCart.AddtoCart"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme_buyer" />
+        <activity
+            android:name=".Buyer.WhileOrdering.RateUs"
+            android:theme="@style/AppTheme_rest" />
+        <activity
             android:name=".Vendor.ViewRequestedOrders.ViewOrder"
             android:parentActivityName=".Vendor.ViewRequestedOrders.RequestedOrders"
             android:theme="@style/AppTheme_vendor" />
         <activity
-            android:name=".Buyer.ChangeLocation"
+            android:name=".Buyer.WhileOrdering.ChangeLocation"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme_rest" />
         <activity
-            android:name=".Buyer.PlaceOrder"
-            android:parentActivityName=".Buyer.ActualOrder"
+            android:name=".Buyer.WhileOrdering.PlaceOrder"
+            android:parentActivityName=".Buyer.WhileOrdering.ActualOrder"
             android:theme="@style/AppTheme_rest" />
         <activity
-            android:name=".Buyer.ActualOrder"
+            android:name=".Buyer.WhileOrdering.ActualOrder"
             android:theme="@style/AppTheme_rest" />
         <activity
             android:name=".Buyer.Grid_View.AvailableItems"
             android:theme="@style/AppTheme_buyer" />
         <activity
-            android:name=".Buyer.AddBuyerDetails"
+            android:name=".Buyer.Authentications.AddBuyerDetails"
             android:theme="@style/AppTheme_buyer" />
         <activity
-            android:name=".ForgotPassword"
+            android:name=".Essentials.ForgotPassword"
             android:theme="@style/AppTheme_rest" />
         <activity
-            android:name=".Vendor.VendorAddItems"
+            android:name=".Vendor.MainActivity.VendorAddItems"
             android:launchMode="singleTask"
             android:parentActivityName=".Vendor.MainActivity.VendorMainActivity"
             android:theme="@style/AppTheme_vendor" />
         <activity
             android:name=".Vendor.MainActivity.VendorMainActivity"
             android:theme="@style/AppTheme_vendor" />
+
         <activity
             android:name=".Buyer.MainActivity.BuyerMainActivity"
             android:theme="@style/AppTheme_buyer" />
+
         <activity
-            android:name=".Vendor.AddVendorDetails"
+            android:name=".Vendor.Authenticatons.AddVendorDetails"
             android:theme="@style/AppTheme_vendor" />
         <activity
-            android:name=".Vendor.VendorLogin"
+            android:name=".Vendor.Authenticatons.VendorLogin"
             android:parentActivityName=".Vendor.VendorSelect"
             android:theme="@style/AppTheme_vendor" />
         <activity
-            android:name=".Vendor.VendorRegister"
+            android:name=".Vendor.Authenticatons.VendorRegister"
             android:parentActivityName=".Vendor.VendorSelect"
             android:theme="@style/AppTheme_vendor" />
         <activity
-            android:name=".SelectActivity"
+            android:name=".Intro.SelectActivity"
             android:theme="@style/AppTheme_rest" />
         <activity
             android:name=".Vendor.VendorSelect"
-            android:parentActivityName=".SelectActivity"
+            android:parentActivityName=".Intro.SelectActivity"
             android:theme="@style/AppTheme_vendor" />
         <activity
             android:name=".Buyer.BuyerSelect"
-            android:parentActivityName=".SelectActivity"
+            android:parentActivityName=".Intro.SelectActivity"
             android:theme="@style/AppTheme_buyer" />
         <activity
-            android:name=".Buyer.BuyerLogin"
+            android:name=".Buyer.Authentications.BuyerLogin"
             android:parentActivityName=".Buyer.BuyerSelect"
             android:theme="@style/AppTheme_buyer" />
         <activity
-            android:name=".Buyer.BuyerRegister"
+            android:name=".Buyer.Authentications.BuyerRegister"
             android:parentActivityName=".Buyer.BuyerSelect"
             android:theme="@style/AppTheme_buyer" />
         <activity
-            android:name=".IntroActivity"
+            android:name=".Intro.IntroActivity"
             android:theme="@style/AppTheme_rest">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

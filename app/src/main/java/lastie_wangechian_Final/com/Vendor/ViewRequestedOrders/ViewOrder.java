@@ -33,9 +33,9 @@ import lastie_wangechian_Final.com.R;
 public class ViewOrder extends AppCompatActivity {
 
     ProgressDialog progressDialog;
-    String buyer_name, item_name, item_image, item_price, item_type, item_quantity, item_deliveryAddress, item_time;
+    String buyer_name, buyer_phone, item_name, item_image, item_price, item_type, item_quantity, item_deliveryAddress, item_time;
     private Toolbar viewOrder_toolbar;
-    private TextView textView_buyerName, textView_itemName, textView_itemPrice, textView_itemType, textView_itemQuatity, textView_itemDeliveryAddress, textView_itemTime;
+    private TextView textView_buyerName, textView_buyerPhone, textView_itemName, textView_itemPrice, textView_itemType, textView_itemQuatity, textView_itemDeliveryAddress, textView_itemTime;
     private Button button_Approve, button_Disapprove;
     private ImageView viewOrder_Imageviewer;
     private FirebaseAuth mAuth;
@@ -50,6 +50,7 @@ public class ViewOrder extends AppCompatActivity {
 
         //casting
         textView_buyerName = findViewById(R.id.viewOrder_buyerName);
+        textView_buyerPhone = findViewById(R.id.viewOrder_buyerPhone);
         textView_itemName = findViewById(R.id.viewOrder_ItemName);
         textView_itemPrice = findViewById(R.id.viewOrder_ItemPrice);
         textView_itemType = findViewById(R.id.viewOrder_ItemType);
@@ -83,6 +84,7 @@ public class ViewOrder extends AppCompatActivity {
 
                 HashMap<String, String> hashMap_approvedOrder = new HashMap<>();
                 hashMap_approvedOrder.put("buyer_name", buyer_name);
+                hashMap_approvedOrder.put("buyer_phone", buyer_phone);
                 hashMap_approvedOrder.put("item_name", item_name);
                 hashMap_approvedOrder.put("item_image", item_image);
                 hashMap_approvedOrder.put("item_price", item_price);
@@ -102,6 +104,7 @@ public class ViewOrder extends AppCompatActivity {
 
                                         progressDialog.dismiss();
                                         Intent intent = new Intent(getApplicationContext(), RequestedOrders.class);
+                                        //todo the notification part
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
 
@@ -167,6 +170,7 @@ public class ViewOrder extends AppCompatActivity {
             super.onStart();
 
             buyer_name = getIntent().getStringExtra("order_BuyerName");
+            buyer_phone = getIntent().getStringExtra("order_Phone");
             item_image = getIntent().getStringExtra("order_ItemImage");
             item_name = getIntent().getStringExtra("order_ItemName");
             item_price = getIntent().getStringExtra("order_ItemPrice");
@@ -176,6 +180,7 @@ public class ViewOrder extends AppCompatActivity {
             item_time = getIntent().getStringExtra("order_ItemTime_of_Order");
 
             textView_buyerName.setText(buyer_name);
+            textView_buyerPhone.setText(buyer_phone);
             textView_itemName.setText(item_name);
             textView_itemPrice.setText(item_price);
             textView_itemType.setText(item_type);

@@ -1,6 +1,7 @@
 package lastie_wangechian_Final.com.Vendor.VendorItems;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import lastie_wangechian_Final.com.R;
+import lastie_wangechian_Final.com.Vendor.MainActivity.VendorAddItems;
 
 public class ItemsFragment extends Fragment {
 
@@ -57,7 +59,8 @@ public class ItemsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //Todo mpeleke kwa add item fragment
+                Intent intent = new Intent(getContext(), VendorAddItems.class);
+                startActivity(intent);
             }
         });
 

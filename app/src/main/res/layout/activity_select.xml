@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context=".SelectActivity">
+    tools:context=".Intro.SelectActivity">
 
-
-    <include
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/rest_appBar"
-        layout="@layout/rest_app_bar_layout" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
     <ImageView

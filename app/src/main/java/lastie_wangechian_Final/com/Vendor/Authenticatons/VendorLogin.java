@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Vendor;
+package lastie_wangechian_Final.com.Vendor.Authenticatons;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -22,7 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import lastie_wangechian_Final.com.ForgotPassword;
+import lastie_wangechian_Final.com.Essentials.ForgotPassword;
 import lastie_wangechian_Final.com.R;
 import lastie_wangechian_Final.com.Vendor.MainActivity.VendorMainActivity;
 

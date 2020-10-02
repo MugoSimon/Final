@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Buyer;
+package lastie_wangechian_Final.com.Buyer.WhileOrdering;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,11 +24,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
+import lastie_wangechian_Final.com.Buyer.MainActivity.BuyerMainActivity;
 import lastie_wangechian_Final.com.R;
 
 public class ActualOrder extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
-    String export_price, export_name, export_type, export_image;
+    String export_price, export_name, export_type, export_image, vendor_id;
     private TextView textView_price, textView_name, textView_type;
     private NumberPicker numberPicker;
     private ImageView imageView;
@@ -93,6 +94,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                     intent.putExtra("export_price", total_price_here);
                     intent.putExtra("export_type", export_type);
                     intent.putExtra("export_quantity", value_ofNumberPicker);
+                    intent.putExtra("vendor_id", vendor_id);
                     startActivity(intent);
 
                     //Toast.makeText(getApplicationContext(), textView_totalPrice.getText(), Toast.LENGTH_LONG).show();
@@ -125,7 +127,6 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                         FirebaseUser current_user = mAuth.getCurrentUser();
                         String user_id = current_user.getUid();
                         String buyer_price = textView_totalPrice.getText().toString();
-                        startActivity(new Intent(getApplicationContext(), PlaceOrder.class));
 
                         mDatabase = FirebaseDatabase.getInstance().getReference().child("Cart").child(user_id);
 
@@ -134,6 +135,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                         cart_hashMap.put("export_image", export_image);
                         cart_hashMap.put("export_price", buyer_price);
                         cart_hashMap.put("export_type", export_type);
+                        cart_hashMap.put("vendor_id", vendor_id);
 
                         mDatabase.push().setValue(cart_hashMap)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -141,6 +143,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                                     public void onSuccess(Void aVoid) {
 
                                         Toast.makeText(getApplicationContext(), "added to cart", Toast.LENGTH_LONG).show();
+                                        startActivity(new Intent(getApplicationContext(), BuyerMainActivity.class));
                                         button_AddtoCart.setEnabled(false);
                                     }
                                 })
@@ -160,6 +163,8 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                                     }
                                 });
 
+                        startActivity(new Intent(getApplicationContext(), PlaceOrder.class));
+
                     }
 
                 } catch (Exception e) {
@@ -171,9 +176,6 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                     }
 
                 }
-
-
-
 
             }
         });
@@ -190,6 +192,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
             export_image = getIntent().getStringExtra("export_image");
             export_price = getIntent().getStringExtra("export_price");
             export_type = getIntent().getStringExtra("export_type");
+            vendor_id = getIntent().getStringExtra("vendor_id");
 
             textView_name.setText(export_name);
             textView_type.setText(export_type);

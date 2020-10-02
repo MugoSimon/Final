@@ -16,11 +16,9 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/order_image"
+                android:id="@+id/myOrder_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/deliv_1" />
 
         </LinearLayout>
@@ -28,37 +26,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_gravity="center"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="0dp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/buyer_orderName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="5dp"
-                android:text="Buyer Name" />
-
-            <TextView
-                android:id="@+id/buyer_orderItemName"
+                android:id="@+id/myOrder_itemName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="5dp"
                 android:text="Item Name" />
 
-            <TextView
-                android:id="@+id/buyer_orderPhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="5dp"
-                android:text="+254700000000" />
 
             <TextView
-                android:id="@+id/buyer_orderItemQuantity"
+                android:id="@+id/myOrder_itemQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -80,7 +63,7 @@
                     android:text="KSh" />
 
                 <TextView
-                    android:id="@+id/buyer_orderItemPrice"
+                    android:id="@+id/myOrder_itemPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -91,23 +74,16 @@
 
 
             <TextView
-                android:id="@+id/buyer_orderItemType"
+                android:id="@+id/myOrder_itemType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="5dp"
                 android:text="Item Type" />
 
-            <TextView
-                android:id="@+id/buyer_orderItemAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="5dp"
-                android:text="Item Address" />
 
             <TextView
-                android:id="@+id/buyer_orderItemTime"
+                android:id="@+id/myOrder_itemTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"

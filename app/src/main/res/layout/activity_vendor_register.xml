@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/vendor_register"
     android:orientation="vertical"
-    tools:context=".Vendor.VendorRegister">
+    tools:context=".Vendor.Authenticatons.VendorRegister">
 
     <include
         android:id="@+id/vendor_appBar_register"

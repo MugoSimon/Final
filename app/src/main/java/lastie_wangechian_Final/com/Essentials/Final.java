@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com;
+package lastie_wangechian_Final.com.Essentials;
 
 import android.app.Application;
 

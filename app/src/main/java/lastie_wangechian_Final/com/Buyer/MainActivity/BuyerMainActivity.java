@@ -18,7 +18,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import lastie_wangechian_Final.com.Buyer.AddtoCart.AddtoCart;
 import lastie_wangechian_Final.com.Buyer.BuyerSelect;
+import lastie_wangechian_Final.com.Buyer.Orders.MyOrdersFgm;
 import lastie_wangechian_Final.com.R;
 
 public class BuyerMainActivity extends AppCompatActivity {
@@ -118,16 +120,27 @@ public class BuyerMainActivity extends AppCompatActivity {
 
         }
 
-/*
+
         if (item.getItemId() == R.id.buyer_orders) {
 
-            Intent order_intent = new Intent(BuyerMainActivity.this, BuyerOrders.class);
+            Intent order_intent = new Intent(BuyerMainActivity.this, MyOrdersFgm.class);
             startActivity(order_intent);
 
         }
 
+        if (item.getItemId() == R.id.available_vendors) {
 
- */
+            Intent vendor_intent = new Intent(BuyerMainActivity.this, AvailableVendorsFgm.class);
+            startActivity(vendor_intent);
+
+        }
+
+        if (item.getItemId() == R.id.added_to_cart) {
+
+            Intent cart_intent = new Intent(BuyerMainActivity.this, AddtoCart.class);
+            startActivity(cart_intent);
+
+        }
         return true;
     }
 

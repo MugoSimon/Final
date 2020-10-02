@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Vendor;
+package lastie_wangechian_Final.com.Vendor.MainActivity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -44,7 +44,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashMap;
 
 import lastie_wangechian_Final.com.R;
-import lastie_wangechian_Final.com.Vendor.MainActivity.VendorMainActivity;
 
 public class VendorAddItems extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

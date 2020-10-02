@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import lastie_wangechian_Final.com.Buyer.BuyerSelect;
 import lastie_wangechian_Final.com.R;
+import lastie_wangechian_Final.com.Vendor.Authenticatons.VendorLogin;
+import lastie_wangechian_Final.com.Vendor.Authenticatons.VendorRegister;
 import lastie_wangechian_Final.com.Vendor.MainActivity.VendorMainActivity;
 
 public class VendorSelect extends AppCompatActivity {

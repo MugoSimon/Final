@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/add_buyer_details"
-    tools:context=".Buyer.AddBuyerDetails">
+    tools:context=".Buyer.Authentications.AddBuyerDetails">
 
     <include
         android:id="@+id/buyer_appBar"

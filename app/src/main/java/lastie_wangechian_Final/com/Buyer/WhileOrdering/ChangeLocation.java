@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Buyer;
+package lastie_wangechian_Final.com.Buyer.WhileOrdering;
 
 import android.content.Intent;
 import android.os.Bundle;

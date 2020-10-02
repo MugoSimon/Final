@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com;
+package lastie_wangechian_Final.com.Intro;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import lastie_wangechian_Final.com.Buyer.BuyerSelect;
+import lastie_wangechian_Final.com.R;
 import lastie_wangechian_Final.com.Vendor.VendorSelect;
 
 public class SelectActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com.Vendor;
+package lastie_wangechian_Final.com.Vendor.Authenticatons;
 
 import android.Manifest;
 import android.app.Activity;

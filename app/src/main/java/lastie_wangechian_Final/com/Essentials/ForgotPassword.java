@@ -1,4 +1,4 @@
-package lastie_wangechian_Final.com;
+package lastie_wangechian_Final.com.Essentials;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,6 +18,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+
+import lastie_wangechian_Final.com.Intro.SelectActivity;
+import lastie_wangechian_Final.com.R;
 
 public class ForgotPassword extends AppCompatActivity {
 
@@ -41,6 +44,7 @@ public class ForgotPassword extends AppCompatActivity {
         setSupportActionBar(forgot_toolbar);
         getSupportActionBar().setTitle("Forgot Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
 
         progressDialog = new ProgressDialog(this);
 

@@ -7,6 +7,7 @@ public class OrderItems {
     String item_quantity;
     String item_address;
     String item_image;
+    String phone;
     String username;
     String time_of_order;
 
@@ -15,7 +16,7 @@ public class OrderItems {
         //its necessary
     }
 
-    public OrderItems(String item_name, String item_price, String item_address, String item_type, String item_quantity, String item_image, String username, String time_of_order) {
+    public OrderItems(String item_name, String item_price, String item_address, String item_type, String phone, String item_quantity, String item_image, String username, String time_of_order) {
         this.item_name = item_name;
         this.item_price = item_price;
         this.item_type = item_type;
@@ -23,8 +24,10 @@ public class OrderItems {
         this.item_address = item_address;
         this.item_image = item_image;
         this.username = username;
+        this.phone = phone;
         this.time_of_order = time_of_order;
     }
+
 
     public String getItem_address() {
         return item_address;
@@ -64,6 +67,14 @@ public class OrderItems {
 
     public void setItem_quantity(String item_quantity) {
         this.item_quantity = item_quantity;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getItem_image() {

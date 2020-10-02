@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import lastie_wangechian_Final.com.R;
-import lastie_wangechian_Final.com.Vendor.VendorAddItems;
 import lastie_wangechian_Final.com.Vendor.VendorSelect;
 
 public class VendorMainActivity extends AppCompatActivity {

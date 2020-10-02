@@ -11,6 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import lastie_wangechian_Final.com.Buyer.Authentications.BuyerLogin;
+import lastie_wangechian_Final.com.Buyer.Authentications.BuyerRegister;
 import lastie_wangechian_Final.com.Buyer.MainActivity.BuyerMainActivity;
 import lastie_wangechian_Final.com.R;
 import lastie_wangechian_Final.com.Vendor.VendorSelect;
