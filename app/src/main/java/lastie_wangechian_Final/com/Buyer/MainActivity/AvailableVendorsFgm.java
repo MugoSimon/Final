@@ -69,7 +69,7 @@ public class AvailableVendorsFgm extends Fragment {
     public void onStart() {
 
         super.onStart();
-        //TODO check on how one can know you are offline using database reference
+        //not necessary of offline vs online
 
         vendorListRef = FirebaseDatabase.getInstance().getReference().child("Vendors");
         vendorListRef.keepSynced(true);
@@ -100,9 +100,9 @@ public class AvailableVendorsFgm extends Fragment {
 
                                 if (dataSnapshot.hasChild("vendor_image")) {
 
-                                    final String profile_image = dataSnapshot.child("vendor_image").getValue().toString();
-                                    String vendor_username = dataSnapshot.child("username").getValue().toString();
-                                    String vendor_location = dataSnapshot.child("address").getValue().toString();
+                                    final String profile_image = (String) dataSnapshot.child("vendor_image").getValue();
+                                    String vendor_username = (String) dataSnapshot.child("username").getValue();
+                                    String vendor_location = (String) dataSnapshot.child("address").getValue();
 
                                     holder.vendor_username.setText(vendor_username);
                                     holder.vendor_location.setText(vendor_location);
@@ -121,8 +121,8 @@ public class AvailableVendorsFgm extends Fragment {
 
                                 } else {
 
-                                    String vendor_username = dataSnapshot.child("username").getValue().toString();
-                                    String vendor_location = dataSnapshot.child("location").getValue().toString();
+                                    String vendor_username = (String) dataSnapshot.child("username").getValue();
+                                    String vendor_location = (String) dataSnapshot.child("location").getValue();
 
                                     holder.vendor_username.setText(vendor_username);
                                     holder.vendor_location.setText(vendor_location);

@@ -1,7 +1,15 @@
 package lastie_wangechian_Final.com.Vendor.ViewRequestedOrders;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
+import lastie_wangechian_Final.com.Buyer.Orders.MyOrdersFgm;
 import lastie_wangechian_Final.com.R;
 
 public class ViewOrder extends AppCompatActivity {
@@ -104,7 +114,7 @@ public class ViewOrder extends AppCompatActivity {
 
                                         progressDialog.dismiss();
                                         Intent intent = new Intent(getApplicationContext(), RequestedOrders.class);
-                                        //todo the notification part
+                                        notify_approval();
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
 
@@ -161,6 +171,43 @@ public class ViewOrder extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void notify_approval() {
+
+        int notificationID = 0;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.deliv_1)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.deliv_1))
+                .setContentTitle("You just Shopped")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("click view to visit site."))
+                .setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL);
+
+        //intents and hope they do work
+        Intent intent = new Intent(getApplicationContext(), MyOrdersFgm.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        builder.addAction(R.drawable.ic_menu_view, "VIEW", pendingIntent);
+
+        //set a message notification
+        Uri path = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(path);
+
+        //call notification manager to build and deliver the notification to the OS
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //android eight plus
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            String channelID = "Your Channel";
+            NotificationChannel channel = new NotificationChannel(channelID,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId(channelID);
+        }
+        notificationManager.notify(notificationID, builder.build());
 
     }
 

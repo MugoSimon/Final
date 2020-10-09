@@ -70,7 +70,6 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
 
         numberPicker.setOnValueChangedListener(this);
         //ratingBar and its content
-        //todo generate random float values for the rating bar
         Double d = (Math.random()) * (5 - 2) + 2;
         float ratings = d.floatValue();
         ratingBar.animate();
@@ -128,7 +127,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                         String user_id = current_user.getUid();
                         String buyer_price = textView_totalPrice.getText().toString();
 
-                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Cart").child(user_id);
+                        mDatabase = FirebaseDatabase.getInstance().getReference("Cart").child(user_id);
 
                         HashMap<String, String> cart_hashMap = new HashMap<>();
                         cart_hashMap.put("export_name", export_name);

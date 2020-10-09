@@ -10,19 +10,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -58,8 +57,7 @@ public class AvailableItems extends AppCompatActivity {
             String user_id = getIntent().getStringExtra("user_id");
             Toast.makeText(AvailableItems.this, user_id, Toast.LENGTH_LONG).show();
 
-            //TODO anagalia vile child afta user_id itafetchiwa.
-            db_ItemsRefer = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id);
+            db_ItemsRefer = FirebaseDatabase.getInstance().getReference("Items").child(user_id);
             db_ItemsRefer.keepSynced(true);
 
             //FirebaseRecyclerOptions
@@ -73,7 +71,43 @@ public class AvailableItems extends AppCompatActivity {
                         protected void onBindViewHolder(@NonNull final myViewHolder holder, int position, @NonNull final Model model) {
 
                             //try fetching from the database
+                            db_ItemsRefer.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                                    if (snapshot.hasChildren()) {
+
+                                        export_image = (String) model.getItem_image();
+                                        export_name = (String) model.getItem_name();
+                                        export_price = (String) model.getItem_price();
+                                        export_type = (String) model.getItem_type();
+
+                                        holder.display_itemName.setText(model.getItem_name());
+                                        holder.display_itemPrice.setText(model.getItem_price());
+                                        Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.display_imageView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+
+                                                //nothing happens since its successful...
+                                                Toast.makeText(getApplicationContext(), export_image, Toast.LENGTH_LONG).show();
+                                            }
+
+                                            @Override
+                                            public void onError(Exception e) {
+
+                                                Picasso.get().load(model.getItem_image()).into(holder.display_imageView);
+                                            }
+                                        });
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+/*
                             db_ItemsRefer.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
@@ -133,11 +167,14 @@ public class AvailableItems extends AppCompatActivity {
 
                             });
 
+
+                                //done kule juu
+
                             //export the variables to next intent
                             export_name = model.getItem_name();
                             export_price = model.getItem_price();
                             export_image = model.getItem_image();
-                            export_type = model.getItem_type();
+                            export_name = model.getItem_type();
 
                             holder.display_itemName.setText(model.getItem_name());
                             holder.display_itemPrice.setText(model.getItem_price());
@@ -154,7 +191,7 @@ public class AvailableItems extends AppCompatActivity {
                                     Picasso.get().load(model.getItem_image()).into(holder.display_imageView);
                                 }
                             });
-
+                            */
                         }
 
                         @NonNull
@@ -203,7 +240,6 @@ public class AvailableItems extends AppCompatActivity {
 
                     Toast.makeText(v.getContext(), "clicked", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(v.getContext(), ActualOrder.class);
-
 
                     String user_id = getIntent().getStringExtra("user_id");
                     Toast.makeText(AvailableItems.this, user_id, Toast.LENGTH_LONG).show();

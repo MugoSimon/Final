@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">Final</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <array name="vendor_types">
+        <item>water bottle</item>
+        <item>5l jerry can</item>
+        <item>10l jerry can</item>
+        <item>20l jerry can</item>
+        <item>40l jerry can</item>
+        <item>50l skyplast</item>
+        <item>75l skyplast"</item>
+        <item>100l skyplast</item>
+        <item>water truck</item>
+    </array>
 </resources>

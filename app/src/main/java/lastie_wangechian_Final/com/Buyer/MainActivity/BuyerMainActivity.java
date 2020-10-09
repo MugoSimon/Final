@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import lastie_wangechian_Final.com.Buyer.AddtoCart.AddtoCart;
 import lastie_wangechian_Final.com.Buyer.BuyerSelect;
-import lastie_wangechian_Final.com.Buyer.Orders.MyOrdersFgm;
 import lastie_wangechian_Final.com.R;
 
 public class BuyerMainActivity extends AppCompatActivity {
@@ -45,6 +44,8 @@ public class BuyerMainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar_mainBuyer);
         getSupportActionBar().setTitle("Mtaani Order Maji");
 
+        //getSupportFragmentManager().beginTransaction().add(R.id.fgm_vendorList, new AvailableVendorsFgm()).commit();
+
         //tabs
         mViewpager = findViewById(R.id.buyer_viewPager);
         fragmentSectionAdpater = new FragmentSectionAdpater(getSupportFragmentManager());
@@ -62,9 +63,6 @@ public class BuyerMainActivity extends AppCompatActivity {
             FirebaseUser currrentUser = mAuth.getCurrentUser();
             if (currrentUser == null) {
                 sendToStart();
-
-            } else {
-
 
             }
 
@@ -120,35 +118,56 @@ public class BuyerMainActivity extends AppCompatActivity {
 
         }
 
-
-        if (item.getItemId() == R.id.buyer_orders) {
-
-            Intent order_intent = new Intent(BuyerMainActivity.this, MyOrdersFgm.class);
-            startActivity(order_intent);
-
-        }
-
-        if (item.getItemId() == R.id.available_vendors) {
-
-            Intent vendor_intent = new Intent(BuyerMainActivity.this, AvailableVendorsFgm.class);
-            startActivity(vendor_intent);
-
-        }
-
         if (item.getItemId() == R.id.added_to_cart) {
 
             Intent cart_intent = new Intent(BuyerMainActivity.this, AddtoCart.class);
             startActivity(cart_intent);
 
         }
+
+        if (item.getItemId() == R.id.buyer_orders) {
+
+            //MyOrdersFgm fragment_viewOrders = new MyOrdersFgm();
+            //loadFragmentOrder(fragment_viewOrders);
+
+        }
+
+        if (item.getItemId() == R.id.available_vendors) {
+
+            //AvailableVendorsFgm fragment_viewVendors = new AvailableVendorsFgm();
+            //loadFragmentVendor(fragment_viewVendors);
+        }
+
         return true;
     }
+
+    //todo still this
+    /*
+    private void loadFragmentVendor(AvailableVendorsFgm fragment_viewVendors) {
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.fgm_vendorList, fragment_viewVendors);
+        transaction.commit();
+
+
+    }
+
+    private void loadFragmentOrder(MyOrdersFgm fragment_viewOrders) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.buyer_viewPager, fragment_viewOrders);
+        transaction.commit();
+
+
+    }
+
 
     @Override
     public void onBackPressed() {
         showAlertDialog();
     }
-
+*/
     private void showAlertDialog() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -1,18 +1,23 @@
 package lastie_wangechian_Final.com.Vendor.VendorItems;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +25,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -36,6 +45,7 @@ public class ItemsFragment extends Fragment {
     String items_name, items_price, items_type, items_image;
     private View ItemFrgm;
     private DatabaseReference dbReference_items;
+    private DatabaseReference db_ReferenceDelete;
     private RecyclerView ItemsRecyclerView;
     private FirebaseAuth mAuth;
     private FloatingActionButton floatinButton;
@@ -75,7 +85,7 @@ public class ItemsFragment extends Fragment {
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser current_user = mAuth.getCurrentUser();
             String vendor_id = current_user.getUid();
-            dbReference_items = FirebaseDatabase.getInstance().getReference().child("Items").child(vendor_id);
+            dbReference_items = FirebaseDatabase.getInstance().getReference("Items").child(vendor_id);
             dbReference_items.keepSynced(true);
 
             //kuquery the request ya database reference.
@@ -88,6 +98,43 @@ public class ItemsFragment extends Fragment {
                 @Override
                 protected void onBindViewHolder(@NonNull final ItemListHolder holder, int position, @NonNull final ImportItems model) {
 
+                    dbReference_items.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            if (snapshot.hasChildren()) {
+
+
+                                items_name = (String) snapshot.child("item_name").getValue();
+                                items_price = (String) snapshot.child("item_price").getValue();
+                                items_type = (String) snapshot.child("item_type").getValue();
+                                items_image = (String) snapshot.child("item_image").getValue();
+
+                                holder.textView_itemName.setText(model.getItem_name());
+                                holder.textView_itemPrice.setText(model.getItem_price());
+                                holder.textView_itemType.setText(model.getItem_type());
+                                Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageView_itemImage, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        //iko sawa hapa
+                                        Toast.makeText(getContext(), items_image, Toast.LENGTH_LONG).show();
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+
+                                        Picasso.get().load(model.getItem_image()).into(holder.imageView_itemImage);
+                                    }
+                                });
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                     /*
                     dbReference_items.addChildEventListener(new ChildEventListener() {
                         @Override
@@ -151,16 +198,21 @@ public class ItemsFragment extends Fragment {
                         public void onCancelled(@NonNull DatabaseError error) {
 
                         }
-                        
+
 
                     });
 
 
-                     */
-                    holder.textView_itemName.setText(model.getItem_name());
-                    holder.textView_itemPrice.setText(model.getItem_price());
-                    holder.textView_itemType.setText(model.getItem_type());
-                    Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageView_itemImage, new Callback() {
+
+                    items_name = model.getItem_name();
+                    items_price = model.getItem_price();
+                    items_type = model.getItem_type();
+                    items_image = model.getItem_name();
+
+                    holder.textView_itemName.setText(items_name);
+                    holder.textView_itemPrice.setText(items_price);
+                    holder.textView_itemType.setText(items_type);
+                    Picasso.get().load(items_image).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageView_itemImage, new Callback() {
                         @Override
                         public void onSuccess() {
                             //its alright there
@@ -173,6 +225,8 @@ public class ItemsFragment extends Fragment {
                         }
                     });
 
+
+                     */
                 }
 
                 @NonNull
@@ -198,7 +252,7 @@ public class ItemsFragment extends Fragment {
 
     }
 
-    public static class ItemListHolder extends RecyclerView.ViewHolder {
+    public class ItemListHolder extends RecyclerView.ViewHolder {
         TextView textView_itemName, textView_itemPrice, textView_itemType;
         ImageView imageView_itemImage;
         View my_view;
@@ -212,47 +266,285 @@ public class ItemsFragment extends Fragment {
             textView_itemType = itemView.findViewById(R.id.single_itemType);
             imageView_itemImage = itemView.findViewById(R.id.single_itemImage);
 
-
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
-
+                public boolean onLongClick(View v) {
                     PopupMenu popupMenu = new PopupMenu(my_view.getContext(), itemView);
-                    //now inflate the pop-up menu using the popup menu
                     popupMenu.getMenuInflater().inflate(R.menu.pop_menu, popupMenu.getMenu());
-
-                    //registering popup with onMenuClickListener
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
 
                             if (item.getItemId() == R.id.delete_item) {
 
-                                //TOdo fix the actual menu to thr respective item
+                                showDialogDelete();
                                 Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
                                 return true;
                             }
-                            if (item.getItemId() == R.id.view_item) {
 
-                                //TOdo fix the actual menu to thr respective item
-                                Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
-                                return true;
-                            }
                             if (item.getItemId() == R.id.edit_item) {
 
-                                //TOdo fix the actual menu to thr respective item
+                                showDialogEdit();
                                 Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
                                 return true;
                             }
                             return false;
                         }
                     });
-
                     //showing the menu
                     popupMenu.show();
+                    return false;
                 }
             });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    showDialogView();
+                }
+            });
+
+        }
+
+        private void showDialogEdit() {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+            LayoutInflater inflater = getLayoutInflater();
+            final View editDialogView = inflater.inflate(R.layout.update_dialog, null);
+            dialogBuilder.setView(editDialogView);
+
+            final TextInputLayout textInputLayoutContainerName = editDialogView.findViewById(R.id.dialog_TextInputLayoutName);
+            final TextInputLayout textInputLayoutContainerPrice = editDialogView.findViewById(R.id.dialog_TextInputLayoutPrice);
+            final Spinner spinnerType = editDialogView.findViewById(R.id.dialog_spinner);
+            final Button buttonUpdate = editDialogView.findViewById(R.id.dialog_ButtonUpdate);
+
+            //loading data into the alertdialog
+            dialogBuilder.setTitle("Updating Item: " + items_name);
+
+            FirebaseUser current_user = mAuth.getCurrentUser();
+            String vendor_id = current_user.getUid();
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Items").child(vendor_id);
+            /*
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    if (snapshot.hasChildren()) {
+
+                        String gotten_itemName = (String) snapshot.child("item_name").getValue();
+                        String gotten_itemPrice = (String) snapshot.child("item_price").getValue();
+                        String gotten_itemType = (String) snapshot.child("item_type").getValue();
+
+                        textInputLayoutContainerName.getEditText().setText(gotten_itemName);
+                        textInputLayoutContainerPrice.getEditText().setText(gotten_itemPrice);
+                        spinnerType.setPrompt(gotten_itemType);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            */
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    if (snapshot.hasChildren()) {
+
+                        String gotten_itemName = (String) snapshot.child("item_name").getValue();
+                        String gotten_itemPrice = (String) snapshot.child("item_price").getValue();
+                        String gotten_itemType = (String) snapshot.child("item_type").getValue();
+
+                        textInputLayoutContainerName.getEditText().setText(gotten_itemName);
+                        textInputLayoutContainerPrice.getEditText().setText(gotten_itemPrice);
+                        spinnerType.setPrompt(gotten_itemType);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            final AlertDialog alertDialog = dialogBuilder.create();
+            alertDialog.show();
+
+            buttonUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (!checkOnName() | !checkOnPrice() | !checkOnSpinner()) {
+
+                        return;
+                    } else {
+
+                        final String update_itemName = textInputLayoutContainerName.getEditText().getText().toString().trim();
+                        final String update_itemPrice = textInputLayoutContainerPrice.getEditText().getText().toString().trim();
+                        final String update_itemType = (String) spinnerType.getSelectedItem();
+
+                        //we need to update this input
+
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                snapshot.getRef().child("item_name").setValue(update_itemName);
+                                snapshot.getRef().child("item_price").setValue(update_itemPrice);
+                                snapshot.getRef().child("item_type").setValue(update_itemType);
+
+                                Toast.makeText(getContext(), "Item successfully updated", Toast.LENGTH_LONG).show();
+                                alertDialog.dismiss();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                    }
+                }
+
+                private boolean checkOnName() {
+
+                    String update_itemName = textInputLayoutContainerName.getEditText().getText().toString().trim();
+                    if (TextUtils.isEmpty(update_itemName)) {
+
+                        textInputLayoutContainerName.requestFocus();
+                        textInputLayoutContainerName.setError("field cannot be left empty");
+                        textInputLayoutContainerName.getEditText().setText(null);
+                        return false;
+
+                    } else {
+
+                        textInputLayoutContainerName.setError(null);
+                        return true;
+                    }
+
+                }
+
+                private boolean checkOnPrice() {
+
+                    String update_itemPrice = textInputLayoutContainerPrice.getEditText().getText().toString().trim();
+                    if (TextUtils.isEmpty(update_itemPrice)) {
+
+                        textInputLayoutContainerPrice.requestFocus();
+                        textInputLayoutContainerPrice.setError("field cannot be left empty");
+                        textInputLayoutContainerPrice.getEditText().setText(null);
+                        return false;
+
+                    } else {
+
+                        textInputLayoutContainerPrice.setError(null);
+                        return true;
+                    }
+                }
+
+                private boolean checkOnSpinner() {
+                    boolean checked = spinnerType.requestFocus();
+                    if (checked == false) {
+
+                        spinnerType.requestFocus();
+                        return false;
+                    } else {
+
+                        return true;
+                    }
+                }
+            });
+
+        }
+
+        private void showDialogView() {
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+            LayoutInflater inflater = getLayoutInflater();
+            final View viewDialogView = inflater.inflate(R.layout.view_dialog, null);
+            dialogBuilder.setView(viewDialogView);
+
+            final ImageView dialogimageView_ItemImage = viewDialogView.findViewById(R.id.dialogView_ItemImage);
+            final TextView textView_ItemName = viewDialogView.findViewById(R.id.dialogView_ItemName);
+            final TextView textView_ItemPrice = viewDialogView.findViewById(R.id.dialogView_ItemPrice);
+            final TextView textView_ItemType = viewDialogView.findViewById(R.id.dialogView_ItemType);
+            final Button button_back = viewDialogView.findViewById(R.id.dialogView_ButtonBack);
+
+            final ImportItems model = new ImportItems();
+            textView_ItemName.setText(model.getItem_name());
+            textView_ItemPrice.setText(model.getItem_price());
+            textView_ItemType.setText(model.getItem_type());
+            Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.deliv_1).into(dialogimageView_ItemImage, new Callback() {
+                @Override
+                public void onSuccess() {
+                    //ni fiu
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                    Picasso.get().load(model.getItem_image()).into(dialogimageView_ItemImage);
+                }
+            });
+
+            dialogBuilder.setTitle("Viewing Item: " + items_name);
+            final AlertDialog alertDialog = dialogBuilder.create();
+            alertDialog.show();
+
+            button_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    alertDialog.dismiss();
+                }
+            });
+
+
+        }
+
+        private void showDialogDelete() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
+            builder.setCancelable(false);
+            builder.setTitle("Exit");
+            builder.setMessage("Are you sure you want to delete?");
+
+            //setting listeners for the dialog buttons
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //delete logics hapa kutoka kwa firebase
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    String vendor_id = user.getUid();
+                    db_ReferenceDelete = FirebaseDatabase.getInstance().getReference("Items").child(vendor_id);
+
+                    db_ReferenceDelete.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            snapshot.getRef().removeValue();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            });
+
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    dialog.dismiss();
+
+                }
+            });
+
+            builder.create().show();
         }
 
     }
+
 }

@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -59,7 +61,7 @@ public class AddtoCart extends AppCompatActivity {
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
             String user_id = currentUser.getUid();
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user_id);
+            databaseReference = FirebaseDatabase.getInstance().getReference("Cart").child(user_id);
             databaseReference.keepSynced(true);
 
             //querying the database
@@ -78,45 +80,31 @@ public class AddtoCart extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                        if (snapshot.hasChild("export_name")) {
+                                        if (snapshot.hasChildren()) {
 
-                                            itemName = snapshot.getValue().toString();
-                                            holder.addToCart_textViewItemName.setText(itemImage);
-                                        }
+                                            itemName = (String) snapshot.child("export_name").getValue();
+                                            itemPrice = (String) snapshot.child("export_price").getValue();
+                                            itemType = (String) snapshot.child("export_type").getValue();
+                                            itemImage = (String) snapshot.child("export_image").getValue();
+                                            String vendor_id = (String) snapshot.child("vendor_id").getValue();
 
-                                        if (snapshot.hasChild("export_price")) {
-
-                                            itemPrice = snapshot.getValue().toString();
-                                            holder.addToCart_textViewItemPrice.setText(itemPrice);
-                                        }
-
-                                        if (snapshot.hasChild("export_type")) {
-
-                                            itemType = snapshot.getValue().toString();
-                                            holder.addToCart_textViewItemType.setText(itemType);
-                                        }
-
-                                        if (snapshot.hasChild("export_image")) {
-
-                                            itemImage = snapshot.getValue().toString();
-                                            Picasso.get().load(itemImage).networkPolicy(NetworkPolicy.OFFLINE).into(holder.addToCart_imageView, new Callback() {
+                                            holder.addToCart_textViewItemName.setText(model.getExport_name());
+                                            holder.addToCart_textViewItemType.setText(model.getExport_type());
+                                            holder.addToCart_textViewItemPrice.setText(model.getExport_price());
+                                            Picasso.get().load(model.getExport_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.addToCart_imageView, new Callback() {
                                                 @Override
                                                 public void onSuccess() {
-                                                    //hapa tuko sawa
+                                                    //hapa tiwe seo
                                                 }
 
                                                 @Override
                                                 public void onError(Exception e) {
 
-                                                    Picasso.get().load(itemImage).into(holder.addToCart_imageView);
+                                                    Picasso.get().load(model.getExport_image()).into(holder.addToCart_imageView);
                                                 }
                                             });
-                                        }
 
-                                        if (snapshot.hasChild("vendor_id")) {
-
-                                            String vendor_id = snapshot.getValue().toString();
-                                            vendorReference = FirebaseDatabase.getInstance().getReference().child("Vendors").child(vendor_id);
+                                            vendorReference = FirebaseDatabase.getInstance().getReference().child("Vendors").child(model.getVendor_id());
                                             vendorReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -132,38 +120,6 @@ public class AddtoCart extends AppCompatActivity {
 
                                                 }
                                             });
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-
-                                holder.addToCart_textViewItemName.setText(model.getExport_name());
-                                holder.addToCart_textViewItemType.setText(model.getExport_type());
-                                holder.addToCart_textViewItemPrice.setText(model.getExport_price());
-                                Picasso.get().load(model.getExport_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.addToCart_imageView, new Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        //hapa tiwe seo
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-
-                                        Picasso.get().load(model.getExport_image()).into(holder.addToCart_imageView);
-                                    }
-                                });
-                                String vendor_ID = model.getVendor_id();
-
-                                vendorReference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.hasChild("username")) {
-                                            vendorName = snapshot.getValue().toString();
-                                            holder.addToCart_textViewVendorName.setText(vendorName);
                                         }
                                     }
 
@@ -228,7 +184,24 @@ public class AddtoCart extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    //todo the delete firebase way through
+                    //done
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(getApplicationContext(), "item successfully deleted", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
             });
         }

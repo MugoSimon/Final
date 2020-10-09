@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,13 +18,12 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import lastie_wangechian_Final.com.R;
@@ -82,107 +80,49 @@ public class RequestedOrders extends Fragment {
                         @Override
                         protected void onBindViewHolder(@NonNull final RequestOrderHolder holder, int position, @NonNull final OrderItems model) {
 
-                            requestedOrdReference.addChildEventListener(new ChildEventListener() {
+                            requestedOrdReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                    if (snapshot.hasChild("item_name")) {
+                                    if (snapshot.hasChildren()) {
 
-                                        order_ItemName = snapshot.getValue().toString();
-                                        holder.ord_TextView_itemName.setText(order_ItemName);
-                                    }
-                                    if (snapshot.hasChild("phone")) {
+                                        order_ItemName = (String) snapshot.child("item_name").getValue();
+                                        order_BuyerPhone = (String) snapshot.child("phone").getValue();
+                                        order_BuyerName = (String) snapshot.child("username").getValue();
+                                        order_ItemType = (String) snapshot.child("item_type").getValue();
+                                        order_ItemPrice = (String) snapshot.child("item_price").getValue();
+                                        order_ItemQuantity = (String) snapshot.child("item_quantity").getValue();
+                                        order_ItemAddress = (String) snapshot.child("item_address").getValue();
+                                        order_ItemTime_of_Order = (String) snapshot.child("time_of_order").getValue();
+                                        order_ItemImage = (String) snapshot.child("item_image").getValue();
 
-                                        order_BuyerPhone = snapshot.getValue().toString();
-                                        holder.ord_TextView_phone.setText(order_BuyerPhone);
-                                    }
-                                    if (snapshot.hasChild("username")) {
-
-                                        order_BuyerName = snapshot.getValue().toString();
-                                        holder.ord_TextView_buyerName.setText(order_BuyerName);
-                                    }
-                                    if (snapshot.hasChild("item_type")) {
-
-                                        order_ItemType = snapshot.getValue().toString();
-                                        holder.ord_TextView_itemType.setText(order_ItemType);
-                                    }
-                                    if (snapshot.hasChild("item_price")) {
-
-                                        order_ItemPrice = snapshot.getValue().toString();
-                                        holder.ord_TextView_itemPrice.setText(order_ItemPrice);
-                                    }
-                                    if (snapshot.hasChild("item_quantity")) {
-
-                                        order_ItemQuantity = snapshot.getValue().toString();
-                                        holder.ord_TextView_itemQuantity.setText(order_ItemQuantity);
-                                    }
-                                    if (snapshot.hasChild("item_address")) {
-
-                                        order_ItemAddress = snapshot.getValue().toString();
-                                        holder.ord_TextView_itemAddress.setText(order_ItemAddress);
-                                    }
-                                    if (snapshot.hasChild("time_of_order")) {
-
-                                        order_ItemTime_of_Order = snapshot.getValue().toString();
-                                        holder.ord_TextView_Time.setText(order_ItemTime_of_Order);
-                                    }
-                                    if (snapshot.hasChild("item_image")) {
-
-                                        Picasso.get().load(order_ItemImage).networkPolicy(NetworkPolicy.OFFLINE).into(holder.ord_ImageView, new Callback() {
+                                        holder.ord_TextView_buyerName.setText(model.getUsername());
+                                        holder.ord_TextView_phone.setText(model.getPhone());
+                                        holder.ord_TextView_itemName.setText(model.getItem_name());
+                                        holder.ord_TextView_itemPrice.setText(model.getItem_price());
+                                        holder.ord_TextView_itemQuantity.setText(model.getItem_quantity());
+                                        holder.ord_TextView_itemType.setText(model.getItem_type());
+                                        holder.ord_TextView_itemAddress.setText(model.getItem_address());
+                                        holder.ord_TextView_Time.setText(model.getTime_of_order());
+                                        Picasso.get().load(model.getItem_image()).into(holder.ord_ImageView, new Callback() {
                                             @Override
                                             public void onSuccess() {
-                                                //hii iko sawa
+                                                //hamna shaka hapa
+
                                             }
 
                                             @Override
                                             public void onError(Exception e) {
 
-                                                Picasso.get().load(order_ItemImage).into(holder.ord_ImageView);
+                                                Picasso.get().load(model.getItem_image()).into(holder.ord_ImageView);
                                             }
                                         });
                                     }
                                 }
 
                                 @Override
-                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                                }
-
-                                @Override
-                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                                }
-
-                                @Override
-                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                                }
-
-                                @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
-
-                            holder.ord_TextView_buyerName.setText(model.getUsername());
-                            holder.ord_TextView_phone.setText(model.getPhone());
-                            holder.ord_TextView_itemName.setText(model.getItem_name());
-                            holder.ord_TextView_itemPrice.setText(model.getItem_price());
-                            holder.ord_TextView_itemQuantity.setText(model.getItem_quantity());
-                            holder.ord_TextView_itemType.setText(model.getItem_type());
-                            holder.ord_TextView_itemAddress.setText(model.getItem_address());
-                            holder.ord_TextView_Time.setText(model.getTime_of_order());
-                            Picasso.get().load(model.getItem_image()).into(holder.ord_ImageView, new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    //hamna shaka hapa
-
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-
-                                    Picasso.get().load(model.getItem_image()).into(holder.ord_ImageView);
                                 }
                             });
 
@@ -250,7 +190,7 @@ public class RequestedOrders extends Fragment {
                     Intent_see_order.putExtra("order_ItemAddress", order_ItemAddress);
                     Intent_see_order.putExtra("order_ItemTime_of_Order", order_ItemTime_of_Order);
 
-                    //todo check if its best this way
+                    //kinda done
                     //itemView.setBackgroundColor(getResources().getColor(R.color.faded));
                     //itemView.setEnabled(false);
 

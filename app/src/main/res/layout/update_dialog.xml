@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dialog_TextInputLayoutName"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="#304FFE"
+        app:boxStrokeColor="#304FFE"
+        app:errorEnabled="true"
+        app:hintAnimationEnabled="true">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableRight="@drawable/ic_container"
+            android:hint="Container name"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textColor="#000" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dialog_TextInputLayoutPrice"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_TextInputLayoutName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="#304FFE"
+        app:boxStrokeColor="#304FFE"
+        app:errorEnabled="true"
+        app:hintAnimationEnabled="true">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/dialog_TextInputLayoutPrice"
+            android:layout_marginTop="10dp"
+            android:drawableRight="@drawable/ic_money"
+            android:hint="Price"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="#000" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_spinnner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_TextInputLayoutPrice"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/dialog_spinner"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:entries="@array/vendor_types" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/dialog_ButtonUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_spinnner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@xml/button_background"
+        android:text="update"
+        android:textAllCaps="false"
+        android:textColor="#fff" />
+
+</RelativeLayout>

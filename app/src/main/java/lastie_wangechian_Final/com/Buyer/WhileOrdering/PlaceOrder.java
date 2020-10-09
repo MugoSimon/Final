@@ -1,6 +1,14 @@
 package lastie_wangechian_Final.com.Buyer.WhileOrdering;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,7 +43,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import lastie_wangechian_Final.com.Buyer.Orders.MyOrdersFgm;
 import lastie_wangechian_Final.com.R;
+import lastie_wangechian_Final.com.Vendor.ViewRequestedOrders.RequestedOrders;
 
 import static lastie_wangechian_Final.com.R.id.radiobutton_Mpesa;
 
@@ -49,7 +60,7 @@ public class PlaceOrder extends AppCompatActivity {
     private TextView textView_buyerName, textView_buyerPhone, textView_buyerStreet, textView_BuyerBuildingName, textView_changeAddress;
     private RadioGroup radioGroup, radioGroupFee;
     private ImageView placeOrder_ImageView;
-    private TextView textView_itemName, textView_itemType, textView_itemTotalPrice, textView_itemQuantity, textView_totalPrice;
+    private TextView textView_itemName, textView_itemType, textView_itemprice, textView_itemQuantity, textView_totalPrice;
 
 
     @Override
@@ -74,7 +85,7 @@ public class PlaceOrder extends AppCompatActivity {
         placeOrder_ImageView = findViewById(R.id.placeOrder_itemImage);
         textView_itemName = findViewById(R.id.placeOrder_itemName);
         textView_itemType = findViewById(R.id.placeOrder_itemType);
-        textView_itemTotalPrice = findViewById(R.id.placeOrder_itemPrice);
+        textView_itemprice = findViewById(R.id.placeOrder_itemPrice);
         textView_itemQuantity = findViewById(R.id.placeOrder_itemQuantity);
         textView_totalPrice = findViewById(R.id.placeOrder_priceThereDown);
 
@@ -132,11 +143,11 @@ public class PlaceOrder extends AppCompatActivity {
 
             textView_itemName.setText(itemName);
             textView_itemType.setText(itemType);
-            textView_totalPrice.setText(String.valueOf(itemPrice));
+            textView_itemprice.setText(String.valueOf(itemPrice));
             int ttp = itemPrice + 50;
             totalPrice_plus_deliveryFee = String.valueOf(ttp);
             textView_itemQuantity.setText(itemQuantity);
-            textView_itemTotalPrice.setText(totalPrice_plus_deliveryFee);
+            textView_totalPrice.setText(totalPrice_plus_deliveryFee);
             Picasso.get().load(itemImage).into(placeOrder_ImageView);
             textView_buyerName.setText(imported_name);
             textView_buyerPhone.setText(imported_phone);
@@ -151,11 +162,11 @@ public class PlaceOrder extends AppCompatActivity {
 
             textView_itemName.setText(itemName);
             textView_itemType.setText(itemType);
-            textView_totalPrice.setText(String.valueOf(itemPrice));
+            textView_itemprice.setText(String.valueOf(itemPrice));
             int ttp = itemPrice + 50;
             totalPrice_plus_deliveryFee = String.valueOf(ttp);
             textView_itemQuantity.setText(itemQuantity);
-            textView_itemTotalPrice.setText(totalPrice_plus_deliveryFee);
+            textView_totalPrice.setText(totalPrice_plus_deliveryFee);
             Picasso.get().load(itemImage).into(placeOrder_ImageView);
             textView_buyerName.setText(imported_name);
             textView_buyerPhone.setText(imported_phone);
@@ -182,7 +193,7 @@ public class PlaceOrder extends AppCompatActivity {
                         String username = textView_buyerName.getText().toString().trim();
                         String item_name = textView_itemName.getText().toString().trim();
                         String item_type = textView_itemType.getText().toString().trim();
-                        String item_price = textView_itemTotalPrice.getText().toString().trim();
+                        String item_price = textView_totalPrice.getText().toString().trim();
                         String item_quantity = textView_itemQuantity.getText().toString().trim();
                         String phone = textView_buyerPhone.getText().toString().trim();
                         String item_image = getIntent().getStringExtra("export_image");
@@ -211,7 +222,7 @@ public class PlaceOrder extends AppCompatActivity {
 
                                             if (task.isSuccessful()) {
 
-                                                //todo the notification part of buyer
+                                                notifyVendor();
                                                 Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_LONG).show();
                                                 startActivity(new Intent(getApplicationContext(), RateUs.class));
                                                 finish();
@@ -236,7 +247,7 @@ public class PlaceOrder extends AppCompatActivity {
 
                         FirebaseUser current_user = mAuth.getCurrentUser();
                         String currentUser_ID = current_user.getUid();
-                        PlaceOrder_buyerReference = FirebaseDatabase.getInstance().getReference().child("Orders").child("Buyer").child(currentUser_ID);
+                        PlaceOrder_buyerReference = FirebaseDatabase.getInstance().getReference("Orders").child("Buyer").child(currentUser_ID);
                         HashMap<String, String> hashMap_buyer_placeOrder = new HashMap<>();
                         hashMap_buyer_placeOrder.put("username", username);
                         hashMap_buyer_placeOrder.put("item_name", item_name);
@@ -255,6 +266,7 @@ public class PlaceOrder extends AppCompatActivity {
                                 if (task.isSuccessful()) {
 
                                     Toast.makeText(getApplicationContext(), "Also successful", Toast.LENGTH_LONG).show();
+                                    notifyBuyer();
                                 }
                             }
                         });
@@ -272,6 +284,79 @@ public class PlaceOrder extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void notifyBuyer() {
+
+        int notificationID = 0;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.deliv_1)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.deliv_1))
+                .setContentTitle("You just Shopped")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("click view to visit site."))
+                .setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL);
+
+        //intents and hope they do work
+        Intent intent = new Intent(getApplicationContext(), MyOrdersFgm.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        builder.addAction(R.drawable.ic_menu_view, "VIEW", pendingIntent);
+
+        //set a message notification
+        Uri path = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(path);
+
+        //call notification manager to build and deliver the notification to the OS
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //android eight plus
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            String channelID = "Your Channel";
+            NotificationChannel channel = new NotificationChannel(channelID,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId(channelID);
+        }
+        notificationManager.notify(notificationID, builder.build());
+    }
+
+    private void notifyVendor() {
+
+        int notificationID = 0;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.deliv_1)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.deliv_1))
+                .setContentTitle("You just Shopped")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("click view to visit site."))
+                .setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL);
+
+        //intents and hope they do work
+        Intent intent = new Intent(getApplicationContext(), RequestedOrders.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        builder.addAction(R.drawable.ic_menu_view, "VIEW", pendingIntent);
+
+        //set a message notification
+        Uri path = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(path);
+
+        //call notification manager to build and deliver the notification to the OS
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //android eight plus
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            String channelID = "Your Channel";
+            NotificationChannel channel = new NotificationChannel(channelID,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId(channelID);
+        }
+        notificationManager.notify(notificationID, builder.build());
 
     }
 
@@ -303,10 +388,10 @@ public class PlaceOrder extends AppCompatActivity {
             textView_itemName.setText(itemName);
             textView_itemType.setText(itemType);
             textView_itemQuantity.setText(itemQuantity);
-            textView_totalPrice.setText(String.valueOf(itemPrice));
+            textView_itemprice.setText(String.valueOf(itemPrice));
             int ttp = itemPrice + 50;
             totalPrice_plus_deliveryFee = String.valueOf(ttp);
-            textView_itemTotalPrice.setText(totalPrice_plus_deliveryFee);
+            textView_totalPrice.setText(totalPrice_plus_deliveryFee);
             Picasso.get().load(itemImage).networkPolicy(NetworkPolicy.OFFLINE).into(placeOrder_ImageView, new Callback() {
                 @Override
                 public void onSuccess() {
@@ -330,7 +415,8 @@ public class PlaceOrder extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        if (snapshot != null) {
+                        //try .exists()
+                        if (snapshot.hasChildren()) {
 
                             imported_name = (String) snapshot.child("username").getValue();
                             imported_phone = (String) snapshot.child("phone_number").getValue();
@@ -341,10 +427,14 @@ public class PlaceOrder extends AppCompatActivity {
                             textView_buyerPhone.setText(imported_phone);
                             textView_buyerStreet.setText(imported_street);
                             textView_BuyerBuildingName.setText(imported_building);
-                        } else {
+                        }
+                        /*
+                        else {
 
                             Toast.makeText(getApplicationContext(), "Datasnapshot empty", Toast.LENGTH_LONG).show();
                         }
+
+                         */
                     }
 
                     @Override

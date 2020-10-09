@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -17,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import lastie_wangechian_Final.com.R;
+import lastie_wangechian_Final.com.Vendor.VendorItems.ItemsFragment;
 import lastie_wangechian_Final.com.Vendor.VendorSelect;
 
 public class VendorMainActivity extends AppCompatActivity {
@@ -92,17 +95,25 @@ public class VendorMainActivity extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.Add_item) {
 
+
             Intent intent = new Intent(VendorMainActivity.this, VendorAddItems.class);
             startActivity(intent);
 
         }
         if (item.getItemId() == R.id.vendor_viewItems) {
 
-            //Intent intent = new Intent(VendorMainActivity.this, VendorViewItems.class);
-            //startActivity(intent);
+            ItemsFragment fragment_viewItems = new ItemsFragment();
+            loadFragment(fragment_viewItems);
         }
 
         return true;
+    }
+
+    private void loadFragment(ItemsFragment fragment_viewItems) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.vendor_mainActivity, fragment_viewItems);
+        transaction.commit();
     }
 
     @Override

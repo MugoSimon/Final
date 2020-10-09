@@ -124,7 +124,7 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
                             FirebaseUser current_user = mAuth.getCurrentUser();
                             String user_id = current_user.getUid();
 
-                            mDatabase = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id);
+                            mDatabase = FirebaseDatabase.getInstance().getReference("Items").child(user_id);
                             HashMap<String, String> item_hashMap = new HashMap<>();
                             item_hashMap.put("item_name", item_name);
                             item_hashMap.put("item_price", item_price);
