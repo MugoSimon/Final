@@ -55,9 +55,9 @@ public class AvailableItems extends AppCompatActivity {
 
             //firebase
             String user_id = getIntent().getStringExtra("user_id");
-            Toast.makeText(AvailableItems.this, user_id, Toast.LENGTH_LONG).show();
+            //Toast.makeText(AvailableItems.this, user_id, Toast.LENGTH_LONG).show();
 
-            db_ItemsRefer = FirebaseDatabase.getInstance().getReference("Items").child(user_id);
+            db_ItemsRefer = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id);
             db_ItemsRefer.keepSynced(true);
 
             //FirebaseRecyclerOptions
@@ -68,38 +68,53 @@ public class AvailableItems extends AppCompatActivity {
             FirebaseRecyclerAdapter<Model, myViewHolder> adapter =
                     new FirebaseRecyclerAdapter<Model, myViewHolder>(options) {
                         @Override
-                        protected void onBindViewHolder(@NonNull final myViewHolder holder, int position, @NonNull final Model model) {
+                        protected void onBindViewHolder(@NonNull final myViewHolder holder, final int position, @NonNull final Model model) {
+//try fetching from the database
+                            String specific_id = getRef(position).getKey();
 
-                            //try fetching from the database
-                            db_ItemsRefer.addValueEventListener(new ValueEventListener() {
+                            db_ItemsRefer.child(specific_id).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                    if (snapshot.hasChildren()) {
+                                    if (snapshot.hasChild("item_image")) {
 
-                                        export_image = (String) model.getItem_image();
-                                        export_name = (String) model.getItem_name();
-                                        export_price = (String) model.getItem_price();
-                                        export_type = (String) model.getItem_type();
-
-                                        holder.display_itemName.setText(model.getItem_name());
-                                        holder.display_itemPrice.setText(model.getItem_price());
-                                        Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.display_imageView, new Callback() {
+                                        export_image = (String) snapshot.child("item_image").getValue();
+                                        holder.inv_itemImage.setText(export_image);
+                                        Picasso.get().load(export_image).networkPolicy(NetworkPolicy.OFFLINE).into(holder.display_imageView, new Callback() {
                                             @Override
                                             public void onSuccess() {
 
                                                 //nothing happens since its successful...
-                                                Toast.makeText(getApplicationContext(), export_image, Toast.LENGTH_LONG).show();
                                             }
 
                                             @Override
                                             public void onError(Exception e) {
 
-                                                Picasso.get().load(model.getItem_image()).into(holder.display_imageView);
+                                                holder.inv_itemImage.setText(export_image);
+                                                Picasso.get().load(export_image).into(holder.display_imageView);
                                             }
                                         });
                                     }
 
+                                    if (snapshot.hasChild("item_name")) {
+
+                                        export_name = (String) snapshot.child("item_name").getValue();
+                                        holder.display_itemName.setText(export_name);
+                                    }
+
+                                    if (snapshot.hasChild("item_price")) {
+
+                                        export_price = (String) snapshot.child("item_price").getValue();
+                                        holder.display_itemPrice.setText(export_price);
+                                        //Toast.makeText(getApplicationContext(), export_price, Toast.LENGTH_LONG).show();
+                                    }
+
+                                    if (snapshot.hasChild("item_type")) {
+
+                                        export_type = (String) snapshot.child("item_type").getValue();
+                                        holder.inv_itemType.setText(export_type);
+                                        //Toast.makeText(getApplicationContext(), export_price, Toast.LENGTH_LONG).show();
+                                    }
                                 }
 
                                 @Override
@@ -107,8 +122,9 @@ public class AvailableItems extends AppCompatActivity {
 
                                 }
                             });
+
 /*
-                            db_ItemsRefer.addChildEventListener(new ChildEventListener() {
+                            db_ItemsRefer.child(specific_id).addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
 
@@ -166,8 +182,56 @@ public class AvailableItems extends AppCompatActivity {
 
 
                             });
+  */
+                           /* db_ItemsRefer.child(specific_id).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.hasChild("item_image")){
 
+                                        export_image = (String) snapshot.child("item_image").getValue();
+                                        Picasso.get().load(export_image).networkPolicy(NetworkPolicy.OFFLINE).into(holder.display_imageView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
 
+                                                //nothing happens since its successful...
+                                            }
+
+                                            @Override
+                                            public void onError(Exception e) {
+
+                                                Picasso.get().load(export_image).into(holder.display_imageView);
+                                            }
+                                        });
+                                    }
+
+                                    if (snapshot.hasChild("item_name")){
+
+                                        export_name = (String) snapshot.child("item_name").getValue();
+                                        holder.display_itemName.setText(export_name);
+                                    }
+
+                                    if (snapshot.hasChild("item_price")){
+
+                                        export_price = (String) snapshot.child("item_price").getValue();
+                                        holder.display_itemPrice.setText(export_price);
+                                        //Toast.makeText(getApplicationContext(), export_price, Toast.LENGTH_LONG).show();
+                                    }
+
+                                    if (snapshot.hasChild("item_type")){
+
+                                        export_type = (String) snapshot.child("item_type").getValue();
+                                        //Toast.makeText(getApplicationContext(), export_price, Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+/*
                                 //done kule juu
 
                             //export the variables to next intent
@@ -221,11 +285,13 @@ public class AvailableItems extends AppCompatActivity {
 
     }
 
+
     public class myViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView display_imageView;
         private TextView display_itemName;
         private TextView display_itemPrice;
+        private TextView inv_itemType, inv_itemImage;
 
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -233,20 +299,21 @@ public class AvailableItems extends AppCompatActivity {
             display_imageView = itemView.findViewById(R.id.single_itemImage);
             display_itemName = itemView.findViewById(R.id.single_itemName);
             display_itemPrice = itemView.findViewById(R.id.single_itemPrice);
+            inv_itemImage = itemView.findViewById(R.id.single_vt_itemImage);
+            inv_itemType = itemView.findViewById(R.id.single_itemType);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Toast.makeText(v.getContext(), "clicked", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(v.getContext(), "clicked", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(v.getContext(), ActualOrder.class);
 
                     String user_id = getIntent().getStringExtra("user_id");
-                    Toast.makeText(AvailableItems.this, user_id, Toast.LENGTH_LONG).show();
-                    intent.putExtra("export_name", export_name);
-                    intent.putExtra("export_image", export_image);
-                    intent.putExtra("export_price", export_price);
-                    intent.putExtra("export_type", export_type);
+                    intent.putExtra("export_name", display_itemName.getText());
+                    intent.putExtra("export_image", inv_itemImage.getText());
+                    intent.putExtra("export_price", display_itemPrice.getText());
+                    intent.putExtra("export_type", inv_itemType.getText());
                     intent.putExtra("vendor_id", user_id);
 
                     startActivity(intent);

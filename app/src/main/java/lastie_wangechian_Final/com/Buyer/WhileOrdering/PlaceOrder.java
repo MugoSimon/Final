@@ -130,48 +130,58 @@ public class PlaceOrder extends AppCompatActivity {
 
         if (addressChanged()) {
 
-            String new_buildingName = getIntent().getStringExtra("buildingName");
-            String new_address = getIntent().getStringExtra("address");
-            textView_buyerStreet.setText(new_address);
-            textView_BuyerBuildingName.setText(new_buildingName);
+            try {
+                String new_buildingName = getIntent().getStringExtra("buildingName");
+                String new_address = getIntent().getStringExtra("address");
+                textView_buyerStreet.setText(new_address);
+                textView_BuyerBuildingName.setText(new_buildingName);
 
-            String itemName = getIntent().getStringExtra("export_name");
-            final String itemImage = getIntent().getStringExtra("export_image");
-            int itemPrice = Integer.parseInt(getIntent().getStringExtra("export_price"));
-            String itemType = getIntent().getStringExtra("export_type");
-            String itemQuantity = getIntent().getStringExtra("export_quantity");
+                String itemName = getIntent().getStringExtra("export_name");
+                final String itemImage = getIntent().getStringExtra("export_image");
+                int itemPrice = Integer.parseInt(getIntent().getStringExtra("export_price"));
+                String itemType = getIntent().getStringExtra("export_type");
+                String itemQuantity = getIntent().getStringExtra("export_quantity");
 
-            textView_itemName.setText(itemName);
-            textView_itemType.setText(itemType);
-            textView_itemprice.setText(String.valueOf(itemPrice));
-            int ttp = itemPrice + 50;
-            totalPrice_plus_deliveryFee = String.valueOf(ttp);
-            textView_itemQuantity.setText(itemQuantity);
-            textView_totalPrice.setText(totalPrice_plus_deliveryFee);
-            Picasso.get().load(itemImage).into(placeOrder_ImageView);
-            textView_buyerName.setText(imported_name);
-            textView_buyerPhone.setText(imported_phone);
+                textView_itemName.setText(itemName);
+                textView_itemType.setText(itemType);
+                textView_itemprice.setText(String.valueOf(itemPrice));
+                int ttp = itemPrice + 50;
+                totalPrice_plus_deliveryFee = String.valueOf(ttp);
+                textView_itemQuantity.setText(itemQuantity);
+                textView_totalPrice.setText(totalPrice_plus_deliveryFee);
+                Picasso.get().load(itemImage).placeholder(R.drawable.no_image_found).into(placeOrder_ImageView);
+                textView_buyerName.setText(imported_name);
+                textView_buyerPhone.setText(imported_phone);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } finally {
+
+            }
 
         } else {
 
-            String itemName = getIntent().getStringExtra("export_name");
-            final String itemImage = getIntent().getStringExtra("export_image");
-            int itemPrice = Integer.parseInt(getIntent().getStringExtra("export_price"));
-            String itemType = getIntent().getStringExtra("export_type");
-            String itemQuantity = getIntent().getStringExtra("export_quantity");
+            try {
+                String itemName = getIntent().getStringExtra("export_name");
+                final String itemImage = getIntent().getStringExtra("export_image");
+                int itemPrice = Integer.parseInt(getIntent().getStringExtra("export_price"));
+                String itemType = getIntent().getStringExtra("export_type");
+                String itemQuantity = getIntent().getStringExtra("export_quantity");
 
-            textView_itemName.setText(itemName);
-            textView_itemType.setText(itemType);
-            textView_itemprice.setText(String.valueOf(itemPrice));
-            int ttp = itemPrice + 50;
-            totalPrice_plus_deliveryFee = String.valueOf(ttp);
-            textView_itemQuantity.setText(itemQuantity);
-            textView_totalPrice.setText(totalPrice_plus_deliveryFee);
-            Picasso.get().load(itemImage).into(placeOrder_ImageView);
-            textView_buyerName.setText(imported_name);
-            textView_buyerPhone.setText(imported_phone);
-            textView_buyerStreet.setText(imported_street);
-            textView_BuyerBuildingName.setText(imported_building);
+                textView_itemName.setText(itemName);
+                textView_itemType.setText(itemType);
+                textView_itemprice.setText(String.valueOf(itemPrice));
+                int ttp = itemPrice + 50;
+                totalPrice_plus_deliveryFee = String.valueOf(ttp);
+                textView_itemQuantity.setText(itemQuantity);
+                textView_totalPrice.setText(totalPrice_plus_deliveryFee);
+                Picasso.get().load(itemImage).placeholder(R.drawable.no_image_found).into(placeOrder_ImageView);
+                textView_buyerName.setText(imported_name);
+                textView_buyerPhone.setText(imported_phone);
+                textView_buyerStreet.setText(imported_street);
+                textView_BuyerBuildingName.setText(imported_building);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -267,6 +277,8 @@ public class PlaceOrder extends AppCompatActivity {
 
                                     Toast.makeText(getApplicationContext(), "Also successful", Toast.LENGTH_LONG).show();
                                     notifyBuyer();
+                                    startActivity(new Intent(getApplicationContext(), RateUs.class));
+                                    finish();
                                 }
                             }
                         });
@@ -392,7 +404,7 @@ public class PlaceOrder extends AppCompatActivity {
             int ttp = itemPrice + 50;
             totalPrice_plus_deliveryFee = String.valueOf(ttp);
             textView_totalPrice.setText(totalPrice_plus_deliveryFee);
-            Picasso.get().load(itemImage).networkPolicy(NetworkPolicy.OFFLINE).into(placeOrder_ImageView, new Callback() {
+            Picasso.get().load(itemImage).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(placeOrder_ImageView, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -462,5 +474,12 @@ public class PlaceOrder extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        //startActivity(new Intent(getApplicationContext(),));
     }
 }

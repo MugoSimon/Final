@@ -61,7 +61,7 @@ public class RateUs extends AppCompatActivity {
         ratingBar.animate();
         ratingBar.requestFocus();
         final float ratings = ratingBar.getRating();
-        ratingBar.getOnRatingBarChangeListener().onRatingChanged(ratingBar, ratings, true);
+        //ratingBar.getOnRatingBarChangeListener().onRatingChanged(ratingBar, ratings, true);
         textView_ratings.setText(String.valueOf(ratings));
 
         //button
@@ -71,7 +71,7 @@ public class RateUs extends AppCompatActivity {
 
                 try {
 
-                    if (ratingBar.getOnRatingBarChangeListener().equals(false)) {
+                    if (ratings == 0) {
 
                         ratingBar.requestFocus();
                         Toast.makeText(RateUs.this, "Kindly gauge our service on the rating bar.", Toast.LENGTH_LONG).show();

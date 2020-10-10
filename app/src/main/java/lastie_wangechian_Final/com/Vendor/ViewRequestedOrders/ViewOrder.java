@@ -50,6 +50,7 @@ public class ViewOrder extends AppCompatActivity {
     private ImageView viewOrder_Imageviewer;
     private FirebaseAuth mAuth;
     private DatabaseReference ApprovedRerefence;
+    private DatabaseReference requestedOrdReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,13 +219,15 @@ public class ViewOrder extends AppCompatActivity {
 
             buyer_name = getIntent().getStringExtra("order_BuyerName");
             buyer_phone = getIntent().getStringExtra("order_Phone");
-            item_image = getIntent().getStringExtra("order_ItemImage");
             item_name = getIntent().getStringExtra("order_ItemName");
             item_price = getIntent().getStringExtra("order_ItemPrice");
             item_type = getIntent().getStringExtra("order_ItemType");
             item_quantity = getIntent().getStringExtra("order_ItemQuantity");
             item_deliveryAddress = getIntent().getStringExtra("order_ItemAddress");
             item_time = getIntent().getStringExtra("order_ItemTime_of_Order");
+            item_image = getIntent().getStringExtra("order_ItemImageUrl");
+
+            //Toast.makeText(getApplicationContext(), buyer_name +item_deliveryAddress +item_price, Toast.LENGTH_SHORT).show();
 
             textView_buyerName.setText(buyer_name);
             textView_buyerPhone.setText(buyer_phone);
@@ -234,7 +237,7 @@ public class ViewOrder extends AppCompatActivity {
             textView_itemQuatity.setText(item_quantity);
             textView_itemDeliveryAddress.setText(item_deliveryAddress);
             textView_itemTime.setText(item_time);
-            Picasso.get().load(item_image).networkPolicy(NetworkPolicy.OFFLINE).into(viewOrder_Imageviewer, new Callback() {
+            Picasso.get().load(item_image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(viewOrder_Imageviewer, new Callback() {
                 @Override
                 public void onSuccess() {
                     //hakna shida ikiload
@@ -247,7 +250,6 @@ public class ViewOrder extends AppCompatActivity {
                     Picasso.get().load(item_image).into(viewOrder_Imageviewer);
                 }
             });
-
 
         } catch (RuntimeException er) {
 

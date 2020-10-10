@@ -162,12 +162,12 @@ public class BuyerMainActivity extends AppCompatActivity {
 
     }
 
-
+*/
     @Override
     public void onBackPressed() {
         showAlertDialog();
     }
-*/
+
     private void showAlertDialog() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +33,7 @@ import lastie_wangechian_Final.com.R;
 
 public class AddtoCart extends AppCompatActivity {
 
-    String itemName, itemPrice, itemType, vendorName, itemImage;
+    String itemName, itemPrice, itemType, vendorName, itemImage, specfic_ID;
     private Toolbar toolbar_addToCart;
     private RecyclerView recyclerView_addToCart;
     private FirebaseAuth mAuth;
@@ -48,6 +46,12 @@ public class AddtoCart extends AppCompatActivity {
 
         //casting
         toolbar_addToCart = findViewById(R.id.addToCart_toolbar);
+
+        setSupportActionBar(toolbar_addToCart);
+        getSupportActionBar().setTitle("Items On Cart");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_kurudinyuma);
+
         recyclerView_addToCart = findViewById(R.id.addToCart_recycler);
         recyclerView_addToCart.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
@@ -75,52 +79,42 @@ public class AddtoCart extends AppCompatActivity {
                         protected void onBindViewHolder(@NonNull final AddtoCartHolder holder, int position, @NonNull final CartList model) {
 
                             try {
-
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                specfic_ID = getRef(position).getKey();
+                                databaseReference.child(specfic_ID).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        holder.addToCart_textViewItemName.setText(model.getExport_name());
+                                        holder.addToCart_textViewItemType.setText(model.getExport_type());
+                                        holder.addToCart_textViewItemPrice.setText(model.getExport_price());
+                                        Picasso.get().load(model.getExport_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.addToCart_imageView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+                                                //hapa tiwe seo
+                                            }
 
-                                        if (snapshot.hasChildren()) {
+                                            @Override
+                                            public void onError(Exception e) {
 
-                                            itemName = (String) snapshot.child("export_name").getValue();
-                                            itemPrice = (String) snapshot.child("export_price").getValue();
-                                            itemType = (String) snapshot.child("export_type").getValue();
-                                            itemImage = (String) snapshot.child("export_image").getValue();
-                                            String vendor_id = (String) snapshot.child("vendor_id").getValue();
+                                                Picasso.get().load(model.getExport_image()).into(holder.addToCart_imageView);
+                                            }
+                                        });
 
-                                            holder.addToCart_textViewItemName.setText(model.getExport_name());
-                                            holder.addToCart_textViewItemType.setText(model.getExport_type());
-                                            holder.addToCart_textViewItemPrice.setText(model.getExport_price());
-                                            Picasso.get().load(model.getExport_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.addToCart_imageView, new Callback() {
-                                                @Override
-                                                public void onSuccess() {
-                                                    //hapa tiwe seo
+                                        vendorReference = FirebaseDatabase.getInstance().getReference().child("Vendors").child(model.getVendor_id());
+                                        vendorReference.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                if (snapshot.hasChild("username")) {
+                                                    vendorName = snapshot.child("username").getValue().toString();
+                                                    holder.addToCart_textViewVendorName.setText(vendorName);
                                                 }
+                                            }
 
-                                                @Override
-                                                public void onError(Exception e) {
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                                    Picasso.get().load(model.getExport_image()).into(holder.addToCart_imageView);
-                                                }
-                                            });
-
-                                            vendorReference = FirebaseDatabase.getInstance().getReference().child("Vendors").child(model.getVendor_id());
-                                            vendorReference.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                                    if (snapshot.hasChild("username")) {
-                                                        vendorName = snapshot.getValue().toString();
-                                                        holder.addToCart_textViewVendorName.setText(vendorName);
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                }
-                                            });
-                                        }
+                                            }
+                                        });
                                     }
 
                                     @Override
@@ -140,12 +134,15 @@ public class AddtoCart extends AppCompatActivity {
                         @Override
                         public AddtoCartHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-                            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_added_to_cart
-                                    , parent, false);
-                            AddtoCartHolder kinda_holder = new AddtoCartHolder(view);
-                            return kinda_holder;
+                            View view = LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.single_added_to_cart, parent, false);
+
+                            return new AddtoCartHolder(view);
                         }
                     };
+
+            recyclerView_addToCart.setAdapter(adapter);
+            adapter.startListening();
 
         } catch (UnsupportedOperationException erro) {
 
@@ -165,7 +162,8 @@ public class AddtoCart extends AppCompatActivity {
     public class AddtoCartHolder extends RecyclerView.ViewHolder {
 
         ImageView addToCart_imageView;
-        TextView addToCart_textViewItemName, addToCart_textViewItemPrice, addToCart_textViewItemType, addToCart_textViewVendorName;
+        TextView addToCart_textViewItemName, addToCart_textViewItemPrice,
+                addToCart_textViewItemType, addToCart_textViewVendorName;
         Button addToCart_buttonDelete;
         private View addedToCart_view;
 
@@ -185,23 +183,7 @@ public class AddtoCart extends AppCompatActivity {
                 public void onClick(View v) {
 
                     //done
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                            snapshot.getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(getApplicationContext(), "item successfully deleted", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                    databaseReference.child(specfic_ID).removeValue();
                 }
             });
         }

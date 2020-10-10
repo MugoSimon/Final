@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -113,7 +114,7 @@ public class ItemsFragment extends Fragment {
                                 holder.textView_itemName.setText(model.getItem_name());
                                 holder.textView_itemPrice.setText(model.getItem_price());
                                 holder.textView_itemType.setText(model.getItem_type());
-                                Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageView_itemImage, new Callback() {
+                                Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(holder.imageView_itemImage, new Callback() {
                                     @Override
                                     public void onSuccess() {
                                         //iko sawa hapa
@@ -278,14 +279,14 @@ public class ItemsFragment extends Fragment {
                             if (item.getItemId() == R.id.delete_item) {
 
                                 showDialogDelete();
-                                Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
                                 return true;
                             }
 
                             if (item.getItemId() == R.id.edit_item) {
 
                                 showDialogEdit();
-                                Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
                                 return true;
                             }
                             return false;
@@ -360,7 +361,16 @@ public class ItemsFragment extends Fragment {
 
                         textInputLayoutContainerName.getEditText().setText(gotten_itemName);
                         textInputLayoutContainerPrice.getEditText().setText(gotten_itemPrice);
-                        spinnerType.setPrompt(gotten_itemType);
+
+                        String compareValue = "some value";
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.vendor_types, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerType.setAdapter(adapter);
+                        if (compareValue != null) {
+                            int spinnerPosition = adapter.getPosition(compareValue);
+                            spinnerType.setSelection(spinnerPosition);
+                        }
+
                     }
                 }
 
@@ -475,7 +485,7 @@ public class ItemsFragment extends Fragment {
             textView_ItemName.setText(model.getItem_name());
             textView_ItemPrice.setText(model.getItem_price());
             textView_ItemType.setText(model.getItem_type());
-            Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.deliv_1).into(dialogimageView_ItemImage, new Callback() {
+            Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(dialogimageView_ItemImage, new Callback() {
                 @Override
                 public void onSuccess() {
                     //ni fiu
@@ -516,13 +526,19 @@ public class ItemsFragment extends Fragment {
                     //delete logics hapa kutoka kwa firebase
                     FirebaseUser user = mAuth.getCurrentUser();
                     String vendor_id = user.getUid();
-                    db_ReferenceDelete = FirebaseDatabase.getInstance().getReference("Items").child(vendor_id);
-
-                    db_ReferenceDelete.addListenerForSingleValueEvent(new ValueEventListener() {
+                    dbReference_items.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                            snapshot.getRef().removeValue();
+                            if (snapshot.hasChildren()) {
+
+                                snapshot.child("item_name").getRef().setValue(null);
+                                snapshot.child("item_price").getRef().setValue(null);
+                                snapshot.child("item_type").getRef().setValue(null);
+                                snapshot.child("item_image").getRef().setValue(null);
+
+                            }
+
                         }
 
                         @Override

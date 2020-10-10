@@ -102,7 +102,7 @@ public class AvailableVendorsFgm extends Fragment {
 
                                     final String profile_image = (String) dataSnapshot.child("vendor_image").getValue();
                                     String vendor_username = (String) dataSnapshot.child("username").getValue();
-                                    String vendor_location = (String) dataSnapshot.child("address").getValue();
+                                    String vendor_location = (String) dataSnapshot.child("location").getValue();
 
                                     holder.vendor_username.setText(vendor_username);
                                     holder.vendor_location.setText(vendor_location);

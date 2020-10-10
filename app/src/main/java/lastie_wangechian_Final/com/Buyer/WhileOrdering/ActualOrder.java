@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -113,7 +114,9 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                 //add to cart activity
                 try {
 
-                    if (!numberPicker.hasFocus()) {
+                    int number_listener = Integer.parseInt(String.valueOf(NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL));
+
+                    if (number_listener == 0) {
 
                         button_AddtoCart.setBackgroundColor(getResources().getColor(R.color.faded));
                         Toast.makeText(getApplicationContext(), "Choose the quantity at numberpicker", Toast.LENGTH_LONG).show();
@@ -127,7 +130,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                         String user_id = current_user.getUid();
                         String buyer_price = textView_totalPrice.getText().toString();
 
-                        mDatabase = FirebaseDatabase.getInstance().getReference("Cart").child(user_id);
+                        mDatabase = FirebaseDatabase.getInstance().getReference().child("Cart").child(user_id);
 
                         HashMap<String, String> cart_hashMap = new HashMap<>();
                         cart_hashMap.put("export_name", export_name);
@@ -162,7 +165,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                                     }
                                 });
 
-                        startActivity(new Intent(getApplicationContext(), PlaceOrder.class));
+                        //startActivity(new Intent(getApplicationContext(), PlaceOrder.class));
 
                     }
 
@@ -183,7 +186,7 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
 
 
     @Override
-    protected void onStart() {
+    protected void onStart() throws RuntimeException {
         try {
             super.onStart();
 
@@ -196,11 +199,22 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
             textView_name.setText(export_name);
             textView_type.setText(export_type);
             textView_price.setText(export_price);
-            Picasso.get().load(export_image).networkPolicy(NetworkPolicy.OFFLINE).into(imageView);
+            Picasso.get().load(export_image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    //its good here
+                }
 
-            Toast.makeText(getApplicationContext(), export_image, Toast.LENGTH_LONG).show();
+                @Override
+                public void onError(Exception e) {
 
-        } catch (RuntimeException errro) {
+                    Picasso.get().load(export_image).placeholder(R.drawable.no_image_found).into(imageView);
+                }
+            });
+
+            //Toast.makeText(getApplicationContext(), export_name, Toast.LENGTH_LONG).show();
+
+        } catch (UnsupportedOperationException errro) {
 
             throw new RuntimeException(errro.getMessage());
 

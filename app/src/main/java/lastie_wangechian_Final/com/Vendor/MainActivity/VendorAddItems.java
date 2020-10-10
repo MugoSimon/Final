@@ -124,7 +124,7 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
                             FirebaseUser current_user = mAuth.getCurrentUser();
                             String user_id = current_user.getUid();
 
-                            mDatabase = FirebaseDatabase.getInstance().getReference("Items").child(user_id);
+                            mDatabase = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id);
                             HashMap<String, String> item_hashMap = new HashMap<>();
                             item_hashMap.put("item_name", item_name);
                             item_hashMap.put("item_price", item_price);
@@ -215,7 +215,7 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
 
                 } catch (Exception e) {
 
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "startPick Image_Activity error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -333,7 +333,6 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setMultiTouchEnabled(true)
                 .setAspectRatio(1, 2)
-                .setMaxCropResultSize(1000, 600)
                 .start(this);
 
     }
@@ -393,7 +392,7 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
 
 
         String item_selected = spinner.getSelectedItem().toString();
-        Toast.makeText(getApplicationContext(), item_selected + " " + position, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), item_selected + " " + position, Toast.LENGTH_LONG).show();
     }
 
     @Override

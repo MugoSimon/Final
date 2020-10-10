@@ -49,6 +49,7 @@
             android:textColor="#000"
             android:textSize="12sp" />
 
+
         <TextView
             android:id="@+id/Ksh"
             android:layout_width="wrap_content"
@@ -60,6 +61,18 @@
             android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/single_itemType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/single_vt_itemImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
     </LinearLayout>
 
 
