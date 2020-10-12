@@ -389,7 +389,7 @@ public class AddItems extends Fragment implements AdapterView.OnItemSelectedList
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
         String item_typeSeleted = frg_spinner.getSelectedItem().toString();
-        Toast.makeText(getContext(), item_typeSeleted + " " + position, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), item_typeSeleted + " " + position, Toast.LENGTH_LONG).show();
     }
 
     @Override

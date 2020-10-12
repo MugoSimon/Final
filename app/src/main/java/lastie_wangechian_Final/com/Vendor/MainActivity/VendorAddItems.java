@@ -71,6 +71,10 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
         //firebase and its requirement.
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        FirebaseUser current_user = mAuth.getCurrentUser();
+        String user_id = current_user.getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id);
+
 
         //toolbar and its stuffs
         addItems_toolbar = findViewById(R.id.vendor_appBar_addDetails);
@@ -114,75 +118,8 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
 
-                        try {
+                        insertData();
 
-                            String item_name = textInputLayout_itemName.getEditText().getText().toString().trim();
-                            String item_price = textInputLayout_itemPrice.getEditText().getText().toString().trim();
-                            String item_type = spinner.getSelectedItem().toString();
-                            String item_image = textView_imageUrl.getText().toString();
-
-                            FirebaseUser current_user = mAuth.getCurrentUser();
-                            String user_id = current_user.getUid();
-
-                            mDatabase = FirebaseDatabase.getInstance().getReference().child("Items").child(user_id);
-                            HashMap<String, String> item_hashMap = new HashMap<>();
-                            item_hashMap.put("item_name", item_name);
-                            item_hashMap.put("item_price", item_price);
-                            item_hashMap.put("item_type", item_type);
-                            item_hashMap.put("item_image", item_image);
-
-                            mDatabase.push().setValue(item_hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    try {
-
-                                        if (task.isSuccessful()) {
-
-                                            progressDialog.dismiss();
-                                            Intent intent = new Intent(getApplicationContext(), VendorMainActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            startActivity(intent);
-                                            finish();
-
-                                        } else {
-
-                                            progressDialog.hide();
-                                            Toast.makeText(getApplicationContext(), "Error saving user's profile: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-
-                                        }
-                                    } catch (final DatabaseException e) {
-
-                                        progressDialog.hide();
-                                        Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addItems), "Database Exception Found", Snackbar.LENGTH_LONG)
-                                                .setAction("View Details", new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-
-                                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
-                                        snackbar.show();
-                                        return;
-
-                                    }
-
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-
-                                    progressDialog.hide();
-                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                    return;
-
-                                }
-                            });
-
-                        } catch (NullPointerException e) {
-
-                            throw new NullPointerException(e.getMessage());
-                        }
 
                     }
 
@@ -221,6 +158,78 @@ public class VendorAddItems extends AppCompatActivity implements AdapterView.OnI
 
             }
         });
+
+    }
+
+    private void insertData() {
+
+        try {
+            String item_name = textInputLayout_itemName.getEditText().getText().toString().trim();
+            String item_price = textInputLayout_itemPrice.getEditText().getText().toString().trim();
+            String item_type = spinner.getSelectedItem().toString();
+            String item_image = textView_imageUrl.getText().toString();
+            String id = mDatabase.push().getKey();
+
+            //InsertData insertData = new InsertData(item_name,item_price,item_type,item_image,id);
+            HashMap<String, String> insertData = new HashMap<>();
+            insertData.put("item_name", item_name);
+            insertData.put("item_price", item_price);
+            insertData.put("item_type", item_type);
+            insertData.put("item_image", item_image);
+            insertData.put("id", id);
+
+            mDatabase.child(id).setValue(insertData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+
+                    try {
+
+                        if (task.isSuccessful()) {
+
+                            progressDialog.dismiss();
+                            Intent intent = new Intent(getApplicationContext(), VendorMainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+
+                        } else {
+
+                            progressDialog.hide();
+                            Toast.makeText(getApplicationContext(), "Error saving user's profile: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                        }
+                    } catch (final DatabaseException e) {
+
+                        progressDialog.hide();
+                        Snackbar snackbar = Snackbar.make(findViewById(R.id.vendor_addItems), "Database Exception Found", Snackbar.LENGTH_LONG)
+                                .setAction("View Details", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                        snackbar.show();
+                        return;
+
+                    }
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                    progressDialog.hide();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+
+                }
+            });
+        } catch (Exception e) {
+            throw new Exception();
+        } finally {
+            return;
+        }
 
     }
 

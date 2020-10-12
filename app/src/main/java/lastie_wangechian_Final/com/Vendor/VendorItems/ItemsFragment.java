@@ -4,7 +4,7 @@ package lastie_wangechian_Final.com.Vendor.VendorItems;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,12 +39,16 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import lastie_wangechian_Final.com.R;
 import lastie_wangechian_Final.com.Vendor.MainActivity.VendorAddItems;
 
 public class ItemsFragment extends Fragment {
 
     String items_name, items_price, items_type, items_image;
+    ArrayList<ImportItems> importItemsList;
     private View ItemFrgm;
     private DatabaseReference dbReference_items;
     private DatabaseReference db_ReferenceDelete;
@@ -65,7 +70,10 @@ public class ItemsFragment extends Fragment {
         ItemsRecyclerView = ItemFrgm.findViewById(R.id.fgm_vendorItemList);
         floatinButton = ItemFrgm.findViewById(R.id.add_button);
         ItemsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.ccp_padding);
+        ItemsRecyclerView.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
 
+        importItemsList = new ArrayList<>();
         floatinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,36 +105,40 @@ public class ItemsFragment extends Fragment {
             FirebaseRecyclerAdapter<ImportItems, ItemListHolder> adapter
                     = new FirebaseRecyclerAdapter<ImportItems, ItemListHolder>(options) {
                 @Override
-                protected void onBindViewHolder(@NonNull final ItemListHolder holder, int position, @NonNull final ImportItems model) {
+                protected void onBindViewHolder(@NonNull final ItemListHolder holder, final int position, @NonNull final ImportItems model) {
 
                     dbReference_items.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                            if (snapshot.hasChildren()) {
+                            importItemsList.clear();
+                            int counter = 0;
+                            for (DataSnapshot Items_dataSnapshot : snapshot.getChildren()) {
 
+                                if (counter == position) {
 
-                                items_name = (String) snapshot.child("item_name").getValue();
-                                items_price = (String) snapshot.child("item_price").getValue();
-                                items_type = (String) snapshot.child("item_type").getValue();
-                                items_image = (String) snapshot.child("item_image").getValue();
+                                    final ImportItems importItems = Items_dataSnapshot.getValue(ImportItems.class);
+                                    importItemsList.add(importItems);
 
-                                holder.textView_itemName.setText(model.getItem_name());
-                                holder.textView_itemPrice.setText(model.getItem_price());
-                                holder.textView_itemType.setText(model.getItem_type());
-                                Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(holder.imageView_itemImage, new Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        //iko sawa hapa
-                                        Toast.makeText(getContext(), items_image, Toast.LENGTH_LONG).show();
-                                    }
+                                    holder.textView_itemPrice.setText(importItems.getItem_price());
+                                    holder.textView_itemName.setText(importItems.getItem_name());
+                                    holder.textView_inv.setText(importItems.getId());
+                                    holder.textView_itemType.setText(importItems.getItem_type());
+                                    Picasso.get().load(importItems.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(holder.imageView_itemImage, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
 
-                                    @Override
-                                    public void onError(Exception e) {
+                                        }
 
-                                        Picasso.get().load(model.getItem_image()).into(holder.imageView_itemImage);
-                                    }
-                                });
+                                        @Override
+                                        public void onError(Exception e) {
+
+                                            Picasso.get().load(importItems.getItem_image()).placeholder(R.drawable.no_image_found).into(holder.imageView_itemImage);
+                                        }
+                                    });
+                                }
+                                counter++;
+
 
                             }
                         }
@@ -136,98 +148,6 @@ public class ItemsFragment extends Fragment {
 
                         }
                     });
-                    /*
-                    dbReference_items.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-
-                            if (snapshot.hasChild("item_name")) {
-
-                                items_name = snapshot.getValue().toString();
-                                holder.textView_itemName.setText(items_name);
-                            }
-
-                            if (snapshot.hasChild("item_price")) {
-
-                                items_price = snapshot.getValue().toString();
-                                holder.textView_itemPrice.setText(items_price);
-                            }
-
-                            if (snapshot.hasChild("item_type")) {
-
-                                items_type = snapshot.getValue().toString();
-                                holder.textView_itemType.setText(items_type);
-                            }
-
-                            if (snapshot.hasChild("item_image")) {
-
-                                items_image = snapshot.getValue().toString();
-                                Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageView_itemImage, new Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        //iko sawa hapa
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-
-                                        Picasso.get().load(items_image).into(holder.imageView_itemImage);
-                                    }
-                                });
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                        }
-
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                        }
-
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-
-
-                    });
-
-
-
-                    items_name = model.getItem_name();
-                    items_price = model.getItem_price();
-                    items_type = model.getItem_type();
-                    items_image = model.getItem_name();
-
-                    holder.textView_itemName.setText(items_name);
-                    holder.textView_itemPrice.setText(items_price);
-                    holder.textView_itemType.setText(items_type);
-                    Picasso.get().load(items_image).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageView_itemImage, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            //its alright there
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                            Picasso.get().load(model.getItem_image()).into(holder.imageView_itemImage);
-                        }
-                    });
-
-
-                     */
                 }
 
                 @NonNull
@@ -254,7 +174,7 @@ public class ItemsFragment extends Fragment {
     }
 
     public class ItemListHolder extends RecyclerView.ViewHolder {
-        TextView textView_itemName, textView_itemPrice, textView_itemType;
+        TextView textView_itemName, textView_itemPrice, textView_inv, textView_itemType;
         ImageView imageView_itemImage;
         View my_view;
 
@@ -265,6 +185,7 @@ public class ItemsFragment extends Fragment {
             textView_itemName = itemView.findViewById(R.id.single_itemName);
             textView_itemPrice = itemView.findViewById(R.id.single_itemPrice);
             textView_itemType = itemView.findViewById(R.id.single_itemType);
+            textView_inv = itemView.findViewById(R.id.inv_imageURL);
             imageView_itemImage = itemView.findViewById(R.id.single_itemImage);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -276,16 +197,24 @@ public class ItemsFragment extends Fragment {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
 
-                            if (item.getItemId() == R.id.delete_item) {
-
-                                showDialogDelete();
-                                //Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
-                                return true;
-                            }
 
                             if (item.getItemId() == R.id.edit_item) {
 
                                 showDialogEdit();
+                                //Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
+                                return true;
+                            }
+
+                            if (item.getItemId() == R.id.view_item) {
+
+                                showDialogView();
+                                //Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
+                                return true;
+                            }
+
+                            if (item.getItemId() == R.id.delete_item) {
+
+                                showDialogDelete();
                                 //Toast.makeText(my_view.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_LONG).show();
                                 return true;
                             }
@@ -295,175 +224,6 @@ public class ItemsFragment extends Fragment {
                     //showing the menu
                     popupMenu.show();
                     return false;
-                }
-            });
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    showDialogView();
-                }
-            });
-
-        }
-
-        private void showDialogEdit() {
-
-            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-            LayoutInflater inflater = getLayoutInflater();
-            final View editDialogView = inflater.inflate(R.layout.update_dialog, null);
-            dialogBuilder.setView(editDialogView);
-
-            final TextInputLayout textInputLayoutContainerName = editDialogView.findViewById(R.id.dialog_TextInputLayoutName);
-            final TextInputLayout textInputLayoutContainerPrice = editDialogView.findViewById(R.id.dialog_TextInputLayoutPrice);
-            final Spinner spinnerType = editDialogView.findViewById(R.id.dialog_spinner);
-            final Button buttonUpdate = editDialogView.findViewById(R.id.dialog_ButtonUpdate);
-
-            //loading data into the alertdialog
-            dialogBuilder.setTitle("Updating Item: " + items_name);
-
-            FirebaseUser current_user = mAuth.getCurrentUser();
-            String vendor_id = current_user.getUid();
-            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Items").child(vendor_id);
-            /*
-            reference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    if (snapshot.hasChildren()) {
-
-                        String gotten_itemName = (String) snapshot.child("item_name").getValue();
-                        String gotten_itemPrice = (String) snapshot.child("item_price").getValue();
-                        String gotten_itemType = (String) snapshot.child("item_type").getValue();
-
-                        textInputLayoutContainerName.getEditText().setText(gotten_itemName);
-                        textInputLayoutContainerPrice.getEditText().setText(gotten_itemPrice);
-                        spinnerType.setPrompt(gotten_itemType);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-            */
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    if (snapshot.hasChildren()) {
-
-                        String gotten_itemName = (String) snapshot.child("item_name").getValue();
-                        String gotten_itemPrice = (String) snapshot.child("item_price").getValue();
-                        String gotten_itemType = (String) snapshot.child("item_type").getValue();
-
-                        textInputLayoutContainerName.getEditText().setText(gotten_itemName);
-                        textInputLayoutContainerPrice.getEditText().setText(gotten_itemPrice);
-
-                        String compareValue = "some value";
-                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.vendor_types, android.R.layout.simple_spinner_item);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerType.setAdapter(adapter);
-                        if (compareValue != null) {
-                            int spinnerPosition = adapter.getPosition(compareValue);
-                            spinnerType.setSelection(spinnerPosition);
-                        }
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-            final AlertDialog alertDialog = dialogBuilder.create();
-            alertDialog.show();
-
-            buttonUpdate.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (!checkOnName() | !checkOnPrice() | !checkOnSpinner()) {
-
-                        return;
-                    } else {
-
-                        final String update_itemName = textInputLayoutContainerName.getEditText().getText().toString().trim();
-                        final String update_itemPrice = textInputLayoutContainerPrice.getEditText().getText().toString().trim();
-                        final String update_itemType = (String) spinnerType.getSelectedItem();
-
-                        //we need to update this input
-
-                        reference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                snapshot.getRef().child("item_name").setValue(update_itemName);
-                                snapshot.getRef().child("item_price").setValue(update_itemPrice);
-                                snapshot.getRef().child("item_type").setValue(update_itemType);
-
-                                Toast.makeText(getContext(), "Item successfully updated", Toast.LENGTH_LONG).show();
-                                alertDialog.dismiss();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
-                    }
-                }
-
-                private boolean checkOnName() {
-
-                    String update_itemName = textInputLayoutContainerName.getEditText().getText().toString().trim();
-                    if (TextUtils.isEmpty(update_itemName)) {
-
-                        textInputLayoutContainerName.requestFocus();
-                        textInputLayoutContainerName.setError("field cannot be left empty");
-                        textInputLayoutContainerName.getEditText().setText(null);
-                        return false;
-
-                    } else {
-
-                        textInputLayoutContainerName.setError(null);
-                        return true;
-                    }
-
-                }
-
-                private boolean checkOnPrice() {
-
-                    String update_itemPrice = textInputLayoutContainerPrice.getEditText().getText().toString().trim();
-                    if (TextUtils.isEmpty(update_itemPrice)) {
-
-                        textInputLayoutContainerPrice.requestFocus();
-                        textInputLayoutContainerPrice.setError("field cannot be left empty");
-                        textInputLayoutContainerPrice.getEditText().setText(null);
-                        return false;
-
-                    } else {
-
-                        textInputLayoutContainerPrice.setError(null);
-                        return true;
-                    }
-                }
-
-                private boolean checkOnSpinner() {
-                    boolean checked = spinnerType.requestFocus();
-                    if (checked == false) {
-
-                        spinnerType.requestFocus();
-                        return false;
-                    } else {
-
-                        return true;
-                    }
                 }
             });
 
@@ -481,24 +241,42 @@ public class ItemsFragment extends Fragment {
             final TextView textView_ItemType = viewDialogView.findViewById(R.id.dialogView_ItemType);
             final Button button_back = viewDialogView.findViewById(R.id.dialogView_ButtonBack);
 
-            final ImportItems model = new ImportItems();
-            textView_ItemName.setText(model.getItem_name());
-            textView_ItemPrice.setText(model.getItem_price());
-            textView_ItemType.setText(model.getItem_type());
-            Picasso.get().load(model.getItem_image()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(dialogimageView_ItemImage, new Callback() {
+            //Toast.makeText(getContext(),textView_inv.getText(),Toast.LENGTH_LONG).show();
+            dbReference_items.child((String) textView_inv.getText()).addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onSuccess() {
-                    //ni fiu
+                public void onDataChange(@NonNull final DataSnapshot snapshot) {
+
+                    if (snapshot.hasChildren()) {
+
+                        textView_ItemName.setText((String) snapshot.child("item_name").getValue());
+                        textView_ItemPrice.setText((String) snapshot.child("item_price").getValue());
+                        textView_ItemType.setText((String) snapshot.child("item_type").getValue());
+                        Picasso.get().load((String) snapshot.child("item_image").getValue()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.no_image_found).into(dialogimageView_ItemImage, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                //ni fiu
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                                Picasso.get().load((String) snapshot.child("item_image").getValue()).into(dialogimageView_ItemImage);
+                            }
+                        });
+
+                    }
+
+
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                    Picasso.get().load(model.getItem_image()).into(dialogimageView_ItemImage);
                 }
             });
 
-            dialogBuilder.setTitle("Viewing Item: " + items_name);
+
+            dialogBuilder.setTitle("Viewing Item: " + textView_ItemName.getText());
             final AlertDialog alertDialog = dialogBuilder.create();
             alertDialog.show();
 
@@ -510,46 +288,41 @@ public class ItemsFragment extends Fragment {
                 }
             });
 
-
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (alertDialog.isShowing()) {
+                        alertDialog.dismiss();
+                    }
+                }
+            }, 5000);
         }
 
         private void showDialogDelete() {
             AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
             builder.setCancelable(false);
-            builder.setTitle("Exit");
+            builder.setTitle("Deleting Record: " + textView_itemName.getText());
             builder.setMessage("Are you sure you want to delete?");
 
             //setting listeners for the dialog buttons
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //delete logics hapa kutoka kwa firebase
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    String vendor_id = user.getUid();
-                    dbReference_items.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                            if (snapshot.hasChildren()) {
+                    dbReference_items.child((String) textView_inv.getText()).removeValue()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
 
-                                snapshot.child("item_name").getRef().setValue(null);
-                                snapshot.child("item_price").getRef().setValue(null);
-                                snapshot.child("item_type").getRef().setValue(null);
-                                snapshot.child("item_image").getRef().setValue(null);
+                                    Toast.makeText(getContext(), "Record deleted", Toast.LENGTH_LONG).show();
+                                }
+                            });
 
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
                 }
             });
 
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
@@ -559,6 +332,103 @@ public class ItemsFragment extends Fragment {
             });
 
             builder.create().show();
+        }
+
+        private void showDialogEdit() {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+            LayoutInflater inflater = getLayoutInflater();
+            final View updateDialogView = inflater.inflate(R.layout.update_dialog, null);
+            dialogBuilder.setView(updateDialogView);
+
+            final TextInputLayout textInputLayout_name = updateDialogView.findViewById(R.id.dialog_TextInputLayoutName);
+            final TextInputLayout textInputLayout_price = updateDialogView.findViewById(R.id.dialog_TextInputLayoutPrice);
+            final Spinner spinner_typeUpdate = updateDialogView.findViewById(R.id.dialog_spinner);
+            final Button buttonUpdate = updateDialogView.findViewById(R.id.dialog_ButtonUpdate);
+
+            dbReference_items.child((String) textView_inv.getText()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull final DataSnapshot snapshot) {
+
+                    if (snapshot.hasChildren()) {
+
+                        textInputLayout_name.getEditText().setText((String) snapshot.child("item_name").getValue());
+                        textInputLayout_price.getEditText().setText((String) snapshot.child("item_price").getValue());
+                        String compareValue = "some value";
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.vendor_types, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinner_typeUpdate.setAdapter(adapter);
+                        if (compareValue != null) {
+                            int spinnerPosition = adapter.getPosition(textView_itemType.getText());
+                            spinner_typeUpdate.setSelection(spinnerPosition);
+                        }
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            dialogBuilder.setTitle("Updating Record:");
+            final AlertDialog alertDialog = dialogBuilder.create();
+            alertDialog.show();
+
+            buttonUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String container_name = textInputLayout_name.getEditText().getText().toString();
+                    String container_Price = textInputLayout_price.getEditText().getText().toString();
+
+                    if (container_name.isEmpty()) {
+                        textInputLayout_name.requestFocus();
+                        textInputLayout_name.setError("field is empty");
+                        return;
+                    } else if (container_Price.isEmpty()) {
+
+                        textInputLayout_price.requestFocus();
+                        textInputLayout_price.setError("field is empty");
+                        return;
+                    } else {
+
+                        textInputLayout_name.setError(null);
+                        textInputLayout_price.setError(null);
+                        String container_type = (String) spinner_typeUpdate.getSelectedItem();
+                        updateRecord(container_name, container_Price, container_type);
+
+                    }
+                }
+
+                private void updateRecord(String container_name, String container_price, String container_type) {
+
+                    HashMap<String, Object> userUpdates = new HashMap<>();
+                    userUpdates.put("item_name", container_name);
+                    userUpdates.put("item_price", container_price);
+                    userUpdates.put("item_type", container_type);
+                    dbReference_items.child((String) textView_inv.getText()).updateChildren(userUpdates)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    Toast.makeText(getContext(), "Record Updated", Toast.LENGTH_LONG).show();
+                                    alertDialog.dismiss();
+                                }
+                            });
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (alertDialog.isShowing()) {
+                        alertDialog.dismiss();
+                    }
+                }
+            }, 60000);
         }
 
     }

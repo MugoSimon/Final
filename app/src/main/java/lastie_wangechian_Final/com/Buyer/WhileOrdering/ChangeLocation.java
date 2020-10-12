@@ -1,129 +1,71 @@
 package lastie_wangechian_Final.com.Buyer.WhileOrdering;
 
-import android.content.Intent;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.google.android.material.textfield.TextInputLayout;
 
 import lastie_wangechian_Final.com.R;
 
-public class ChangeLocation extends AppCompatActivity {
+public class ChangeLocation extends AppCompatDialogFragment {
 
-    private Button button_save;
     private TextInputLayout textInputLayout_address;
-    private TextInputLayout textInputLayout_building;
-    private Toolbar changeLocation_toolbar;
+    private TextInputLayout textInputLayout_buildingName;
+    private Button buttonUpdate;
+    private ChangeLocationListener listener;
 
+    @NonNull
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_location);
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
-        //casting
-        button_save = findViewById(R.id.changeLocation_button);
-        textInputLayout_address = findViewById(R.id.changeLocation_address);
-        textInputLayout_building = findViewById(R.id.changeLocation_buildingName);
-        changeLocation_toolbar = findViewById(R.id.changeLocation_toolbar);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.update_location, null);
 
-        setSupportActionBar(changeLocation_toolbar);
-        getSupportActionBar().setTitle("Entering New Location Address");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
+        builder.setView(view)
+                .setTitle("Changing Location");
 
+        textInputLayout_address = view.findViewById(R.id.dialog_TextInputLayoutAddress);
+        textInputLayout_buildingName = view.findViewById(R.id.dialog_TextInputLayoutPrice);
+        buttonUpdate = view.findViewById(R.id.changeLocation_button);
 
-        button_save.setOnClickListener(new View.OnClickListener() {
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                try {
-
-                    if (!validateAddress() | !validateBuilding()) {
-
-                        return;
-
-                    } else {
-
-                        String buildingName = textInputLayout_building.getEditText().getText().toString().trim();
-                        String address = textInputLayout_address.getEditText().getText().toString().trim();
-
-                        Intent pass_intent = new Intent(getApplicationContext(), PlaceOrder.class);
-                        pass_intent.putExtra("buildingName", buildingName);
-                        pass_intent.putExtra("address", address);
-                        startActivity(pass_intent);
-                        finish();
-
-                    }
-
-                } catch (Exception error) {
-
-                    try {
-                        throw new Exception(error.getMessage());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
+                String new_address = textInputLayout_address.getEditText().getText().toString();
+                String new_buildingName = textInputLayout_buildingName.getEditText().getText().toString();
+                listener.applyText(new_address, new_buildingName);
             }
         });
 
-
+        return builder.create();
     }
 
-    private boolean validateBuilding() {
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        String buildingName = textInputLayout_building.getEditText().getText().toString().trim();
+        try {
+            listener = (ChangeLocationListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement changeLocationListener");
 
-        if (TextUtils.isEmpty(buildingName)) {
-
-            textInputLayout_building.requestFocus();
-            textInputLayout_building.setError("field can't be left empty");
-            textInputLayout_building.getEditText().setText(null);
-            return false;
-
-        } else if (buildingName.length() > 15) {
-
-            textInputLayout_building.requestFocus();
-            textInputLayout_building.setError("building name too long");
-            textInputLayout_building.getEditText().setText(null);
-            return false;
-
-        } else {
-
-            textInputLayout_building.setError(null);
-            return true;
         }
     }
 
-    private boolean validateAddress() {
+    public interface ChangeLocationListener {
 
-        String address = textInputLayout_address.getEditText().getText().toString().trim();
+        void applyText(String new_address, String new_buildingName);
 
-        if (TextUtils.isEmpty(address)) {
-
-            textInputLayout_address.requestFocus();
-            textInputLayout_address.setError("field can't be left empty");
-            textInputLayout_address.getEditText().setText(null);
-            return false;
-
-        } else if (address.length() > 15) {
-
-            textInputLayout_building.requestFocus();
-            textInputLayout_building.setError("address too long");
-            textInputLayout_building.getEditText().setText(null);
-            return false;
-
-        } else {
-
-            textInputLayout_building.setError(null);
-            return true;
-
-        }
     }
 }

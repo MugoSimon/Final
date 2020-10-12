@@ -49,7 +49,7 @@ import lastie_wangechian_Final.com.Vendor.ViewRequestedOrders.RequestedOrders;
 
 import static lastie_wangechian_Final.com.R.id.radiobutton_Mpesa;
 
-public class PlaceOrder extends AppCompatActivity {
+public class PlaceOrder extends AppCompatActivity implements ChangeLocation.ChangeLocationListener {
 
     String imported_name, imported_phone, imported_street, imported_building, totalPrice_plus_deliveryFee, vendor_id;
     private FirebaseAuth mAuth;
@@ -61,6 +61,7 @@ public class PlaceOrder extends AppCompatActivity {
     private RadioGroup radioGroup, radioGroupFee;
     private ImageView placeOrder_ImageView;
     private TextView textView_itemName, textView_itemType, textView_itemprice, textView_itemQuantity, textView_totalPrice;
+    String itemName, itemImage, itemType, itemQuantity, itemPrice;
 
 
     @Override
@@ -118,72 +119,10 @@ public class PlaceOrder extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent change_intent = new Intent(getApplicationContext(), ChangeLocation.class);
-                startActivity(change_intent);
-                textView_buyerStreet.setText(null);
-                textView_BuyerBuildingName.setText(null);
-
                 addressChanged();
 
             }
         });
-
-        if (addressChanged()) {
-
-            try {
-                String new_buildingName = getIntent().getStringExtra("buildingName");
-                String new_address = getIntent().getStringExtra("address");
-                textView_buyerStreet.setText(new_address);
-                textView_BuyerBuildingName.setText(new_buildingName);
-
-                String itemName = getIntent().getStringExtra("export_name");
-                final String itemImage = getIntent().getStringExtra("export_image");
-                int itemPrice = Integer.parseInt(getIntent().getStringExtra("export_price"));
-                String itemType = getIntent().getStringExtra("export_type");
-                String itemQuantity = getIntent().getStringExtra("export_quantity");
-
-                textView_itemName.setText(itemName);
-                textView_itemType.setText(itemType);
-                textView_itemprice.setText(String.valueOf(itemPrice));
-                int ttp = itemPrice + 50;
-                totalPrice_plus_deliveryFee = String.valueOf(ttp);
-                textView_itemQuantity.setText(itemQuantity);
-                textView_totalPrice.setText(totalPrice_plus_deliveryFee);
-                Picasso.get().load(itemImage).placeholder(R.drawable.no_image_found).into(placeOrder_ImageView);
-                textView_buyerName.setText(imported_name);
-                textView_buyerPhone.setText(imported_phone);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            } finally {
-
-            }
-
-        } else {
-
-            try {
-                String itemName = getIntent().getStringExtra("export_name");
-                final String itemImage = getIntent().getStringExtra("export_image");
-                int itemPrice = Integer.parseInt(getIntent().getStringExtra("export_price"));
-                String itemType = getIntent().getStringExtra("export_type");
-                String itemQuantity = getIntent().getStringExtra("export_quantity");
-
-                textView_itemName.setText(itemName);
-                textView_itemType.setText(itemType);
-                textView_itemprice.setText(String.valueOf(itemPrice));
-                int ttp = itemPrice + 50;
-                totalPrice_plus_deliveryFee = String.valueOf(ttp);
-                textView_itemQuantity.setText(itemQuantity);
-                textView_totalPrice.setText(totalPrice_plus_deliveryFee);
-                Picasso.get().load(itemImage).placeholder(R.drawable.no_image_found).into(placeOrder_ImageView);
-                textView_buyerName.setText(imported_name);
-                textView_buyerPhone.setText(imported_phone);
-                textView_buyerStreet.setText(imported_street);
-                textView_BuyerBuildingName.setText(imported_building);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-
 
         button_placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -299,6 +238,12 @@ public class PlaceOrder extends AppCompatActivity {
 
     }
 
+    public void addressChanged() {
+        ChangeLocation changeLocation = new ChangeLocation();
+        changeLocation.show(getSupportFragmentManager(), "changing the location and address");
+
+    }
+
     private void notifyBuyer() {
 
         int notificationID = 0;
@@ -372,11 +317,6 @@ public class PlaceOrder extends AppCompatActivity {
 
     }
 
-    //boolean methods
-    private boolean addressChanged() {
-        return true;
-    }
-
     private boolean lipaOnDelivery() {
         return true;
     }
@@ -440,13 +380,6 @@ public class PlaceOrder extends AppCompatActivity {
                             textView_buyerStreet.setText(imported_street);
                             textView_BuyerBuildingName.setText(imported_building);
                         }
-                        /*
-                        else {
-
-                            Toast.makeText(getApplicationContext(), "Datasnapshot empty", Toast.LENGTH_LONG).show();
-                        }
-
-                         */
                     }
 
                     @Override
@@ -481,5 +414,12 @@ public class PlaceOrder extends AppCompatActivity {
         super.onBackPressed();
 
         //startActivity(new Intent(getApplicationContext(),));
+    }
+
+    @Override
+    public void applyText(String new_address, String new_buildingName) {
+
+        textView_buyerStreet.setText(new_address);
+        textView_BuyerBuildingName.setText(new_buildingName);
     }
 }

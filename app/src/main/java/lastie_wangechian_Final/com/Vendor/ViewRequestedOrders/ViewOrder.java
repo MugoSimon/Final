@@ -77,6 +77,7 @@ public class ViewOrder extends AppCompatActivity {
         getSupportActionBar().setTitle("View Order");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_kurudinyuma);
+        progressDialog = new ProgressDialog(this);
 
         //buttons
         button_Approve.setOnClickListener(new View.OnClickListener() {

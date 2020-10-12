@@ -105,7 +105,7 @@
             android:gravity="center"
             android:text="use another address"
             android:textAlignment="center"
-            android:textColor="#FFD600" />
+            android:textColor="#0DC5E0" />
 
         <View
             android:id="@+id/divider"
@@ -218,7 +218,7 @@
                 android:id="@+id/placeOrder_itemImage"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:src="@drawable/default_avatar_4" />
+                android:src="@drawable/no_image_found" />
 
             <LinearLayout
                 android:layout_width="match_parent"

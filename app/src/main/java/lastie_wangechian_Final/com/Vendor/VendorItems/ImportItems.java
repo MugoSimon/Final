@@ -6,15 +6,17 @@ public class ImportItems {
     String item_price;
     String item_type;
     String item_image;
+    String id;
 
     public ImportItems() {
         //empty constuctor
     }
 
-    public ImportItems(String item_name, String item_price, String item_type, String item_image) {
+    public ImportItems(String item_name, String id, String item_price, String item_type, String item_image) {
         this.item_name = item_name;
         this.item_price = item_price;
         this.item_type = item_type;
+        this.id = id;
         this.item_image = item_image;
     }
 
@@ -48,5 +50,13 @@ public class ImportItems {
 
     public void setItem_image(String item_image) {
         this.item_image = item_image;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

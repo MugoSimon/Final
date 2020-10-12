@@ -8,6 +8,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fgm_vendorItemList"
         android:layout_width="match_parent"
+        android:background="#fff"
         android:layout_height="match_parent"
         android:padding="8dp" />
 

@@ -1,5 +1,6 @@
 package lastie_wangechian_Final.com.Buyer.WhileOrdering;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +34,7 @@ public class RateUs extends AppCompatActivity {
     private TextView textView_thanking, textView_heading, textView_ratings;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +59,13 @@ public class RateUs extends AppCompatActivity {
         setSupportActionBar(rateUs_toolbar);
         getSupportActionBar().setTitle("Rate Us");
 
+        //progressDialog
+        progressDialog = new ProgressDialog(this);
+
         //ratingBar
         ratingBar.animate();
         ratingBar.requestFocus();
-        final float ratings = ratingBar.getRating();
-        //ratingBar.getOnRatingBarChangeListener().onRatingChanged(ratingBar, ratings, true);
-        textView_ratings.setText(String.valueOf(ratings));
+
 
         //button
         button_submit.setOnClickListener(new View.OnClickListener() {
@@ -71,44 +74,13 @@ public class RateUs extends AppCompatActivity {
 
                 try {
 
-                    if (ratings == 0) {
+                    final float ratings = ratingBar.getRating();
+                    progressDialog.setTitle("Concluding...");
+                    progressDialog.setMessage("Thank you very much :)");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
 
-                        ratingBar.requestFocus();
-                        Toast.makeText(RateUs.this, "Kindly gauge our service on the rating bar.", Toast.LENGTH_LONG).show();
-                        return;
-
-                    } else {
-
-                        HashMap<String, String> hashMap_this = new HashMap<>();
-                        hashMap_this.put("ratings", String.valueOf(ratings));
-                        databaseReference.push().setValue(hashMap_this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-
-                                if (task.isSuccessful()) {
-
-                                    Toast.makeText(RateUs.this, "Successful", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(getApplicationContext(), BuyerMainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-
-                                } else {
-
-                                    Toast.makeText(getApplicationContext(), task.getException().getMessage().trim(), Toast.LENGTH_LONG).show();
-                                    return;
-
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-
-                            }
-                        });
-
-                    }
+                    saveRating(ratings);
 
                 } catch (UnsupportedOperationException error) {
 
@@ -125,5 +97,39 @@ public class RateUs extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void saveRating(float ratings) {
+
+        HashMap<String, String> hashMap_this = new HashMap<>();
+        hashMap_this.put("ratings", String.valueOf(ratings));
+        databaseReference.push().setValue(hashMap_this).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+
+                    progressDialog.dismiss();
+                    Toast.makeText(RateUs.this, "Successful", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), BuyerMainActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                } else {
+
+                    progressDialog.hide();
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage().trim(), Toast.LENGTH_LONG).show();
+                    return;
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 }
