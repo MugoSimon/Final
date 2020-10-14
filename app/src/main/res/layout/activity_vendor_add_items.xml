@@ -101,10 +101,10 @@
         android:layout_below="@+id/linear_layout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:background="@color/purple_yake"
+        android:background="@xml/water_vendor_style"
         android:text="add image"
         android:textAllCaps="false"
-        android:textColor="@color/colorPrimary_rest"
+        android:textColor="#fff"
         android:textStyle="italic" />
 
     <ImageView
@@ -126,8 +126,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="30dp"
-        android:background="@color/gradient_end_color"
-        android:text="Save Item"
+        android:background="@xml/btn_gradient_style"
+        android:text="save "
+        android:textAllCaps="false"
+        android:textColor="#fff"
         android:textStyle="bold" />
 
     <TextView
@@ -136,6 +138,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:textAllCaps="false"
         android:text="TextView"
         android:visibility="invisible" />
 
