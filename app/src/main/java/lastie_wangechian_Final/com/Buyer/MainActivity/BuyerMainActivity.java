@@ -181,6 +181,8 @@ public class BuyerMainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 finish();
+                finishAndRemoveTask();
+                System.exit(0);
 
             }
         });

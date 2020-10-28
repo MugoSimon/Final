@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import lastie_wangechian_Final.com.Vendor.AddItems.AddItems;
 import lastie_wangechian_Final.com.Vendor.VendorItems.ItemsFragment;
 import lastie_wangechian_Final.com.Vendor.ViewRequestedOrders.RequestedOrders;
 
@@ -28,9 +27,6 @@ public class FragmentSectionAdapter extends FragmentPagerAdapter {
                 RequestedOrders requestedOrders = new RequestedOrders();
                 return requestedOrders;
 
-            case 2:
-                AddItems addItems = new AddItems();
-                return addItems;
 
             default:
                 return null;
@@ -40,7 +36,7 @@ public class FragmentSectionAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Nullable
@@ -54,9 +50,6 @@ public class FragmentSectionAdapter extends FragmentPagerAdapter {
 
             case 1:
                 return "Requested Orders";
-
-            case 2:
-                return "Add Items";
 
             default:
                 return null;

@@ -6,17 +6,19 @@ public class CartList {
     private String export_image;
     private String export_price;
     private String export_type;
+    private String list_id;
     private String vendor_id;
 
     public CartList() {
         //empty constructor
     }
 
-    public CartList(String export_name, String export_image, String export_price, String export_type, String vendor_id) {
+    public CartList(String export_name, String export_image, String export_price, String export_type, String list_id, String vendor_id) {
         this.export_name = export_name;
         this.export_image = export_image;
         this.export_price = export_price;
         this.export_type = export_type;
+        this.list_id = list_id;
         this.vendor_id = vendor_id;
     }
 
@@ -50,6 +52,14 @@ public class CartList {
 
     public void setExport_type(String export_type) {
         this.export_type = export_type;
+    }
+
+    public String getList_id() {
+        return list_id;
+    }
+
+    public void setList_id(String list_id) {
+        this.list_id = list_id;
     }
 
     public String getVendor_id() {

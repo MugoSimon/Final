@@ -30,7 +30,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //additional dependencies
-    implementation 'com.google.firebase:firebase-database:19.5.0'
+    implementation 'com.google.firebase:firebase-database:19.5.1'
     //implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.firebase:firebase-storage:19.2.0'
     implementation 'com.firebaseui:firebase-ui-database:6.2.1'
@@ -45,8 +45,11 @@ dependencies {
     implementation 'id.zelory:compressor:3.0.0'
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
-    implementation "com.squareup.okhttp3:okhttp:4.8.0"
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
     implementation 'com.androidstudy:daraja:1.0.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     //implementation 'com.github.bumptech.glide:compiler:4.11.0'
     //implementation 'com.google.firebase:firebase-auth:16.0.5'

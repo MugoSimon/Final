@@ -43,7 +43,6 @@ public class IntroActivity extends AppCompatActivity {
         //concetrating on making the activiy_intro xml the main deal here
         setContentView(R.layout.activity_intro);
 
-
         //variables from layouts
         tab_indicator = findViewById(R.id.tab_indicator);
         btnNext = findViewById(R.id.btn_Next);

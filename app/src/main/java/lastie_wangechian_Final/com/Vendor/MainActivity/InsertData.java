@@ -16,6 +16,7 @@ public class InsertData {
         this.item_name = item_name;
         this.item_price = item_price;
         this.item_type = item_type;
+        this.id = id;
         this.item_image = item_image;
     }
 

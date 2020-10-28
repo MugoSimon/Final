@@ -39,6 +39,7 @@ import java.util.HashMap;
 
 import lastie_wangechian_Final.com.Buyer.Orders.MyOrdersFgm;
 import lastie_wangechian_Final.com.R;
+import lastie_wangechian_Final.com.Vendor.MainActivity.VendorMainActivity;
 
 public class ViewOrder extends AppCompatActivity {
 
@@ -115,7 +116,7 @@ public class ViewOrder extends AppCompatActivity {
                                     if (task.isSuccessful()) {
 
                                         progressDialog.dismiss();
-                                        Intent intent = new Intent(getApplicationContext(), RequestedOrders.class);
+                                        Intent intent = new Intent(getApplicationContext(), VendorMainActivity.class);
                                         notify_approval();
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
@@ -123,7 +124,7 @@ public class ViewOrder extends AppCompatActivity {
                                     } else {
 
                                         progressDialog.hide();
-                                        Toast.makeText(getApplicationContext(), task.getException().getMessage().toString(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                         return;
                                     }
 

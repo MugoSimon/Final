@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,11 +30,14 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import lastie_wangechian_Final.com.R;
 
 public class AddtoCart extends AppCompatActivity {
 
     String itemName, itemPrice, itemType, vendorName, itemImage, specfic_ID;
+    ArrayList<CartList> cartListArrayList;
     private Toolbar toolbar_addToCart;
     private RecyclerView recyclerView_addToCart;
     private FirebaseAuth mAuth;
@@ -54,6 +58,7 @@ public class AddtoCart extends AppCompatActivity {
 
         recyclerView_addToCart = findViewById(R.id.addToCart_recycler);
         recyclerView_addToCart.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        cartListArrayList = new ArrayList<>();
     }
 
     @Override
@@ -76,58 +81,72 @@ public class AddtoCart extends AppCompatActivity {
             FirebaseRecyclerAdapter<CartList, AddtoCartHolder> adapter =
                     new FirebaseRecyclerAdapter<CartList, AddtoCartHolder>(options) {
                         @Override
-                        protected void onBindViewHolder(@NonNull final AddtoCartHolder holder, int position, @NonNull final CartList model) {
+                        protected void onBindViewHolder(@NonNull final AddtoCartHolder holder, final int position, @NonNull final CartList model) {
 
                             try {
-                                specfic_ID = getRef(position).getKey();
-                                databaseReference.child(specfic_ID).addValueEventListener(new ValueEventListener() {
+                                databaseReference.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        holder.addToCart_textViewItemName.setText(model.getExport_name());
-                                        holder.addToCart_textViewItemType.setText(model.getExport_type());
-                                        holder.addToCart_textViewItemPrice.setText(model.getExport_price());
-                                        Picasso.get().load(model.getExport_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.addToCart_imageView, new Callback() {
-                                            @Override
-                                            public void onSuccess() {
-                                                //hapa tiwe seo
+
+                                        cartListArrayList.clear();
+                                        int counter = 0;
+                                        for (DataSnapshot Cart_datasnapshot : snapshot.getChildren()) {
+
+                                            if (counter == position) {
+
+                                                final CartList cartList = Cart_datasnapshot.getValue(CartList.class);
+                                                cartListArrayList.add(cartList);
+
+                                                holder.addToCart_textViewItemName.setText(cartList.getExport_name());
+                                                holder.addToCart_textViewItemType.setText(cartList.getExport_type());
+                                                holder.addToCart_textViewItemPrice.setText(cartList.getExport_price());
+                                                holder.addToCart_txtInv.setText(cartList.getList_id());
+                                                Picasso.get().load(cartList.getExport_image()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.addToCart_imageView, new Callback() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        //hapa tiwe seo
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Exception e) {
+
+                                                        Picasso.get().load(cartList.getExport_image()).into(holder.addToCart_imageView);
+                                                    }
+                                                });
+
+                                                vendorReference = FirebaseDatabase.getInstance().getReference().child("Vendors").child(cartList.getVendor_id());
+                                                vendorReference.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                        if (snapshot.hasChild("username")) {
+                                                            vendorName = snapshot.child("username").getValue().toString();
+                                                            holder.addToCart_textViewVendorName.setText(vendorName);
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
                                             }
-
-                                            @Override
-                                            public void onError(Exception e) {
-
-                                                Picasso.get().load(model.getExport_image()).into(holder.addToCart_imageView);
-                                            }
-                                        });
-
-                                        vendorReference = FirebaseDatabase.getInstance().getReference().child("Vendors").child(model.getVendor_id());
-                                        vendorReference.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                                if (snapshot.hasChild("username")) {
-                                                    vendorName = snapshot.child("username").getValue().toString();
-                                                    holder.addToCart_textViewVendorName.setText(vendorName);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
+                                            counter++;
+                                        }
                                     }
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
 
                                     }
-                                });
 
+                                });
                             } catch (DatabaseException db_error) {
 
                                 Toast.makeText(getApplicationContext(), db_error.getMessage(), Toast.LENGTH_LONG).show();
                                 return;
                             }
+
                         }
 
                         @NonNull
@@ -162,7 +181,7 @@ public class AddtoCart extends AppCompatActivity {
     public class AddtoCartHolder extends RecyclerView.ViewHolder {
 
         ImageView addToCart_imageView;
-        TextView addToCart_textViewItemName, addToCart_textViewItemPrice,
+        TextView addToCart_textViewItemName, addToCart_textViewItemPrice, addToCart_txtInv,
                 addToCart_textViewItemType, addToCart_textViewVendorName;
         Button addToCart_buttonDelete;
         private View addedToCart_view;
@@ -175,6 +194,7 @@ public class AddtoCart extends AppCompatActivity {
             addToCart_textViewItemName = itemView.findViewById(R.id.added_itemName);
             addToCart_textViewItemPrice = itemView.findViewById(R.id.added_itemPrice);
             addToCart_textViewItemType = itemView.findViewById(R.id.added_itemType);
+            addToCart_txtInv = itemView.findViewById(R.id.textcart_inv);
             addToCart_textViewVendorName = itemView.findViewById(R.id.added_vendorName);
             addToCart_buttonDelete = itemView.findViewById(R.id.added_buttonDelete);
 
@@ -183,7 +203,14 @@ public class AddtoCart extends AppCompatActivity {
                 public void onClick(View v) {
 
                     //done
-                    databaseReference.child(specfic_ID).removeValue();
+                    databaseReference.child((String) addToCart_txtInv.getText()).removeValue()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    Toast.makeText(getApplicationContext(), addToCart_textViewItemName.getText() + " deleted", Toast.LENGTH_LONG).show();
+                                }
+                            });
                 }
             });
         }

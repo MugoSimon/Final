@@ -131,12 +131,14 @@ public class ActualOrder extends AppCompatActivity implements NumberPicker.OnVal
                         String buyer_price = textView_totalPrice.getText().toString();
 
                         mDatabase = FirebaseDatabase.getInstance().getReference().child("Cart").child(user_id);
+                        String list_id = mDatabase.push().getKey();
 
                         HashMap<String, String> cart_hashMap = new HashMap<>();
                         cart_hashMap.put("export_name", export_name);
                         cart_hashMap.put("export_image", export_image);
                         cart_hashMap.put("export_price", buyer_price);
                         cart_hashMap.put("export_type", export_type);
+                        cart_hashMap.put("list_id", list_id);
                         cart_hashMap.put("vendor_id", vendor_id);
 
                         mDatabase.push().setValue(cart_hashMap)

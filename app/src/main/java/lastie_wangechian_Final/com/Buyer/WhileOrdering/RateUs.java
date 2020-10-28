@@ -112,6 +112,7 @@ public class RateUs extends AppCompatActivity {
                     progressDialog.dismiss();
                     Toast.makeText(RateUs.this, "Successful", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), BuyerMainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
 
